@@ -7,7 +7,7 @@ import no.taardal.blossom.tile.Tile;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Viewport {
+public abstract class Viewport {
 
     int xOffset;
     int yOffset;
@@ -17,7 +17,7 @@ public class Viewport {
 
     public Viewport(int width, int height) {
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        createGraphics();
+        prepareForDrawing();
     }
 
     public BufferedImage getBufferedImage() {
@@ -32,52 +32,18 @@ public class Viewport {
         return bufferedImage.getHeight();
     }
 
-    public int getXOffset() {
-        return xOffset;
-    }
-
-    public int getYOffset() {
-        return yOffset;
-    }
-
     public void setOffset(int xOffset, int yOffset) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
     }
 
     public void prepareForDrawing() {
-        createGraphics();
+        graphics2D = bufferedImage.createGraphics();
         clear();
     }
 
-    public void createGraphics() {
-        graphics2D = bufferedImage.createGraphics();
-    }
-
-    public void clear() {
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-    }
-
     public void finishDrawing() {
-        dispose();
-    }
-
-    public void recycleGraphics() {
-        dispose();
-        createGraphics();
-    }
-
-    private void dispose() {
         graphics2D.dispose();
-    }
-
-    public void drawSprite(Sprite sprite, XYCoordinate xyCoordinate) {
-        graphics2D.drawImage(sprite.getBufferedImage(), xyCoordinate.getX(), xyCoordinate.getY(), null);
-    }
-
-    public void drawTile(Tile tile, int x, int y) {
-        graphics2D.drawImage(tile.getSprite().getBufferedImage(), x, y, null);
     }
 
     public void drawImage(Image image, int x, int y) {
@@ -89,6 +55,19 @@ public class Viewport {
         int xIso = (x - y) * (bufferedImage.getWidth() / 2) - xOffset;
         int yIso = (x + y) * (bufferedImage.getHeight() / 2) - yOffset;
         drawImage(bufferedImage, xIso, yIso);
+    }
+
+    public void drawSprite(Sprite sprite, XYCoordinate xyCoordinate) {
+        graphics2D.drawImage(sprite.getBufferedImage(), xyCoordinate.getX(), xyCoordinate.getY(), null);
+    }
+
+    public void drawTile(Tile tile, int x, int y) {
+        graphics2D.drawImage(tile.getSprite().getBufferedImage(), x, y, null);
+    }
+
+    private void clear() {
+        graphics2D.setColor(Color.BLACK);
+        graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
     }
 
 }

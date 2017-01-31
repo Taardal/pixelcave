@@ -1,4 +1,4 @@
-package no.taardal.blossom;
+package no.taardal.blossom.game;
 
 import no.taardal.blossom.input.Keyboard;
 import no.taardal.blossom.input.Mouse;
@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 public class Game extends Canvas implements Runnable {
 
@@ -19,7 +18,7 @@ public class Game extends Canvas implements Runnable {
     public static final int GAME_HEIGHT = GAME_WIDTH / 16 * 9;
     public static final int SCALE = 3;
 
-    private static final String TITLE = "Nova";
+    private static final String TITLE = "Blossom";
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
     private static final int NUMBER_OF_BUFFERS = 3;
     private static final int ONE_SECOND = 1000;
@@ -29,7 +28,6 @@ public class Game extends Canvas implements Runnable {
 
     private volatile boolean running = false;
 
-    private BufferedImage bufferedImage;
     private Thread gameThread;
     private Camera camera;
     private Keyboard keyboard;
@@ -38,7 +36,6 @@ public class Game extends Canvas implements Runnable {
 
     private Game() {
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
-        bufferedImage = new BufferedImage(GAME_WIDTH, GAME_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         gameThread = new Thread(this);
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         keyboard = new Keyboard();
@@ -55,7 +52,7 @@ public class Game extends Canvas implements Runnable {
         JFrame jframe = new JFrame();
         jframe.add(game);
         jframe.setTitle(TITLE);
-        jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jframe.setResizable(false);
         jframe.setVisible(true);
         jframe.pack();
@@ -74,11 +71,11 @@ public class Game extends Canvas implements Runnable {
             delta += (currentTimeNano - lastTimeNano) / NANOSECONDS_PER_UPDATE;
             lastTimeNano = currentTimeNano;
             if (delta >= 1) {
-                update();
+//                update();
                 updates++;
                 delta--;
             }
-            draw();
+//            draw();
             frames++;
             if (System.currentTimeMillis() - lastTimeMillis > ONE_SECOND) {
                 lastTimeMillis += ONE_SECOND;
@@ -90,48 +87,49 @@ public class Game extends Canvas implements Runnable {
         stop();
     }
 
-    private synchronized void start() {
+    public synchronized void start() {
         requestFocus();
         running = true;
         gameThread.start();
     }
 
-    private synchronized void stop() {
+    public synchronized void stop() {
+        System.out.println("GAME STOP");
         running = false;
+        joinGameThread();
+        System.exit(0);
+    }
+
+    private void joinGameThread() {
         try {
             gameThread.join();
         } catch (InterruptedException e) {
             LOGGER.error("Could not join runnable [{}]", gameThread, e);
             throw new RuntimeException(e);
         }
-        System.exit(0);
     }
 
-    private void update() {
+    public void update() {
         keyboard.update();
         camera.update(keyboard);
     }
 
-    private void draw() {
+    public void draw() {
         BufferStrategy bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
             createBufferStrategy(NUMBER_OF_BUFFERS);
-            return;
+        } else {
+            camera.prepareForDrawing();
+            level.draw(camera);
+            camera.finishDrawing();
+            drawBuffer(bufferStrategy);
+            bufferStrategy.show();
         }
-
-        Graphics2D graphics2D = bufferedImage.createGraphics();
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        level.draw(camera, graphics2D);
-        graphics2D.dispose();
-
-        drawBuffer(bufferStrategy);
-        bufferStrategy.show();
     }
 
     private void drawBuffer(BufferStrategy bufferStrategy) {
         Graphics graphics = bufferStrategy.getDrawGraphics();
-        graphics.drawImage(bufferedImage, 0, 0, getWidth(), getHeight(), null);
+        graphics.drawImage(camera.getBufferedImage(), 0, 0, getWidth(), getHeight(), null);
         graphics.dispose();
     }
 

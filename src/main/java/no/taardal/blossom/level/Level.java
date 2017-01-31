@@ -1,6 +1,6 @@
 package no.taardal.blossom.level;
 
-import no.taardal.blossom.Game;
+import no.taardal.blossom.game.Game;
 import no.taardal.blossom.view.Camera;
 import no.taardal.blossom.tile.Tile;
 
@@ -32,11 +32,11 @@ public class Level {
         int bottom = (camera.getBottom() + Tile.HEIGHT) >>  Tile.HEIGHT_EXPONENT;
 
         for (int row = top; row < bottom; row++) {
-            int y = row * Tile.HEIGHT - camera.getYOffset();
-            for (int column = left; column < right; column++) {
-                int x = column * Tile.WIDTH - camera.getXOffset();
-                getTile(column, row).draw(x, y, graphics2D);
-            }
+//            int y = row * Tile.HEIGHT - camera.getYOffset();
+//            for (int column = left; column < right; column++) {
+//                int x = column * Tile.WIDTH - camera.getXOffset();
+//                getTile(column, row).draw(x, y, graphics2D);
+//            }
         }
     }
 
@@ -104,5 +104,9 @@ public class Level {
             return Tile.ISO_GRASS;
         }
         return Tile.ISO_VOID;
+    }
+
+    public void draw(Camera camera) {
+
     }
 }

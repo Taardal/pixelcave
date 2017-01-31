@@ -8,6 +8,14 @@
     <artifactId>blossom</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <developers>
+        <developer>
+            <id>taardal</id>
+            <name>Torbjørn Årdal</name>
+            <email>torbjorn.aardal@gmail.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java-sdk.version>1.8</java-sdk.version>
@@ -40,7 +48,7 @@
     </dependencies>
 
     <build>
-        <finalName>nova</finalName>
+        <finalName>blossom</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
