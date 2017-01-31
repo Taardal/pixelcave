@@ -1,0 +1,27 @@
+### Eclipse ###
+target/
+dist/
+
+
+### IntelliJ IDEA ###
+out/
+.idea/
+*.iml
+
+
+### MAC OSX ###
+*.DS_Store
+
+
+### Windows ###
+Thumbs.db
+Desktop.ini
+*.lnk
+
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+
