@@ -47,17 +47,17 @@ public class Game extends Canvas implements Runnable {
         level = new TestLevel();
     }
 
-    public static void main(String[] args) {
-        Game game = new Game();
-        JFrame jframe = new JFrame();
-        jframe.add(game);
-        jframe.setTitle(TITLE);
-        jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jframe.setResizable(false);
-        jframe.setVisible(true);
-        jframe.pack();
-        game.start();
-    }
+//    public static void main(String[] args) {
+//        Game game = new Game();
+//        JFrame jframe = new JFrame();
+//        jframe.add(game);
+//        jframe.setTitle(TITLE);
+//        jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        jframe.setResizable(false);
+//        jframe.setVisible(true);
+//        jframe.pack();
+//        game.start();
+//    }
 
     @Override
     public void run() {
@@ -119,9 +119,9 @@ public class Game extends Canvas implements Runnable {
         if (bufferStrategy == null) {
             createBufferStrategy(NUMBER_OF_BUFFERS);
         } else {
-            camera.prepareForDrawing();
+//            camera.prepareForDrawing();
             level.draw(camera);
-            camera.finishDrawing();
+//            camera.finishDrawing();
             drawBuffer(bufferStrategy);
             bufferStrategy.show();
         }

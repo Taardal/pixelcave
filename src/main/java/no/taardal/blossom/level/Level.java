@@ -109,4 +109,8 @@ public class Level {
     public void draw(Camera camera) {
 
     }
+
+    public void update() {
+
+    }
 }
