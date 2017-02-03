@@ -1,58 +1,41 @@
 package no.taardal.blossom.input;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Keyboard implements KeyListener {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Keyboard.class);
     private static final int NUMBER_OF_KEYS_ON_KEYBOARD = 256;
+
     private static boolean[] keys = new boolean[NUMBER_OF_KEYS_ON_KEYBOARD];
 
-    private boolean up;
-    private boolean down;
-    private boolean left;
-    private boolean right;
+    private KeyboardEventListener keyboardEventListener;
 
-    public void update() {
-        up = keys[KeyEvent.VK_UP] || keys[KeyEvent.VK_W];
-        down = keys[KeyEvent.VK_DOWN] || keys[KeyEvent.VK_S];
-        left = keys[KeyEvent.VK_LEFT] || keys[KeyEvent.VK_A];
-        right = keys[KeyEvent.VK_RIGHT] || keys[KeyEvent.VK_D];
+    public Keyboard(KeyboardEventListener keyboardEventListener) {
+        this.keyboardEventListener = keyboardEventListener;
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-
+    public void keyTyped(KeyEvent keyEvent) {
+        
     }
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
+        LOGGER.debug(keyEvent.paramString());
         keys[keyEvent.getKeyCode()] = true;
+        keyboardEventListener.onKeyEvent(KeyEventType.PRESSED, keyEvent);
     }
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {
+        LOGGER.debug(keyEvent.paramString());
         keys[keyEvent.getKeyCode()] = false;
-    }
-
-    public static boolean getKey(int key) {
-        return keys[key];
-    }
-
-    public boolean isUp() {
-        return up;
-    }
-
-    public boolean isDown() {
-        return down;
-    }
-
-    public boolean isLeft() {
-        return left;
-    }
-
-    public boolean isRight() {
-        return right;
+        keyboardEventListener.onKeyEvent(KeyEventType.RELEASED, keyEvent);
     }
 
 }

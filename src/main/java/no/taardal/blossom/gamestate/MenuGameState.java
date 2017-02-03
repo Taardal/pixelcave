@@ -1,35 +1,40 @@
-package no.taardal.blossom.state;
+package no.taardal.blossom.gamestate;
 
+import no.taardal.blossom.input.KeyEventType;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.level.TestLevel;
 import no.taardal.blossom.view.Camera;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayState implements State {
+public class MenuGameState implements GameState {
+
+    private static final int START = 1;
+    private static final int EXIT = 2;
 
     private List<Level> levels;
-    private int currentLevel;
+    private int selectedMenuItem;
 
-    public PlayState() {
+    public MenuGameState() {
         levels = new ArrayList<>();
         levels.add(new TestLevel());
     }
 
     @Override
-    public void onEntry() {
-
+    public GameState onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
+        return null;
     }
 
     @Override
     public void update() {
-        levels.get(currentLevel).update();
+
     }
 
     @Override
     public void draw(Camera camera) {
-        levels.get(currentLevel).draw(camera);
+
     }
 
 }

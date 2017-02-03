@@ -56,18 +56,7 @@ public class Camera {
     }
 
     public void update(Keyboard keyboard) {
-        if (keyboard.isUp()) {
-            yOffset--;
-        }
-        if (keyboard.isLeft()) {
-            xOffset--;
-        }
-        if (keyboard.isRight()) {
-            xOffset++;
-        }
-        if (keyboard.isDown()) {
-            yOffset++;
-        }
+
     }
 
     public void clear() {
