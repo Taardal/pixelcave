@@ -1,13 +1,15 @@
 package no.taardal.blossom.gamestate;
 
 import no.taardal.blossom.input.KeyEventType;
+import no.taardal.blossom.input.Keyboard;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.view.Camera;
 
 import java.awt.event.KeyEvent;
 
-public class PauseGameState implements GameState {
-    public PauseGameState(Level level) {
+class PauseGameState implements GameState {
+
+    PauseGameState(Level level) {
     }
 
     @Override
@@ -16,12 +18,13 @@ public class PauseGameState implements GameState {
     }
 
     @Override
-    public void update() {
-
+    public GameState update(Keyboard keyboard) {
+        return null;
     }
 
     @Override
     public void draw(Camera camera) {
 
     }
+
 }

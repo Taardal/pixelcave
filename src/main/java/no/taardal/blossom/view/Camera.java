@@ -1,12 +1,11 @@
 package no.taardal.blossom.view;
 
 
-import no.taardal.blossom.coordinate.XYCoordinate;
+import no.taardal.blossom.input.KeyEventType;
 import no.taardal.blossom.input.Keyboard;
-import no.taardal.blossom.sprite.Sprite;
-import no.taardal.blossom.tile.Tile;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Camera {
@@ -34,6 +33,14 @@ public class Camera {
         return bufferedImage.getHeight();
     }
 
+    public int getXOffset() {
+        return xOffset;
+    }
+
+    public int getYOffset() {
+        return yOffset;
+    }
+
     public void setOffset(int xOffset, int yOffset) {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
@@ -56,7 +63,18 @@ public class Camera {
     }
 
     public void update(Keyboard keyboard) {
-
+        if (keyboard.isKeyPressed(KeyEvent.VK_UP) || keyboard.isKeyPressed(KeyEvent.VK_W)) {
+            yOffset--;
+        }
+        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT) || keyboard.isKeyPressed(KeyEvent.VK_A)) {
+            xOffset--;
+        }
+        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT) || keyboard.isKeyPressed(KeyEvent.VK_D)) {
+            xOffset++;
+        }
+        if (keyboard.isKeyPressed(KeyEvent.VK_DOWN) || keyboard.isKeyPressed(KeyEvent.VK_S)) {
+            yOffset++;
+        }
     }
 
     public void clear() {
@@ -75,11 +93,31 @@ public class Camera {
         drawImage(bufferedImage, xIso, yIso);
     }
 
-    public void drawSprite(Sprite sprite, XYCoordinate xyCoordinate) {
-        graphics2D.drawImage(sprite.getBufferedImage(), xyCoordinate.getX(), xyCoordinate.getY(), null);
+    public void drawString(String text, int x, int y, Font font, Color color) {
+        graphics2D.setColor(color);
+        graphics2D.setFont(font);
+        graphics2D.drawString(text, x, y);
     }
 
-    public void drawTile(Tile tile, int x, int y) {
-        graphics2D.drawImage(tile.getSprite().getBufferedImage(), x, y, null);
+    public void drawCircle(int x, int y, int diameter, Color color) {
+        graphics2D.setColor(color);
+        graphics2D.fillOval(x, y, diameter, diameter);
+    }
+
+    public void onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
+        if (keyEventType == KeyEventType.PRESSED) {
+            if (keyEvent.getKeyCode() == KeyEvent.VK_UP) {
+                yOffset -= 5;
+            }
+            if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
+                xOffset += 5;
+            }
+            if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
+                xOffset -= 5;
+            }
+            if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+                yOffset += 5;
+            }
+        }
     }
 }
