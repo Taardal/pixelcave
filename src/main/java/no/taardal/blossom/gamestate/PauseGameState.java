@@ -13,11 +13,6 @@ class PauseGameState implements GameState {
     }
 
     @Override
-    public GameState onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
-        return null;
-    }
-
-    @Override
     public GameState update(Keyboard keyboard) {
         return null;
     }

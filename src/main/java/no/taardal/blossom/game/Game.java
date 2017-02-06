@@ -15,7 +15,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
-public class Game extends Canvas implements GameLoopListener, KeyboardEventListener, ExitListener {
+public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     public static final int GAME_WIDTH = 400;
     public static final int GAME_HEIGHT = GAME_WIDTH / 16 * 9;
@@ -35,9 +35,9 @@ public class Game extends Canvas implements GameLoopListener, KeyboardEventListe
         gameThread = new Thread(gameLoop);
         gameStateManager = new GameStateManager(this);
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
-        setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
-        keyboard = new Keyboard(this);
+        keyboard = new Keyboard();
         addKeyListener(keyboard);
+        setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
     }
 
     public synchronized void start() {
@@ -48,22 +48,7 @@ public class Game extends Canvas implements GameLoopListener, KeyboardEventListe
 
     @Override
     public void onExit() {
-        LOGGER.info("Exiting game.");
-//        removeKeyListener(keyboard);
-//        gameLoop.setRunning(false);
-//        joinGameThread();
         System.exit(0);
-    }
-
-    @Override
-    public void onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
-        gameStateManager.onKeyEvent(keyEventType, keyEvent);
-        camera.onKeyEvent(keyEventType, keyEvent);
-    }
-
-    @Override
-    public void onHandleInput() {
-
     }
 
     @Override
@@ -88,9 +73,9 @@ public class Game extends Canvas implements GameLoopListener, KeyboardEventListe
     }
 
     private synchronized void joinGameThread() {
+        LOGGER.info("Game thread has been joined.");
         try {
             gameThread.join();
-            LOGGER.info("Game thread has been joined.");
         } catch (InterruptedException e) {
             LOGGER.error("Could not join game thread.", e);
             throw new RuntimeException(e);

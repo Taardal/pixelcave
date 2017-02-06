@@ -22,16 +22,6 @@ class PlayGameState implements GameState {
     }
 
     @Override
-    public GameState onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
-        if (keyEventType == KeyEventType.RELEASED && keyEvent.getKeyCode() == VK_ESCAPE) {
-            LOGGER.debug("Escape pressed. Entering pause state.");
-            return new PauseGameState(level);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public GameState update(Keyboard keyboard) {
         if (keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
             LOGGER.debug("Escape pressed. Entering pause state.");

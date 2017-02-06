@@ -8,7 +8,6 @@ import java.awt.event.KeyEvent;
 
 interface GameState {
 
-    GameState onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent);
     GameState update(Keyboard keyboard);
     void draw(Camera camera);
 

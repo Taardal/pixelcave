@@ -19,14 +19,6 @@ public class GameStateManager {
         gameState = new MenuGameState(exitListener);
     }
 
-    public void onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
-        GameState gameState = this.gameState.onKeyEvent(keyEventType, keyEvent);
-        if (gameState != null) {
-            LOGGER.debug("Changing game state to [{}]", gameState);
-            this.gameState = gameState;
-        }
-    }
-
     public void update(Keyboard keyboard) {
         GameState gameState = this.gameState.update(keyboard);
         if (gameState != null) {

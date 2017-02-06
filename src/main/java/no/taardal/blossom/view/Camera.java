@@ -3,6 +3,8 @@ package no.taardal.blossom.view;
 
 import no.taardal.blossom.input.KeyEventType;
 import no.taardal.blossom.input.Keyboard;
+import no.taardal.blossom.menu.*;
+import no.taardal.blossom.menu.MenuItem;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -120,4 +122,11 @@ public class Camera {
             }
         }
     }
+
+    public void drawMenuItem(MenuItem menuItem, int x, int y) {
+        graphics2D.setColor(menuItem.getFontColor());
+        graphics2D.setFont(menuItem.getFont());
+        graphics2D.drawString(menuItem.getText(), x, y);
+    }
+
 }
