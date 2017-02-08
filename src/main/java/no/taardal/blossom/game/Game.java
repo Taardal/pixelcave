@@ -1,18 +1,15 @@
 package no.taardal.blossom.game;
 
-import no.taardal.blossom.input.KeyEventType;
 import no.taardal.blossom.input.Keyboard;
-import no.taardal.blossom.input.KeyboardEventListener;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
 import no.taardal.blossom.gamestate.GameStateManager;
-import no.taardal.blossom.thread.GameLoop;
+import no.taardal.blossom.runnable.GameLoop;
 import no.taardal.blossom.view.Camera;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
@@ -24,7 +21,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     private static final int SCALE = 3;
     private static final int NUMBER_OF_BUFFERS = 3;
 
-    private Thread gameThread;
     private GameLoop gameLoop;
     private GameStateManager gameStateManager;
     private Camera camera;
@@ -32,7 +28,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     public Game() {
         gameLoop = new GameLoop(this);
-        gameThread = new Thread(gameLoop);
         gameStateManager = new GameStateManager(this);
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         keyboard = new Keyboard();
@@ -43,11 +38,20 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     public synchronized void start() {
         requestFocus();
         gameLoop.setRunning(true);
-        gameThread.start();
+        new Thread(gameLoop).start();
     }
 
     @Override
     public void onExit() {
+        LOGGER.info("Removing keyboard input.");
+        removeKeyListener(keyboard);
+        LOGGER.info("Stopping game loop.");
+        gameLoop.setRunning(false);
+    }
+
+    @Override
+    public void onShutdown() {
+        LOGGER.info("Shutting down.");
         System.exit(0);
     }
 
@@ -70,16 +74,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
             bufferStrategy.show();
         }
 
-    }
-
-    private synchronized void joinGameThread() {
-        LOGGER.info("Game thread has been joined.");
-        try {
-            gameThread.join();
-        } catch (InterruptedException e) {
-            LOGGER.error("Could not join game thread.", e);
-            throw new RuntimeException(e);
-        }
     }
 
     private void drawCameraToBuffer(BufferStrategy bufferStrategy) {

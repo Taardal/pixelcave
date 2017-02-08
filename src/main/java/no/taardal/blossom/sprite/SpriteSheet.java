@@ -1,6 +1,5 @@
 package no.taardal.blossom.sprite;
 
-import no.taardal.blossom.coordinate.XYCoordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,15 +33,6 @@ public class SpriteSheet {
 
     public int getHeight() {
         return bufferedImage.getHeight();
-    }
-
-    public Sprite getSprite(XYCoordinate xyCoordinate) {
-        BufferedImage bufferedImage = bufferedImages[xyCoordinate.getY()][xyCoordinate.getX()];
-        return new Sprite(bufferedImage);
-    }
-
-    public Sprite getSprite(XYCoordinate xyCoordinate, int spriteWidth, int spriteHeight) {
-        return getSprite(xyCoordinate.getX(), xyCoordinate.getY(), spriteWidth, spriteHeight);
     }
 
     public Sprite getSprite(int x, int y, int spriteWidth, int spriteHeight) {

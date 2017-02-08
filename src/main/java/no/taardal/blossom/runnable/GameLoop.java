@@ -1,4 +1,4 @@
-package no.taardal.blossom.thread;
+package no.taardal.blossom.runnable;
 
 import no.taardal.blossom.listener.GameLoopListener;
 import org.slf4j.Logger;
@@ -53,6 +53,7 @@ public class GameLoop implements Runnable {
             }
         }
         LOGGER.info("Game loop stopped.");
+        gameLoopListener.onShutdown();
     }
 
 }

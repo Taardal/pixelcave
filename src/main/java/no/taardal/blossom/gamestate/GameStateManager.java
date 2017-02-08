@@ -1,13 +1,10 @@
 package no.taardal.blossom.gamestate;
 
-import no.taardal.blossom.input.KeyEventType;
 import no.taardal.blossom.input.Keyboard;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.view.Camera;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.event.KeyEvent;
 
 public class GameStateManager {
 

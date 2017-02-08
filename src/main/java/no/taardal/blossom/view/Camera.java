@@ -1,13 +1,11 @@
 package no.taardal.blossom.view;
 
 
-import no.taardal.blossom.input.KeyEventType;
+import no.taardal.blossom.input.Key;
 import no.taardal.blossom.input.Keyboard;
-import no.taardal.blossom.menu.*;
 import no.taardal.blossom.menu.MenuItem;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Camera {
@@ -65,16 +63,16 @@ public class Camera {
     }
 
     public void update(Keyboard keyboard) {
-        if (keyboard.isKeyPressed(KeyEvent.VK_UP) || keyboard.isKeyPressed(KeyEvent.VK_W)) {
+        if (keyboard.isPressed(Key.UP) || keyboard.isPressed(Key.W)) {
             yOffset--;
         }
-        if (keyboard.isKeyPressed(KeyEvent.VK_LEFT) || keyboard.isKeyPressed(KeyEvent.VK_A)) {
+        if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A)) {
             xOffset--;
         }
-        if (keyboard.isKeyPressed(KeyEvent.VK_RIGHT) || keyboard.isKeyPressed(KeyEvent.VK_D)) {
+        if (keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
             xOffset++;
         }
-        if (keyboard.isKeyPressed(KeyEvent.VK_DOWN) || keyboard.isKeyPressed(KeyEvent.VK_S)) {
+        if (keyboard.isPressed(Key.DOWN) || keyboard.isPressed(Key.S)) {
             yOffset++;
         }
     }
@@ -104,23 +102,6 @@ public class Camera {
     public void drawCircle(int x, int y, int diameter, Color color) {
         graphics2D.setColor(color);
         graphics2D.fillOval(x, y, diameter, diameter);
-    }
-
-    public void onKeyEvent(KeyEventType keyEventType, KeyEvent keyEvent) {
-        if (keyEventType == KeyEventType.PRESSED) {
-            if (keyEvent.getKeyCode() == KeyEvent.VK_UP) {
-                yOffset -= 5;
-            }
-            if (keyEvent.getKeyCode() == KeyEvent.VK_RIGHT) {
-                xOffset += 5;
-            }
-            if (keyEvent.getKeyCode() == KeyEvent.VK_LEFT) {
-                xOffset -= 5;
-            }
-            if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-                yOffset += 5;
-            }
-        }
     }
 
     public void drawMenuItem(MenuItem menuItem, int x, int y) {

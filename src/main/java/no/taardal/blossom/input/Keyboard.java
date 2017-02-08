@@ -39,7 +39,11 @@ public class Keyboard implements KeyListener {
         setCurrentKeyStatesAsPreviousKeyStates();
     }
 
-    public boolean isKeyPressed(int keyCode) {
+    public boolean isPressed(Key key) {
+        return isPressed(key.getKeyCode());
+    }
+
+    private boolean isPressed(int keyCode) {
         if (keyCode == KeyEvent.VK_ESCAPE || keyCode == KeyEvent.VK_ENTER) {
             return keyStates[keyCode] && !previousKeyStates[keyCode];
         } else {
