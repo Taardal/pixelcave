@@ -56,7 +56,7 @@ class MenuGameState implements GameState {
 
     @Override
     public void draw(Camera camera) {
-        camera.drawString("BLOSSOM", 100, 50, headerFont, Color.WHITE);
+        camera.drawString(Game.GAME_TITLE.toUpperCase(), 100, 50, headerFont, Color.WHITE);
         camera.drawString("2017, Torbjørn Årdal", 20, Game.GAME_HEIGHT - 20, footerFont, Color.WHITE);
         menu.draw(camera);
     }

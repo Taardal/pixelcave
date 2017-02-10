@@ -14,6 +14,7 @@ import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
+    public static final String GAME_TITLE = "Blossom";
     public static final int GAME_WIDTH = 400;
     public static final int GAME_HEIGHT = GAME_WIDTH / 16 * 9;
 
@@ -81,4 +82,5 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
         graphics.drawImage(camera.getBufferedImage(), 0, 0, getWidth(), getHeight(), null);
         graphics.dispose();
     }
+
 }

@@ -10,7 +10,7 @@ public class Main {
         Game game = new Game();
         JFrame jframe = new JFrame();
         jframe.add(game);
-        jframe.setTitle("Blossom");
+        jframe.setTitle(Game.GAME_TITLE);
         jframe.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jframe.setResizable(false);
         jframe.setVisible(true);
