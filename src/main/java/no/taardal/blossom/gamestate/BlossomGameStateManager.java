@@ -16,7 +16,7 @@ public class BlossomGameStateManager implements GameStateManager {
 
     @Inject
     public BlossomGameStateManager(Service<Level> levelService) {
-        Level level = levelService.getLevel("blossommap.json");
+        Level level = levelService.getLevel("testmap.json");
         gameState = new PlayGameState(level);
     }
 
