@@ -1,11 +1,9 @@
 package no.taardal.blossom.menu;
 
-import no.taardal.blossom.view.Camera;
+import no.taardal.blossom.camera.Camera;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Menu {
 

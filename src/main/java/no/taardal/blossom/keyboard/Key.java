@@ -1,4 +1,4 @@
-package no.taardal.blossom.input;
+package no.taardal.blossom.keyboard;
 
 import java.awt.event.KeyEvent;
 

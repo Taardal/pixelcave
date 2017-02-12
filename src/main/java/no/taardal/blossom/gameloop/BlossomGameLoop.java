@@ -1,10 +1,11 @@
-package no.taardal.blossom.runnable;
+package no.taardal.blossom.gameloop;
 
+import com.google.inject.Inject;
 import no.taardal.blossom.listener.GameLoopListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GameLoop implements Runnable {
+public class BlossomGameLoop implements GameLoop {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
     private static final int ONE_SECOND = 1000;
@@ -18,14 +19,17 @@ public class GameLoop implements Runnable {
     private int updates;
     private float delta;
 
-    public GameLoop(GameLoopListener gameLoopListener) {
+    @Inject
+    public BlossomGameLoop(GameLoopListener gameLoopListener) {
         this.gameLoopListener = gameLoopListener;
     }
 
+    @Override
     public boolean isRunning() {
         return running;
     }
 
+    @Override
     public void setRunning(boolean running) {
         this.running = running;
     }
@@ -53,7 +57,6 @@ public class GameLoop implements Runnable {
             }
         }
         LOGGER.info("Game loop stopped.");
-        gameLoopListener.onShutdown();
     }
 
 }

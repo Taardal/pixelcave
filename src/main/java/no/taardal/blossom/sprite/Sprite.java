@@ -1,6 +1,6 @@
 package no.taardal.blossom.sprite;
 
-import no.taardal.blossom.view.Camera;
+import no.taardal.blossom.camera.Camera;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

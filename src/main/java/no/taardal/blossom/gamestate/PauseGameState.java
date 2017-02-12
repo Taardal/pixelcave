@@ -1,8 +1,8 @@
 package no.taardal.blossom.gamestate;
 
-import no.taardal.blossom.input.Keyboard;
+import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
-import no.taardal.blossom.view.Camera;
 
 class PauseGameState implements GameState {
 

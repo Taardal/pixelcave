@@ -1,7 +1,7 @@
 package no.taardal.blossom.gamestate;
 
-import no.taardal.blossom.input.Keyboard;
-import no.taardal.blossom.view.Camera;
+import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.camera.Camera;
 
 interface GameState {
 

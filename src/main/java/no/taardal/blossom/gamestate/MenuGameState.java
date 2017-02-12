@@ -1,13 +1,14 @@
 package no.taardal.blossom.gamestate;
 
+import com.google.inject.Inject;
+import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.game.Game;
-import no.taardal.blossom.input.Key;
-import no.taardal.blossom.input.Keyboard;
+import no.taardal.blossom.keyboard.Key;
+import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
-import no.taardal.blossom.level.TestLevel;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.menu.Menu;
-import no.taardal.blossom.view.Camera;
+import no.taardal.blossom.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +25,14 @@ class MenuGameState implements GameState {
     private Menu menu;
     private Font headerFont;
     private Font footerFont;
+    private Service<Level> levelService;
 
-    MenuGameState(ExitListener exitListener) {
-        this.exitListener = exitListener;
+    @Inject
+    public MenuGameState(Service<Level> levelService) {
+        this.levelService = levelService;
         levels = new ArrayList<>();
-        levels.add(new TestLevel());
+        Level level = this.levelService.getLevel("blossommap.json");
+        levels.add(level);
         menu = getMenu();
         headerFont = new Font("Arial", Font.PLAIN, 28);
         footerFont = new Font("Arial", Font.PLAIN, 10);
@@ -39,7 +43,7 @@ class MenuGameState implements GameState {
         if (keyboard.isPressed(Key.ENTER)) {
             if (menu.getSelectedMenuItem() == 0) {
                 LOGGER.info("Entering play state on level [{}].", levels.get(0));
-                return new PlayGameState(new TestLevel());
+                return new PlayGameState(levels.get(0));
             } else if (menu.getSelectedMenuItem() == 1) {
                 LOGGER.info("Exiting game.");
                 exitListener.onExit();
