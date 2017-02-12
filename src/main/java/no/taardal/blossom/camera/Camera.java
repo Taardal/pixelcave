@@ -8,15 +8,15 @@ import no.taardal.blossom.menu.MenuItem;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Camera {
+public class Camera extends Rectangle {
 
-    private int xOffset;
-    private int yOffset;
+    private static final int SPEED = 10;
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
 
     public Camera(int width, int height) {
+        super(width, height);
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         graphics2D = bufferedImage.createGraphics();
     }
@@ -25,55 +25,18 @@ public class Camera {
         return bufferedImage;
     }
 
-    public int getWidth() {
-        return bufferedImage.getWidth();
-    }
-
-    public int getHeight() {
-        return bufferedImage.getHeight();
-    }
-
-    public int getXOffset() {
-        return xOffset;
-    }
-
-    public int getYOffset() {
-        return yOffset;
-    }
-
-    public void setOffset(int xOffset, int yOffset) {
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
-    }
-
-    public int getTop() {
-        return yOffset;
-    }
-
-    public int getLeft() {
-        return xOffset;
-    }
-
-    public int getRight() {
-        return xOffset + getWidth();
-    }
-
-    public int getBottom() {
-        return yOffset + getHeight();
-    }
-
     public void update(Keyboard keyboard) {
         if (keyboard.isPressed(Key.UP) || keyboard.isPressed(Key.W)) {
-            yOffset--;
+            y -= SPEED;
         }
         if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A)) {
-            xOffset--;
+            x -= SPEED;
         }
         if (keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
-            xOffset++;
+            x += SPEED;
         }
         if (keyboard.isPressed(Key.DOWN) || keyboard.isPressed(Key.S)) {
-            yOffset++;
+            y += SPEED;
         }
     }
 
@@ -88,8 +51,8 @@ public class Camera {
 
     public void drawImageIsometric(Image image, int x, int y) {
         BufferedImage bufferedImage = (BufferedImage) image;
-        int xIso = (x - y) * (bufferedImage.getWidth() / 2) - xOffset;
-        int yIso = (x + y) * (bufferedImage.getHeight() / 2) - yOffset;
+        int xIso = (x - y) * (bufferedImage.getWidth() / 2) - x;
+        int yIso = (x + y) * (bufferedImage.getHeight() / 2) - y;
         drawImage(bufferedImage, xIso, yIso);
     }
 

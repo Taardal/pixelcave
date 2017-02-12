@@ -9,7 +9,8 @@ import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TiledEditorLevel implements Level {
 
@@ -30,29 +31,50 @@ public class TiledEditorLevel implements Level {
 
     @Override
     public void draw(Camera camera) {
-        for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
-            TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-            int[] data = tiledEditorLayer.getData();
+        int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
+        int tileHeightExponent = Math.getExponent(tiledEditorMap.getTileHeight());
 
-            int rows = tiledEditorMap.getHeight();
-            int columns = tiledEditorMap.getWidth();
-            int[][] data2D = new int[rows][columns];
+        int topMostTileRowToDraw = ((int) camera.getMinY() - tiledEditorMap.getTileHeight()) >> tileWidthExponent;
+        int leftMostTileColumnToDraw = ((int) camera.getMinX() - tiledEditorMap.getTileWidth()) >> tileHeightExponent;
+        int rightMostTileColumnToDraw = ((int) camera.getMaxX() + tiledEditorMap.getTileWidth()) >> tileHeightExponent;
+        int bottomMostTileRowToDraw = ((int) camera.getMaxY() + tiledEditorMap.getTileHeight()) >> tileWidthExponent;
 
-            for (int row = 0; row < rows; row++) {
-                for (int column = 0; column < columns; column++) {
-                    int i1 = row + column * columns;
-                    if (i1 < data.length) {
-                        int tileId = data[i1];
-                        if (tileId != TiledEditorMap.NO_TILE_ID) {
-                            int x = tiledEditorLayer.getX() + column * 128;
-                            int y = tiledEditorLayer.getY() + row * 128;
-                            Tile tile = tiles.get(tileId);
-                            tile.draw(x, y, camera);
-                        }
+        for (int row = topMostTileRowToDraw; row < bottomMostTileRowToDraw; row++) {
+            if (row >= tiledEditorMap.getHeight()) {
+                break;
+            }
+            if (row < 0) {
+                continue;
+            }
+            int y = row * tiledEditorMap.getTileHeight() - (int) camera.getY();
+            for (int column = leftMostTileColumnToDraw; column < rightMostTileColumnToDraw; column++) {
+                if (column >= tiledEditorMap.getWidth()) {
+                    break;
+                }
+                if (column < 0) {
+                    continue;
+                }
+                int x = column * tiledEditorMap.getTileWidth() - (int) camera.getX();
+                for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
+                    TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
+                    int tiledId = getLayerData(tiledEditorLayer)[column][row];
+                    if (tiledId != TiledEditorMap.NO_TILE_ID) {
+                        tiles.get(tiledId).draw(x, y, camera);
                     }
                 }
             }
         }
+
+    }
+
+    private int[][] getLayerData(TiledEditorLayer tiledEditorLayer) {
+        int[][] layerData = new int[tiledEditorLayer.getWidth()][tiledEditorLayer.getHeight()];
+        for (int j = 0; j < layerData.length; j++) {
+            for (int k = 0; k < layerData[j].length; k++) {
+                layerData[j][k] = tiledEditorLayer.getData()[j + k * layerData.length];
+            }
+        }
+        return layerData;
     }
 
     private Map<Integer, Tile> getTiles(TiledEditorMap tiledEditorMap) {

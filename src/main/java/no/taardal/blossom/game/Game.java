@@ -16,7 +16,7 @@ import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     public static final String GAME_TITLE = "Blossom";
-    public static final int GAME_WIDTH = 640;
+    public static final int GAME_WIDTH = 1280;
     public static final int GAME_HEIGHT = GAME_WIDTH / 16 * 9;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);

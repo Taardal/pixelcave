@@ -31,7 +31,7 @@ public class TiledEditorMapDeserializer implements JsonDeserializer<TiledEditorM
             tiledEditorMap.setNextObjectId(jsonObject.get("nextobjectid").getAsInt());
             tiledEditorMap.setTileHeight(jsonObject.get("tileheight").getAsInt());
             tiledEditorMap.setTileWidth(jsonObject.get("tilewidth").getAsInt());
-            tiledEditorMap.setTileWidth(jsonObject.get("version").getAsInt());
+            tiledEditorMap.setVersion(jsonObject.get("version").getAsInt());
             LOGGER.info("Deserialized tiled editor map [{}]", tiledEditorMap);
             return tiledEditorMap;
         } catch (JsonParseException e) {
