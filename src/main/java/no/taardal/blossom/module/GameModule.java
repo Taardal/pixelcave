@@ -11,6 +11,8 @@ import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
 import no.taardal.blossom.gameloop.BlossomGameLoop;
 import no.taardal.blossom.gameloop.GameLoop;
+import no.taardal.blossom.ribbon.Ribbon;
+import no.taardal.blossom.service.RibbonService;
 import no.taardal.blossom.service.Service;
 import no.taardal.blossom.service.TiledEditorLevelService;
 
@@ -23,9 +25,13 @@ public class GameModule implements Module {
         binder.bind(GameStateManager.class).to(BlossomGameStateManager.class);
         binder.bind(ExitListener.class).to(Game.class);
         binder.bind(new LevelServiceTypeLiteral()).to(TiledEditorLevelService.class);
+        binder.bind(new RibbonServiceTypeLiteral()).to(RibbonService.class);
     }
 
     private class LevelServiceTypeLiteral extends TypeLiteral<Service<Level>> {
+    }
+
+    private class RibbonServiceTypeLiteral extends TypeLiteral<Service<Ribbon>> {
     }
 
 }

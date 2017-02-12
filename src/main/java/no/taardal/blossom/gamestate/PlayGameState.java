@@ -23,6 +23,7 @@ class PlayGameState implements GameState {
             LOGGER.debug("Entering pause state.");
             return new PauseGameState(level);
         } else {
+            level.update(keyboard);
             return null;
         }
     }

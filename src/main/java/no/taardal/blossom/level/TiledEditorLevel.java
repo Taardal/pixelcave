@@ -4,6 +4,7 @@ import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.ribbon.Ribbon;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
@@ -18,6 +19,8 @@ public class TiledEditorLevel implements Level {
 
     private TiledEditorMap tiledEditorMap;
     private Map<Integer, Tile> tiles;
+    private Ribbon ribbon;
+    private Camera camera;
 
     public TiledEditorLevel(TiledEditorMap tiledEditorMap) {
         this.tiledEditorMap = tiledEditorMap;
@@ -26,11 +29,19 @@ public class TiledEditorLevel implements Level {
 
     @Override
     public void update(Keyboard keyboard) {
-
+        if (camera != null) {
+            ribbon.update(-camera.getX(), -camera.getY());
+        }
     }
 
     @Override
     public void draw(Camera camera) {
+        this.camera = camera;
+
+        if (ribbon != null) {
+            ribbon.draw(camera);
+        }
+
         int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
         int tileHeightExponent = Math.getExponent(tiledEditorMap.getTileHeight());
 
@@ -55,16 +66,21 @@ public class TiledEditorLevel implements Level {
                     continue;
                 }
                 int x = column * tiledEditorMap.getTileWidth() - (int) camera.getX();
+
                 for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
                     TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
                     int tiledId = getLayerData(tiledEditorLayer)[column][row];
                     if (tiledId != TiledEditorMap.NO_TILE_ID) {
-                        tiles.get(tiledId).draw(x, y, camera);
+//                        tiles.get(tiledId).draw(x, y, camera);
                     }
                 }
             }
         }
+    }
 
+    @Override
+    public void setRibbon(Ribbon ribbon) {
+        this.ribbon = ribbon;
     }
 
     private int[][] getLayerData(TiledEditorLayer tiledEditorLayer) {

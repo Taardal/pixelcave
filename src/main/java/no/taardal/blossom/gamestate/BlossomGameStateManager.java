@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
+import no.taardal.blossom.ribbon.Ribbon;
 import no.taardal.blossom.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,10 @@ public class BlossomGameStateManager implements GameStateManager {
     private GameState gameState;
 
     @Inject
-    public BlossomGameStateManager(Service<Level> levelService) {
-        Level level = levelService.getLevel("testmap.json");
+    public BlossomGameStateManager(Service<Level> levelService, Service<Ribbon> ribbonService) {
+        Level level = levelService.get("testmap.json");
+        Ribbon ribbon = ribbonService.get("test");
+        level.setRibbon(ribbon);
         gameState = new PlayGameState(level);
     }
 

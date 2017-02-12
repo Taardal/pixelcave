@@ -16,7 +16,7 @@ import java.io.File;
 
 public class TiledEditorLevelService implements Service<Level> {
 
-    private static final String TILED_MAPS_RESOURCE_FOLDER = "tiledmaps";
+    private static final String TILED_MAPS_RESOURCE_FOLDER = "tilededitormaps";
     private static final String JSON_FILE_TYPE = "json";
 
     private ResourceLoader<String> stringResourceLoader;
@@ -31,7 +31,7 @@ public class TiledEditorLevelService implements Service<Level> {
     }
 
     @Override
-    public Level getLevel(String name) {
+    public Level get(String name) {
         String json = stringResourceLoader.loadResource(getResourcePath(name));
         TiledEditorMap tiledEditorMap = gson.fromJson(json, TiledEditorMap.class);
         return new TiledEditorLevel(tiledEditorMap);
