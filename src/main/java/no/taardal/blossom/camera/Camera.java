@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 public class Camera extends Rectangle {
 
-    private static final int SPEED = 10;
+    private static final int SPEED = 2;
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;

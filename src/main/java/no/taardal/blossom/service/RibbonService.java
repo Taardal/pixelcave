@@ -2,7 +2,7 @@ package no.taardal.blossom.service;
 
 import com.google.inject.Inject;
 import no.taardal.blossom.resourceloader.ResourceLoader;
-import no.taardal.blossom.ribbon.Background;
+import no.taardal.blossom.ribbon.RibbonItem;
 import no.taardal.blossom.ribbon.Ribbon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +32,12 @@ public class RibbonService implements Service<Ribbon> {
         URI ribbonsResourceDirectoryURI = getRibbonsResourceFolderURI(path);
         File ribbonsResourceDirectory = new File(ribbonsResourceDirectoryURI);
         String[] ribbonImagesFileNames = ribbonsResourceDirectory.list();
-        List<Background> bufferedImages = new ArrayList<>();
+        List<RibbonItem> bufferedImages = new ArrayList<>();
         if (ribbonImagesFileNames != null) {
             for (String ribbonImageFileName : ribbonImagesFileNames) {
                 String fullPath = path + "/" + ribbonImageFileName;
                 BufferedImage bufferedImage = bufferedImageResourceLoader.loadResource(fullPath);
-                bufferedImages.add(new Background(bufferedImage));
+                bufferedImages.add(new RibbonItem(bufferedImage));
             }
         } else {
             LOGGER.warn("Could not find any files in ribbon resource directory [{}].", ribbonsResourceDirectory.getName());

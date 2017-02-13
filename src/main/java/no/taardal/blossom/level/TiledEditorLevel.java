@@ -4,12 +4,16 @@ import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.resourceloader.BufferedImageResourceLoader;
 import no.taardal.blossom.ribbon.Ribbon;
+import no.taardal.blossom.service.RibbonService;
+import no.taardal.blossom.service.Service;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +24,26 @@ public class TiledEditorLevel implements Level {
     private TiledEditorMap tiledEditorMap;
     private Map<Integer, Tile> tiles;
     private Ribbon ribbon;
+    private Ribbon ribbon1;
     private Camera camera;
+    private Service<Ribbon> ribbonService;
+    BufferedImage caveInside;
+    BufferedImage bgobjects;
+    BufferedImage waterlayer;
+    BufferedImage grey;
+    BufferedImage objects;
 
     public TiledEditorLevel(TiledEditorMap tiledEditorMap) {
         this.tiledEditorMap = tiledEditorMap;
         tiles = getTiles(tiledEditorMap);
+        BufferedImageResourceLoader bufferedImageResourceLoader = new BufferedImageResourceLoader();
+        ribbonService = new RibbonService(bufferedImageResourceLoader);
+        ribbon = ribbonService.get("stageb");
+        caveInside = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_06_caveinside_b.png");
+        bgobjects = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_07_bgobjects.png");
+        waterlayer = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_07_waterlayer.png");
+        grey = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_08_grey.png");
+        objects = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_09_objects.png");
     }
 
     @Override
@@ -40,6 +59,11 @@ public class TiledEditorLevel implements Level {
 
         if (ribbon != null) {
             ribbon.draw(camera);
+            camera.drawImage(caveInside, (int) ribbon.getX(), (int) ribbon.getY());
+            camera.drawImage(bgobjects, (int) ribbon.getX(), (int) ribbon.getY());
+            camera.drawImage(waterlayer, (int) ribbon.getX(), (int) ribbon.getY());
+            camera.drawImage(grey, (int) ribbon.getX(), (int) ribbon.getY());
+            camera.drawImage(objects, (int) ribbon.getX(), (int) ribbon.getY());
         }
 
         int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
