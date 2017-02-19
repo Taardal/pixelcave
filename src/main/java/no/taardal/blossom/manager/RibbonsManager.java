@@ -3,7 +3,6 @@ package no.taardal.blossom.manager;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Key;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.manager.Manager;
 import no.taardal.blossom.ribbon.Ribbon;
 
 import java.util.List;

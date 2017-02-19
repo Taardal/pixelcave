@@ -24,16 +24,16 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     private static final int SCALE = 3;
     private static final int NUMBER_OF_BUFFERS = 3;
 
-    private GameLoop gameLoop;
     private Manager<GameState> gameStateManager;
+    private GameLoop gameLoop;
     private Keyboard keyboard;
     private Camera camera;
 
     @Inject
-    public Game(GameLoop gameLoop, Manager<GameState> gameStateManager, Keyboard keyboard) {
-        this.gameLoop = gameLoop;
+    public Game(Manager<GameState> gameStateManager) {
         this.gameStateManager = gameStateManager;
-        this.keyboard = keyboard;
+        this.gameLoop = new GameLoop(this);
+        this.keyboard = new Keyboard();
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
     }
@@ -41,7 +41,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     public synchronized void start() {
         requestFocus();
         addKeyListener(keyboard);
-        gameLoop.setRunning(true);
         new Thread(gameLoop, GAME_TITLE).start();
     }
 

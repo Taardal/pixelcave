@@ -25,7 +25,7 @@ public class TiledEditorLevel implements Level {
     public TiledEditorLevel(TiledEditorMap tiledEditorMap, Manager<Ribbon> ribbonManager) {
         this.tiledEditorMap = tiledEditorMap;
         this.ribbonManager = ribbonManager;
-        tiles = getTiles(tiledEditorMap);
+//        tiles = getTiles(tiledEditorMap);
     }
 
     @Override
