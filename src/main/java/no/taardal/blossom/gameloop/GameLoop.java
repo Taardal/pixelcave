@@ -1,6 +1,5 @@
 package no.taardal.blossom.gameloop;
 
-import com.google.inject.Inject;
 import no.taardal.blossom.listener.GameLoopListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ public class GameLoop implements Runnable {
     private int updates;
     private float delta;
 
-    @Inject
     public GameLoop(GameLoopListener gameLoopListener) {
         this.gameLoopListener = gameLoopListener;
     }
@@ -55,7 +53,7 @@ public class GameLoop implements Runnable {
                 frames = 0;
             }
         }
-        LOGGER.info("Game loop stopped.");
+        LOGGER.info("Game loop completed.");
     }
 
 }
