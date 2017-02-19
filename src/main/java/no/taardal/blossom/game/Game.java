@@ -2,11 +2,12 @@ package no.taardal.blossom.game;
 
 import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.gamestate.GameStateManager;
+import no.taardal.blossom.gameloop.GameLoop;
+import no.taardal.blossom.gamestate.GameState;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
-import no.taardal.blossom.gameloop.GameLoop;
+import no.taardal.blossom.manager.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +25,12 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     private static final int NUMBER_OF_BUFFERS = 3;
 
     private GameLoop gameLoop;
-    private GameStateManager gameStateManager;
+    private Manager<GameState> gameStateManager;
     private Keyboard keyboard;
     private Camera camera;
 
     @Inject
-    public Game(GameLoop gameLoop, GameStateManager gameStateManager, Keyboard keyboard) {
+    public Game(GameLoop gameLoop, Manager<GameState> gameStateManager, Keyboard keyboard) {
         this.gameLoop = gameLoop;
         this.gameStateManager = gameStateManager;
         this.keyboard = keyboard;

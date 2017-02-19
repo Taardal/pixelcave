@@ -4,7 +4,7 @@ import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 
-class PauseGameState implements GameState {
+public class PauseGameState implements GameState {
 
     PauseGameState(Level level) {
     }

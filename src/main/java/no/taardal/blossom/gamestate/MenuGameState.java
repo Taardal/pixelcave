@@ -16,7 +16,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-class MenuGameState implements GameState {
+public class MenuGameState implements GameState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MenuGameState.class);
 

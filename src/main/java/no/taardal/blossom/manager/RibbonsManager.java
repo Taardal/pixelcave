@@ -1,12 +1,14 @@
-package no.taardal.blossom.ribbon;
+package no.taardal.blossom.manager;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Key;
 import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.manager.Manager;
+import no.taardal.blossom.ribbon.Ribbon;
 
 import java.util.List;
 
-public class RibbonsManager {
+public class RibbonsManager implements Manager<Ribbon> {
 
     private static final double SPEED_FACTOR = 0.5;
     private static final double SPEED_FACTOR_INCREMENT = 0.2;
@@ -18,6 +20,7 @@ public class RibbonsManager {
         setRibbonSpeeds(ribbons);
     }
 
+    @Override
     public void update(Keyboard keyboard) {
         if (keyboard.isPressed(Key.W)) {
             moveDown();
@@ -42,6 +45,7 @@ public class RibbonsManager {
         }
     }
 
+    @Override
     public void draw(Camera camera) {
         for (int i = 0; i < ribbons.size(); i++) {
             ribbons.get(i).draw(camera);

@@ -3,16 +3,15 @@ package no.taardal.blossom.level;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
+import no.taardal.blossom.manager.Manager;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.ribbon.Ribbon;
-import no.taardal.blossom.ribbon.RibbonsManager;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TiledEditorLevel implements Level {
@@ -20,23 +19,23 @@ public class TiledEditorLevel implements Level {
     private static final Logger LOGGER = LoggerFactory.getLogger(TiledEditorLevel.class);
 
     private TiledEditorMap tiledEditorMap;
+    private Manager<Ribbon> ribbonManager;
     private Map<Integer, Tile> tiles;
-    private RibbonsManager ribbonsManager;
 
-    public TiledEditorLevel(TiledEditorMap tiledEditorMap, List<Ribbon> ribbons) {
+    public TiledEditorLevel(TiledEditorMap tiledEditorMap, Manager<Ribbon> ribbonManager) {
         this.tiledEditorMap = tiledEditorMap;
+        this.ribbonManager = ribbonManager;
         tiles = getTiles(tiledEditorMap);
-        ribbonsManager = new RibbonsManager(ribbons);
     }
 
     @Override
     public void update(Keyboard keyboard) {
-        ribbonsManager.update(keyboard);
+        ribbonManager.update(keyboard);
     }
 
     @Override
     public void draw(Camera camera) {
-        ribbonsManager.draw(camera);
+        ribbonManager.draw(camera);
 
         int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
         int tileHeightExponent = Math.getExponent(tiledEditorMap.getTileHeight());

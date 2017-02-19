@@ -25,27 +25,27 @@ public class Ribbon {
         this.bufferedImage = bufferedImage;
     }
 
-    void setSpeedX(int speedX) {
+    public void setSpeedX(int speedX) {
         this.speedX = speedX;
     }
 
-    void setSpeedY(int speedY) {
+    public void setSpeedY(int speedY) {
         this.speedY = speedY;
     }
 
-    void setMovingRight(boolean movingRight) {
+    public void setMovingRight(boolean movingRight) {
         this.movingRight = movingRight;
     }
 
-    void setMovingLeft(boolean movingLeft) {
+    public void setMovingLeft(boolean movingLeft) {
         this.movingLeft = movingLeft;
     }
 
-    void setMovingUp(boolean movingUp) {
+    public void setMovingUp(boolean movingUp) {
         this.movingUp = movingUp;
     }
 
-    void setMovingDown(boolean movingDown) {
+    public void setMovingDown(boolean movingDown) {
         this.movingDown = movingDown;
     }
 

@@ -1,6 +1,7 @@
 package no.taardal.blossom.service;
 
 import com.google.inject.Inject;
+import no.taardal.blossom.manager.RibbonsManager;
 import no.taardal.blossom.resourceloader.ResourceLoader;
 import no.taardal.blossom.ribbon.Ribbon;
 import org.slf4j.Logger;
@@ -13,29 +14,29 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RibbonsService implements Service<List<Ribbon>> {
+public class RibbonManagerService implements Service<RibbonsManager> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RibbonsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RibbonManagerService.class);
     private static final String RIBBONS_RESOURCE_FOLDER = "ribbons";
 
     private ResourceLoader<BufferedImage> bufferedImageResourceLoader;
     private List<Ribbon> ribbons;
 
     @Inject
-    public RibbonsService(ResourceLoader<BufferedImage> bufferedImageResourceLoader) {
+    public RibbonManagerService(ResourceLoader<BufferedImage> bufferedImageResourceLoader) {
         this.bufferedImageResourceLoader = bufferedImageResourceLoader;
         ribbons = new ArrayList<>();
     }
 
     @Override
-    public List<Ribbon> get(String ribbonsResourceDirectoryName) {
+    public RibbonsManager get(String ribbonsResourceDirectoryName) {
         String ribbonsResourceDirectoryPath = getPath(ribbonsResourceDirectoryName);
         for (String fileName : getFileNamesInDirectory(ribbonsResourceDirectoryPath)) {
             String ribbonImageFilePath = ribbonsResourceDirectoryPath + "/" + fileName;
             BufferedImage bufferedImage = bufferedImageResourceLoader.loadResource(ribbonImageFilePath);
             ribbons.add(new Ribbon(bufferedImage));
         }
-        return ribbons;
+        return new RibbonsManager(ribbons);
     }
 
     private String getPath(String name) {

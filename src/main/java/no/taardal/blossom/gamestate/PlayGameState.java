@@ -7,13 +7,13 @@ import no.taardal.blossom.camera.Camera;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class PlayGameState implements GameState {
+public class PlayGameState implements GameState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayGameState.class);
 
     private Level level;
 
-    PlayGameState(Level level) {
+    public PlayGameState(Level level) {
         this.level = level;
     }
 
