@@ -16,11 +16,11 @@ import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     public static final String GAME_TITLE = "Blossom";
-    public static final int GAME_WIDTH = 704;
-    public static final int GAME_HEIGHT = 544;
+    public static final int GAME_WIDTH = 320;
+    public static final int GAME_HEIGHT = 240;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
-    private static final int SCALE = 1;
+    private static final int SCALE = 3;
     private static final int NUMBER_OF_BUFFERS = 3;
 
     private GameLoop gameLoop;
@@ -33,7 +33,7 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
         this.gameLoop = gameLoop;
         this.gameStateManager = gameStateManager;
         this.keyboard = keyboard;
-        camera = new Camera(320, 240);
+        camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
     }
 

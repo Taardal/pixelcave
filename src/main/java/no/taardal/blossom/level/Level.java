@@ -2,7 +2,6 @@ package no.taardal.blossom.level;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.ribbon.Ribbon;
 
 public interface Level {
 
@@ -10,5 +9,4 @@ public interface Level {
 
     void draw(Camera camera);
 
-    void setRibbon(Ribbon ribbon);
 }

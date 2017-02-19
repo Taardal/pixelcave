@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 
 public class Camera extends Rectangle {
 
-    private static final int SPEED = 2;
+    public static final int SPEED = 5;
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
@@ -76,4 +76,18 @@ public class Camera extends Rectangle {
         graphics2D.setFont(menuItem.getFont());
         graphics2D.drawString(menuItem.getText(), x, y);
     }
+
+    public void drawLine(int x1, int y1, int x2, int y2) {
+        graphics2D.setColor(Color.RED);
+        graphics2D.drawLine(x1, y1, x2, y2);
+    }
+
+    public void drawImage(BufferedImage im, int destinationX1, int destinationX2, int sourceX1, int sourceX2) {
+        graphics2D.drawImage(im, destinationX1, 0, destinationX2, (int) getHeight(), sourceX1, 0, sourceX2, (int) getHeight(), null);
+    }
+
+    public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
+        graphics2D.drawImage(bufferedImage, destinationX1, destinationY1, destinationX2, destinationY2, sourceX1, sourceY1, sourceX2, sourceY2, null);
+    }
+
 }

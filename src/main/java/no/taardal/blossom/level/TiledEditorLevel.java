@@ -4,17 +4,15 @@ import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.map.TiledEditorMap;
-import no.taardal.blossom.resourceloader.BufferedImageResourceLoader;
 import no.taardal.blossom.ribbon.Ribbon;
-import no.taardal.blossom.service.RibbonService;
-import no.taardal.blossom.service.Service;
+import no.taardal.blossom.ribbon.RibbonsManager;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TiledEditorLevel implements Level {
@@ -23,48 +21,22 @@ public class TiledEditorLevel implements Level {
 
     private TiledEditorMap tiledEditorMap;
     private Map<Integer, Tile> tiles;
-    private Ribbon ribbon;
-    private Ribbon ribbon1;
-    private Camera camera;
-    private Service<Ribbon> ribbonService;
-    BufferedImage caveInside;
-    BufferedImage bgobjects;
-    BufferedImage waterlayer;
-    BufferedImage grey;
-    BufferedImage objects;
+    private RibbonsManager ribbonsManager;
 
-    public TiledEditorLevel(TiledEditorMap tiledEditorMap) {
+    public TiledEditorLevel(TiledEditorMap tiledEditorMap, List<Ribbon> ribbons) {
         this.tiledEditorMap = tiledEditorMap;
         tiles = getTiles(tiledEditorMap);
-        BufferedImageResourceLoader bufferedImageResourceLoader = new BufferedImageResourceLoader();
-        ribbonService = new RibbonService(bufferedImageResourceLoader);
-        ribbon = ribbonService.get("stageb");
-        caveInside = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_06_caveinside_b.png");
-        bgobjects = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_07_bgobjects.png");
-        waterlayer = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_07_waterlayer.png");
-        grey = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_08_grey.png");
-        objects = bufferedImageResourceLoader.loadResource("ribbons/stagebstatic/bg_09_objects.png");
+        ribbonsManager = new RibbonsManager(ribbons);
     }
 
     @Override
     public void update(Keyboard keyboard) {
-        if (camera != null) {
-            ribbon.update(-camera.getX(), -camera.getY());
-        }
+        ribbonsManager.update(keyboard);
     }
 
     @Override
     public void draw(Camera camera) {
-        this.camera = camera;
-
-        if (ribbon != null) {
-            ribbon.draw(camera);
-            camera.drawImage(caveInside, (int) ribbon.getX(), (int) ribbon.getY());
-            camera.drawImage(bgobjects, (int) ribbon.getX(), (int) ribbon.getY());
-            camera.drawImage(waterlayer, (int) ribbon.getX(), (int) ribbon.getY());
-            camera.drawImage(grey, (int) ribbon.getX(), (int) ribbon.getY());
-            camera.drawImage(objects, (int) ribbon.getX(), (int) ribbon.getY());
-        }
+        ribbonsManager.draw(camera);
 
         int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
         int tileHeightExponent = Math.getExponent(tiledEditorMap.getTileHeight());
@@ -100,11 +72,6 @@ public class TiledEditorLevel implements Level {
                 }
             }
         }
-    }
-
-    @Override
-    public void setRibbon(Ribbon ribbon) {
-        this.ribbon = ribbon;
     }
 
     private int[][] getLayerData(TiledEditorLayer tiledEditorLayer) {

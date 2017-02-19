@@ -4,9 +4,10 @@ import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
-import no.taardal.blossom.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class BlossomGameStateManager implements GameStateManager {
 
@@ -15,9 +16,8 @@ public class BlossomGameStateManager implements GameStateManager {
     private GameState gameState;
 
     @Inject
-    public BlossomGameStateManager(Service<Level> levelService) {
-        Level level = levelService.get("raventale.json");
-        gameState = new PlayGameState(level);
+    public BlossomGameStateManager(List<Level> levels) {
+        gameState = new PlayGameState(levels.get(0));
     }
 
     @Override

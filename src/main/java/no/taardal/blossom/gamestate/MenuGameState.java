@@ -31,7 +31,7 @@ class MenuGameState implements GameState {
     public MenuGameState(Service<Level> levelService) {
         this.levelService = levelService;
         levels = new ArrayList<>();
-        Level level = this.levelService.get("raventale.json");
+        Level level = this.levelService.get("pixelcave.json");
         levels.add(level);
         menu = getMenu();
         headerFont = new Font("Arial", Font.PLAIN, 28);
