@@ -17,8 +17,6 @@ public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEdito
         try {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             TiledEditorLayer tiledEditorLayer = new TiledEditorLayer();
-            tiledEditorLayer.setData(getData(jsonObject));
-            tiledEditorLayer.setTiledEditorLayerType(getTiledEditorLayerType(jsonObject));
             tiledEditorLayer.setName(jsonObject.get("name").getAsString());
             tiledEditorLayer.setX(jsonObject.get("x").getAsInt());
             tiledEditorLayer.setY(jsonObject.get("y").getAsInt());
@@ -26,12 +24,25 @@ public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEdito
             tiledEditorLayer.setHeight(jsonObject.get("height").getAsInt());
             tiledEditorLayer.setOpacity(jsonObject.get("opacity").getAsInt());
             tiledEditorLayer.setVisible(jsonObject.get("visible").getAsBoolean());
+            tiledEditorLayer.setData(getData(jsonObject));
+            tiledEditorLayer.setData2D(getData2D(tiledEditorLayer.getData(), tiledEditorLayer.getWidth(), tiledEditorLayer.getHeight()));
+            tiledEditorLayer.setTiledEditorLayerType(getTiledEditorLayerType(jsonObject));
             LOGGER.info("Deserialized tiled editor layer [{}].", tiledEditorLayer);
             return tiledEditorLayer;
         } catch (JsonParseException e) {
             LOGGER.error("Could not deserialize layer.", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private int[][] getData2D(int[] data, int width, int height) {
+        int[][] data2D = new int[width][height];
+        for (int x = 0; x < data2D.length; x++) {
+            for (int y = 0; y < data2D[x].length; y++) {
+                data2D[x][y] = data[x + y * data2D.length];
+            }
+        }
+        return data2D;
     }
 
     private TiledEditorLayerType getTiledEditorLayerType(JsonObject jsonObject) {

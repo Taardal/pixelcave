@@ -6,6 +6,7 @@ public class TiledEditorLayer {
 
     private String name;
     private TiledEditorLayerType tiledEditorLayerType;
+    private int[][] data2D;
     private int[] data;
     private int x;
     private int y;
@@ -43,6 +44,14 @@ public class TiledEditorLayer {
 
     public void setTiledEditorLayerType(TiledEditorLayerType tiledEditorLayerType) {
         this.tiledEditorLayerType = tiledEditorLayerType;
+    }
+
+    public int[][] getData2D() {
+        return data2D;
+    }
+
+    public void setData2D(int[][] data2D) {
+        this.data2D = data2D;
     }
 
     public int[] getData() {

@@ -26,13 +26,6 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TiledEdi
         try {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             TiledEditorTileSet tiledEditorTileSet = new TiledEditorTileSet();
-            tiledEditorTileSet.setTiles(getTiles(jsonObject));
-            JsonElement imageJsonObject = jsonObject.get("image");
-            if (imageJsonObject != null && !imageJsonObject.isJsonNull()) {
-                tiledEditorTileSet.setImagePath(imageJsonObject.getAsString());
-                tiledEditorTileSet.setImageWidth(jsonObject.get("imagewidth").getAsInt());
-                tiledEditorTileSet.setImageHeight(jsonObject.get("imageheight").getAsInt());
-            }
             tiledEditorTileSet.setName(jsonObject.get("name").getAsString());
             tiledEditorTileSet.setFirstGlobalId(jsonObject.get("firstgid").getAsInt());
             tiledEditorTileSet.setNumberOfTiles(jsonObject.get("tilecount").getAsInt());
@@ -41,12 +34,37 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TiledEdi
             tiledEditorTileSet.setTileHeight(jsonObject.get("tileheight").getAsInt());
             tiledEditorTileSet.setMargin(jsonObject.get("margin").getAsInt());
             tiledEditorTileSet.setSpacing(jsonObject.get("spacing").getAsInt());
+            JsonElement imageJsonElement = jsonObject.get("image");
+            if (imageJsonElement != null && !imageJsonElement.isJsonNull()) {
+                String imagePath = imageJsonElement.getAsString().replaceFirst("../", "");
+                tiledEditorTileSet.setImagePath(imagePath);
+                tiledEditorTileSet.setImageWidth(jsonObject.get("imagewidth").getAsInt());
+                tiledEditorTileSet.setImageHeight(jsonObject.get("imageheight").getAsInt());
+                List<Tile> tiles = getTiles(imagePath, tiledEditorTileSet.getTileWidth(), tiledEditorTileSet.getTileHeight());
+                tiledEditorTileSet.setTiles(tiles);
+            } else {
+                tiledEditorTileSet.setTiles(getTiles(jsonObject));
+            }
             LOGGER.info("Deserialized tiled editor tile set [{}]", tiledEditorTileSet);
             return tiledEditorTileSet;
         } catch (JsonParseException e) {
             LOGGER.error("Could not deserialize layer.", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private List<Tile> getTiles(String imagePath, int tileWidth, int tileHeight) {
+        List<Tile> tiles = new ArrayList<>();
+        BufferedImage bufferedImage = bufferedImageResourceLoader.loadResource(imagePath);
+        int numberOfTilesY = bufferedImage.getHeight() / tileHeight;
+        int numberOfTilesX = bufferedImage.getWidth() / tileWidth;
+        for (int y = 0; y < numberOfTilesY; y++) {
+            for (int x = 0; x < numberOfTilesX; x++) {
+                BufferedImage subImage = bufferedImage.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
+                tiles.add(new Tile(subImage));
+            }
+        }
+        return tiles;
     }
 
     private List<Tile> getTiles(JsonObject jsonObject) {
@@ -60,8 +78,8 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TiledEdi
         return new ArrayList<>(tiles.values());
     }
 
-    private BufferedImage getTileBufferedImage(JsonElement tileImageJsonElement) {
-        String imagePath = tileImageJsonElement.getAsJsonObject().get("image").getAsString().replaceFirst("../", "");
+    private BufferedImage getTileBufferedImage(JsonElement jsonElement) {
+        String imagePath = jsonElement.getAsJsonObject().get("image").getAsString().replaceFirst("../", "");
         return bufferedImageResourceLoader.loadResource(imagePath);
     }
 

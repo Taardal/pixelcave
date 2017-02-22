@@ -6,13 +6,8 @@ import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.manager.Manager;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.ribbon.Ribbon;
-import no.taardal.blossom.tile.Tile;
-import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TiledEditorLevel implements Level {
 
@@ -20,12 +15,10 @@ public class TiledEditorLevel implements Level {
 
     private TiledEditorMap tiledEditorMap;
     private Manager<Ribbon> ribbonManager;
-    private Map<Integer, Tile> tiles;
 
     public TiledEditorLevel(TiledEditorMap tiledEditorMap, Manager<Ribbon> ribbonManager) {
         this.tiledEditorMap = tiledEditorMap;
         this.ribbonManager = ribbonManager;
-//        tiles = getTiles(tiledEditorMap);
     }
 
     @Override
@@ -61,38 +54,17 @@ public class TiledEditorLevel implements Level {
                     continue;
                 }
                 int x = column * tiledEditorMap.getTileWidth() - (int) camera.getX();
-
                 for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
                     TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-                    int tiledId = getLayerData(tiledEditorLayer)[column][row];
-                    if (tiledId != TiledEditorMap.NO_TILE_ID) {
-//                        tiles.get(tiledId).draw(x, y, camera);
+                    if (tiledEditorLayer.isVisible()) {
+                        int tiledId = tiledEditorLayer.getData2D()[column][row];
+                        if (tiledId != TiledEditorMap.NO_TILE_ID) {
+                            tiledEditorMap.getTiles().get(tiledId).draw(x, y, camera);
+                        }
                     }
                 }
             }
         }
-    }
-
-    private int[][] getLayerData(TiledEditorLayer tiledEditorLayer) {
-        int[][] layerData = new int[tiledEditorLayer.getWidth()][tiledEditorLayer.getHeight()];
-        for (int j = 0; j < layerData.length; j++) {
-            for (int k = 0; k < layerData[j].length; k++) {
-                layerData[j][k] = tiledEditorLayer.getData()[j + k * layerData.length];
-            }
-        }
-        return layerData;
-    }
-
-    private Map<Integer, Tile> getTiles(TiledEditorMap tiledEditorMap) {
-        Map<Integer, Tile> tiles = new HashMap<>();
-        for (TiledEditorTileSet tiledEditorTileSet : tiledEditorMap.getTiledEditorTileSets()) {
-            int globalId = tiledEditorTileSet.getFirstGlobalId();
-            for (Tile tile : tiledEditorTileSet.getTiles()) {
-                tiles.put(globalId, tile);
-                globalId++;
-            }
-        }
-        return tiles;
     }
 
 }

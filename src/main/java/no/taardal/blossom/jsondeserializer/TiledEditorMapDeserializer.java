@@ -5,13 +5,16 @@ import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.orientation.Orientation;
 import no.taardal.blossom.renderorder.RenderOrder;
+import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TiledEditorTileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TiledEditorMapDeserializer implements JsonDeserializer<TiledEditorMap> {
 
@@ -22,16 +25,17 @@ public class TiledEditorMapDeserializer implements JsonDeserializer<TiledEditorM
         try {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             TiledEditorMap tiledEditorMap = new TiledEditorMap();
-            tiledEditorMap.setTiledEditorTileSets(getTiledEditorTileSets(jsonObject, jsonDeserializationContext));
-            tiledEditorMap.setTiledEditorLayers(getTiledEditorLayers(jsonObject, jsonDeserializationContext));
-            tiledEditorMap.setOrientation(getOrientation(jsonObject));
-            tiledEditorMap.setRenderOrder(getRenderOrder(jsonObject));
             tiledEditorMap.setWidth(jsonObject.get("width").getAsInt());
             tiledEditorMap.setHeight(jsonObject.get("height").getAsInt());
             tiledEditorMap.setNextObjectId(jsonObject.get("nextobjectid").getAsInt());
             tiledEditorMap.setTileHeight(jsonObject.get("tileheight").getAsInt());
             tiledEditorMap.setTileWidth(jsonObject.get("tilewidth").getAsInt());
             tiledEditorMap.setVersion(jsonObject.get("version").getAsInt());
+            tiledEditorMap.setOrientation(getOrientation(jsonObject));
+            tiledEditorMap.setRenderOrder(getRenderOrder(jsonObject));
+            tiledEditorMap.setTiledEditorTileSets(getTiledEditorTileSets(jsonObject, jsonDeserializationContext));
+            tiledEditorMap.setTiledEditorLayers(getTiledEditorLayers(jsonObject, jsonDeserializationContext));
+            tiledEditorMap.setTiles(getTiles(tiledEditorMap.getTiledEditorTileSets()));
             LOGGER.info("Deserialized tiled editor map [{}]", tiledEditorMap);
             return tiledEditorMap;
         } catch (JsonParseException e) {
@@ -41,13 +45,13 @@ public class TiledEditorMapDeserializer implements JsonDeserializer<TiledEditorM
     }
 
     private RenderOrder getRenderOrder(JsonObject jsonObject) {
-        String renderOrderString = jsonObject.get("renderorder").getAsString();
-        return RenderOrder.valueOf(renderOrderString.toUpperCase().replaceAll("-", "_"));
+        String renderOrder = jsonObject.get("renderorder").getAsString();
+        return RenderOrder.valueOf(renderOrder.toUpperCase().replaceAll("-", "_"));
     }
 
     private Orientation getOrientation(JsonObject jsonObject) {
-        String orientationString = jsonObject.get("orientation").getAsString();
-        return Orientation.valueOf(orientationString.toUpperCase());
+        String orientation = jsonObject.get("orientation").getAsString();
+        return Orientation.valueOf(orientation.toUpperCase().replaceAll("-", "_"));
     }
 
     private List<TiledEditorLayer> getTiledEditorLayers(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext) {
@@ -60,6 +64,18 @@ public class TiledEditorMapDeserializer implements JsonDeserializer<TiledEditorM
         JsonArray tileSetsJsonArray = jsonObject.get("tilesets").getAsJsonArray();
         TiledEditorTileSet[] tiledEditorTileSets = jsonDeserializationContext.deserialize(tileSetsJsonArray, TiledEditorTileSet[].class);
         return Arrays.asList(tiledEditorTileSets);
+    }
+
+    private Map<Integer, Tile> getTiles(List<TiledEditorTileSet> tiledEditorTileSets) {
+        Map<Integer, Tile> tiles = new HashMap<>();
+        for (TiledEditorTileSet tiledEditorTileSet : tiledEditorTileSets) {
+            int globalId = tiledEditorTileSet.getFirstGlobalId();
+            for (Tile tile : tiledEditorTileSet.getTiles()) {
+                tiles.put(globalId, tile);
+                globalId++;
+            }
+        }
+        return tiles;
     }
 
 }
