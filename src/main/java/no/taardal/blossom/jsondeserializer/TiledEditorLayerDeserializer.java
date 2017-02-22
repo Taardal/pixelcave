@@ -24,15 +24,29 @@ public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEdito
             tiledEditorLayer.setHeight(jsonObject.get("height").getAsInt());
             tiledEditorLayer.setOpacity(jsonObject.get("opacity").getAsInt());
             tiledEditorLayer.setVisible(jsonObject.get("visible").getAsBoolean());
+            tiledEditorLayer.setTiledEditorLayerType(getTiledEditorLayerType(jsonObject));
             tiledEditorLayer.setData(getData(jsonObject));
             tiledEditorLayer.setData2D(getData2D(tiledEditorLayer.getData(), tiledEditorLayer.getWidth(), tiledEditorLayer.getHeight()));
-            tiledEditorLayer.setTiledEditorLayerType(getTiledEditorLayerType(jsonObject));
             LOGGER.info("Deserialized tiled editor layer [{}].", tiledEditorLayer);
             return tiledEditorLayer;
         } catch (JsonParseException e) {
             LOGGER.error("Could not deserialize layer.", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private TiledEditorLayerType getTiledEditorLayerType(JsonObject jsonObject) {
+        String layerType = jsonObject.get("type").getAsString();
+        return TiledEditorLayerType.valueOf(layerType.toUpperCase().replaceAll("-", "_"));
+    }
+
+    private int[] getData(JsonObject jsonObject) {
+        JsonArray dataJsonArray = jsonObject.get("data").getAsJsonArray();
+        int[] data = new int[dataJsonArray.size()];
+        for (int i = 0; i < dataJsonArray.size(); i++) {
+            data[i] = dataJsonArray.get(i).getAsInt();
+        }
+        return data;
     }
 
     private int[][] getData2D(int[] data, int width, int height) {
@@ -43,20 +57,6 @@ public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEdito
             }
         }
         return data2D;
-    }
-
-    private TiledEditorLayerType getTiledEditorLayerType(JsonObject jsonObject) {
-        String layerType = jsonObject.get("type").getAsString();
-        return TiledEditorLayerType.valueOf(layerType.toUpperCase());
-    }
-
-    private int[] getData(JsonObject jsonObject) {
-        JsonArray dataJsonArray = jsonObject.get("data").getAsJsonArray();
-        int[] data = new int[dataJsonArray.size()];
-        for (int i = 0; i < dataJsonArray.size(); i++) {
-            data[i] = dataJsonArray.get(i).getAsInt();
-        }
-        return data;
     }
 
 }

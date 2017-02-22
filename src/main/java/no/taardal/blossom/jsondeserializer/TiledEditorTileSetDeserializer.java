@@ -40,8 +40,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TiledEdi
                 tiledEditorTileSet.setImagePath(imagePath);
                 tiledEditorTileSet.setImageWidth(jsonObject.get("imagewidth").getAsInt());
                 tiledEditorTileSet.setImageHeight(jsonObject.get("imageheight").getAsInt());
-                List<Tile> tiles = getTiles(imagePath, tiledEditorTileSet.getTileWidth(), tiledEditorTileSet.getTileHeight());
-                tiledEditorTileSet.setTiles(tiles);
+                tiledEditorTileSet.setTiles(getTiles(imagePath, tiledEditorTileSet.getTileWidth(), tiledEditorTileSet.getTileHeight()));
             } else {
                 tiledEditorTileSet.setTiles(getTiles(jsonObject));
             }
