@@ -41,7 +41,7 @@
         {
          "columns":8,
          "firstgid":1,
-         "image":"..\/..\/..\/..\/..\/..\/Downloads\/Pixel Cave Tileset\/Enviroment sprite sheets\/cave_tileset.png",
+         "image":"..\/tilesets\/pixelcave\/cave_tileset.png",
          "imageheight":240,
          "imagewidth":128,
          "margin":0,
@@ -84,7 +84,7 @@
         {
          "columns":3,
          "firstgid":152,
-         "image":"..\/..\/..\/..\/..\/..\/Downloads\/Pixel Cave Tileset\/Enviroment sprite sheets\/bg_cave_blueish_16x16.png",
+         "image":"..\/tilesets\/pixelcave\/bg_cave_blueish_16x16.png",
          "imageheight":112,
          "imagewidth":48,
          "margin":0,

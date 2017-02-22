@@ -22,13 +22,13 @@ public class RibbonsManager implements Manager<Ribbon> {
     @Override
     public void update(Keyboard keyboard) {
         if (keyboard.isPressed(Key.W)) {
-            moveDown();
+            moveUp();
         }
         if (keyboard.isPressed(Key.A)) {
             moveRight();
         }
         if (keyboard.isPressed(Key.S)) {
-            moveUp();
+            moveDown();
         }
         if (keyboard.isPressed(Key.D)) {
             moveLeft();
