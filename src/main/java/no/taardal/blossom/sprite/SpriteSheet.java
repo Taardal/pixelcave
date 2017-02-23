@@ -3,68 +3,58 @@ package no.taardal.blossom.sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 
 public class SpriteSheet {
 
-    public static final SpriteSheet TOP_DOWN_TILES = new SpriteSheet("sprites/tiles.png");
-    public static final SpriteSheet ISO_VOID = new SpriteSheet("sprites/iso_void.png");
-    public static final SpriteSheet ISO_TEST = new SpriteSheet("sprites/iso_tile.png");
-
     private static final Logger LOGGER = LoggerFactory.getLogger(SpriteSheet.class);
-    private BufferedImage bufferedImage;
-    private BufferedImage[][] bufferedImages;
 
-    public SpriteSheet(String path) {
-        this.bufferedImage = getBufferedImage(path);
+    private BufferedImage[][] subImages;
+    private int spriteWidth;
+    private int spriteHeight;
+    private int width;
+    private int height;
+
+    public SpriteSheet(BufferedImage bufferedImage, int spriteWidth, int spriteHeight) {
+        this.spriteWidth = spriteWidth;
+        this.spriteHeight = spriteHeight;
+        subImages = getSubImages(bufferedImage);
+        width = bufferedImage.getWidth();
+        height = bufferedImage.getHeight();
     }
 
-    public SpriteSheet(String path, int spriteWidth, int spriteHeight) {
-        this(path);
-        bufferedImages = getBufferedImages(spriteWidth, spriteHeight);
+    public int getSpriteWidth() {
+        return spriteWidth;
+    }
+
+    public int getSpriteHeight() {
+        return spriteHeight;
     }
 
     public int getWidth() {
-        return bufferedImage.getWidth();
+        return width;
     }
 
     public int getHeight() {
-        return bufferedImage.getHeight();
+        return height;
     }
 
-    public Sprite getSprite(int x, int y, int spriteWidth, int spriteHeight) {
-        x *= spriteWidth;
-        y *= spriteHeight;
-        BufferedImage subimage = bufferedImage.getSubimage(x, y, spriteWidth, spriteHeight);
-        return new Sprite(subimage);
+    public Sprite getSprite(int column, int row) {
+        return new Sprite(subImages[column][row]);
     }
 
-    private BufferedImage getBufferedImage(String path) {
-        try {
-            return ImageIO.read(getResourceURL(path));
-        } catch (IOException | IllegalArgumentException e) {
-            LOGGER.error("Could not load image", e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private URL getResourceURL(String path) {
-        return getClass().getClassLoader().getResource(path);
-    }
-
-    public BufferedImage[][] getBufferedImages(int spriteWidth, int spriteHeight) {
+    private BufferedImage[][] getSubImages(BufferedImage bufferedImage) {
         int columns = bufferedImage.getWidth() / spriteWidth;
         int rows = bufferedImage.getHeight() / spriteHeight;
-        BufferedImage[][] bufferedImages = new BufferedImage[rows][columns];
+        BufferedImage[][] subImages = new BufferedImage[columns][rows];
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                bufferedImages[row][column] = bufferedImage.getSubimage(column * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
+                int x = column * spriteWidth;
+                int y = row * spriteHeight;
+                subImages[column][row] = bufferedImage.getSubimage(x, y, spriteWidth, spriteHeight);
             }
         }
-        return bufferedImages;
+        return subImages;
     }
 
 }
