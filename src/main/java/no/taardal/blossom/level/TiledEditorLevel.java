@@ -3,6 +3,7 @@ package no.taardal.blossom.level;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
+import no.taardal.blossom.layer.TiledEditorLayerType;
 import no.taardal.blossom.manager.Manager;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.ribbon.Ribbon;
@@ -56,7 +57,7 @@ public class TiledEditorLevel implements Level {
                 int x = column * tiledEditorMap.getTileWidth() - (int) camera.getX();
                 for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
                     TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-                    if (tiledEditorLayer.isVisible()) {
+                    if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible()) {
                         int tiledId = tiledEditorLayer.getData2D()[column][row];
                         if (tiledId != TiledEditorMap.NO_TILE_ID) {
                             tiledEditorMap.getTiles().get(tiledId).draw(x, y, camera);
@@ -65,6 +66,10 @@ public class TiledEditorLevel implements Level {
                 }
             }
         }
+    }
+
+    private boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {
+        return tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER;
     }
 
 }

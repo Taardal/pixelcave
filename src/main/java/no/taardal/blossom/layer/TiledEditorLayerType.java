@@ -2,6 +2,6 @@ package no.taardal.blossom.layer;
 
 public enum TiledEditorLayerType {
 
-    TILELAYER
+    OBJECTGROUP, TILELAYER
 
 }

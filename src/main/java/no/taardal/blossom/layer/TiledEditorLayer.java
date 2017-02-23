@@ -1,11 +1,17 @@
 package no.taardal.blossom.layer;
 
+import no.taardal.blossom.gameobject.TiledEditorObject;
+import no.taardal.blossom.order.DrawOrder;
+
 import java.util.Arrays;
+import java.util.List;
 
 public class TiledEditorLayer {
 
     private String name;
     private TiledEditorLayerType tiledEditorLayerType;
+    private List<TiledEditorObject> tiledEditorObjects;
+    private DrawOrder drawOrder;
     private int[][] data2D;
     private int[] data;
     private int x;
@@ -20,6 +26,9 @@ public class TiledEditorLayer {
         return "TiledEditorLayer{" +
                 "name='" + name + '\'' +
                 ", tiledEditorLayerType=" + tiledEditorLayerType +
+                ", tiledEditorObjects=" + tiledEditorObjects +
+                ", drawOrder=" + drawOrder +
+                ", data2D=" + Arrays.toString(data2D) +
                 ", data=" + Arrays.toString(data) +
                 ", x=" + x +
                 ", y=" + y +
@@ -44,6 +53,22 @@ public class TiledEditorLayer {
 
     public void setTiledEditorLayerType(TiledEditorLayerType tiledEditorLayerType) {
         this.tiledEditorLayerType = tiledEditorLayerType;
+    }
+
+    public List<TiledEditorObject> getTiledEditorObjects() {
+        return tiledEditorObjects;
+    }
+
+    public void setTiledEditorObjects(List<TiledEditorObject> tiledEditorObjects) {
+        this.tiledEditorObjects = tiledEditorObjects;
+    }
+
+    public DrawOrder getDrawOrder() {
+        return drawOrder;
+    }
+
+    public void setDrawOrder(DrawOrder drawOrder) {
+        this.drawOrder = drawOrder;
     }
 
     public int[][] getData2D() {

@@ -1,12 +1,16 @@
 package no.taardal.blossom.jsondeserializer;
 
 import com.google.gson.*;
+import no.taardal.blossom.gameobject.TiledEditorObject;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.layer.TiledEditorLayerType;
+import no.taardal.blossom.order.DrawOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEditorLayer> {
 
@@ -25,9 +29,16 @@ public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEdito
             tiledEditorLayer.setOpacity(jsonObject.get("opacity").getAsInt());
             tiledEditorLayer.setVisible(jsonObject.get("visible").getAsBoolean());
             tiledEditorLayer.setTiledEditorLayerType(getTiledEditorLayerType(jsonObject));
-            tiledEditorLayer.setData(getData(jsonObject));
-            tiledEditorLayer.setData2D(getData2D(tiledEditorLayer.getData(), tiledEditorLayer.getWidth(), tiledEditorLayer.getHeight()));
-            LOGGER.info("Deserialized tiled editor layer [{}].", tiledEditorLayer);
+            if (tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER) {
+                tiledEditorLayer.setData(getData(jsonObject));
+                tiledEditorLayer.setData2D(getData2D(tiledEditorLayer.getData(), tiledEditorLayer.getWidth(), tiledEditorLayer.getHeight()));
+            } else if (tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.OBJECTGROUP) {
+                tiledEditorLayer.setDrawOrder(getDrawOrder(jsonObject));
+                tiledEditorLayer.setTiledEditorObjects(getTiledEditorObjects(jsonObject));
+            } else {
+                LOGGER.warn("Could not determine layer type.");
+            }
+            LOGGER.info("Deserialized layer [{}].", tiledEditorLayer);
             return tiledEditorLayer;
         } catch (JsonParseException e) {
             LOGGER.error("Could not deserialize layer.", e);
@@ -57,6 +68,33 @@ public class TiledEditorLayerDeserializer implements JsonDeserializer<TiledEdito
             }
         }
         return data2D;
+    }
+
+    private DrawOrder getDrawOrder(JsonObject jsonObject) {
+        String layerType = jsonObject.get("draworder").getAsString();
+        return DrawOrder.valueOf(layerType.toUpperCase().replaceAll("-", "_"));
+    }
+
+    private List<TiledEditorObject> getTiledEditorObjects(JsonObject jsonObject) {
+        List<TiledEditorObject> tiledEditorObjects = new ArrayList<>();
+        JsonArray objectsJsonArray = jsonObject.get("objects").getAsJsonArray();
+        for (int i = 0; i < objectsJsonArray.size(); i++) {
+            tiledEditorObjects.add(getTiledEditorObject(objectsJsonArray.get(i).getAsJsonObject()));
+        }
+        return tiledEditorObjects;
+    }
+
+    private TiledEditorObject getTiledEditorObject(JsonObject jsonObject) {
+        TiledEditorObject tiledEditorObject = new TiledEditorObject(jsonObject.get("id").getAsInt());
+        tiledEditorObject.setName(jsonObject.get("name").getAsString());
+        tiledEditorObject.setType(jsonObject.get("type").getAsString());
+        tiledEditorObject.setWidth(jsonObject.get("width").getAsInt());
+        tiledEditorObject.setHeight(jsonObject.get("height").getAsInt());
+        tiledEditorObject.setX(jsonObject.get("x").getAsFloat());
+        tiledEditorObject.setY(jsonObject.get("y").getAsFloat());
+        tiledEditorObject.setRotation(jsonObject.get("rotation").getAsFloat());
+        tiledEditorObject.setVisible(jsonObject.get("visible").getAsBoolean());
+        return tiledEditorObject;
     }
 
 }

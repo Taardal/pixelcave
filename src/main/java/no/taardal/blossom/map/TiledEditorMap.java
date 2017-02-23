@@ -2,7 +2,7 @@ package no.taardal.blossom.map;
 
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.orientation.Orientation;
-import no.taardal.blossom.renderorder.RenderOrder;
+import no.taardal.blossom.order.RenderOrder;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TiledEditorTileSet;
 

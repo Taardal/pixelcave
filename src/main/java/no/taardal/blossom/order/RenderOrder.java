@@ -1,4 +1,4 @@
-package no.taardal.blossom.renderorder;
+package no.taardal.blossom.order;
 
 public enum RenderOrder {
 
