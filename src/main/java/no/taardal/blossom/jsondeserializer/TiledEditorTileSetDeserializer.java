@@ -44,7 +44,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TiledEdi
             } else {
                 tiledEditorTileSet.setTiles(getTiles(jsonObject));
             }
-            LOGGER.info("Deserialized tiled editor tile set [{}]", tiledEditorTileSet);
+            LOGGER.info("Deserialized tile set [{}]", tiledEditorTileSet);
             return tiledEditorTileSet;
         } catch (JsonParseException e) {
             LOGGER.error("Could not deserialize layer.", e);

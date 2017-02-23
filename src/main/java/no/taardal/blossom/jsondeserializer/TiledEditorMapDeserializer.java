@@ -36,10 +36,10 @@ public class TiledEditorMapDeserializer implements JsonDeserializer<TiledEditorM
             tiledEditorMap.setTiledEditorTileSets(getTiledEditorTileSets(jsonObject, jsonDeserializationContext));
             tiledEditorMap.setTiledEditorLayers(getTiledEditorLayers(jsonObject, jsonDeserializationContext));
             tiledEditorMap.setTiles(getTiles(tiledEditorMap.getTiledEditorTileSets()));
-            LOGGER.info("Deserialized tiled editor map [{}]", tiledEditorMap);
+            LOGGER.info("Deserialized map [{}]", tiledEditorMap);
             return tiledEditorMap;
         } catch (JsonParseException e) {
-            LOGGER.error("Could not deserialize tile map.", e);
+            LOGGER.error("Could not deserialize map.", e);
             throw new RuntimeException(e);
         }
     }

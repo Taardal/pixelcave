@@ -19,10 +19,10 @@ public class TiledEditorLayersDeserializer implements JsonDeserializer<TiledEdit
             for (int i = 0; i < jsonArray.size(); i++) {
                 tiledEditorLayers[i] = jsonDeserializationContext.deserialize(jsonArray.get(i), TiledEditorLayer.class);
             }
-            LOGGER.info("Deserialized [{}] tiled editor layers.", tiledEditorLayers.length);
+            LOGGER.info("Deserialized [{}] layers.", tiledEditorLayers.length);
             return tiledEditorLayers;
         } catch (JsonParseException e) {
-            LOGGER.error("Could not deserialize layer json array.", e);
+            LOGGER.error("Could not deserialize layers json array.", e);
             throw new RuntimeException(e);
         }
     }

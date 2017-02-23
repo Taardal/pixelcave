@@ -19,10 +19,10 @@ public class TiledEditorTileSetsDeserializer implements JsonDeserializer<TiledEd
             for (int i = 0; i < jsonArray.size(); i++) {
                 tiledEditorTileSets[i] = jsonDeserializationContext.deserialize(jsonArray.get(i), TiledEditorTileSet.class);
             }
-            LOGGER.info("Deserialized [{}] tiled editor tile sets.", tiledEditorTileSets.length);
+            LOGGER.info("Deserialized [{}] tile sets.", tiledEditorTileSets.length);
             return tiledEditorTileSets;
         } catch (JsonParseException e) {
-            LOGGER.error("Could not deserialize layer json array.", e);
+            LOGGER.error("Could not deserialize tile sets json array.", e);
             throw new RuntimeException(e);
         }
     }
