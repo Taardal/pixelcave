@@ -17,31 +17,34 @@ import java.util.List;
 public class RibbonManagerService implements Service<RibbonsManager> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RibbonManagerService.class);
-    private static final String RIBBONS_RESOURCE_FOLDER = "ribbons";
+    private static final String RIBBONS_RESOURCE_DIRECTORY = "ribbons";
 
     private ResourceLoader<BufferedImage> bufferedImageResourceLoader;
-    private List<Ribbon> ribbons;
 
     @Inject
     public RibbonManagerService(ResourceLoader<BufferedImage> bufferedImageResourceLoader) {
         this.bufferedImageResourceLoader = bufferedImageResourceLoader;
-        ribbons = new ArrayList<>();
     }
 
     @Override
     public RibbonsManager get(String ribbonsResourceDirectoryName) {
         String ribbonsResourceDirectoryPath = getPath(ribbonsResourceDirectoryName);
+        return new RibbonsManager(getRibbons(ribbonsResourceDirectoryPath));
+    }
+
+    private List<Ribbon> getRibbons(String ribbonsResourceDirectoryPath) {
+        List<Ribbon> ribbons = new ArrayList<>();
         for (String fileName : getFileNamesInDirectory(ribbonsResourceDirectoryPath)) {
             String ribbonImageFilePath = ribbonsResourceDirectoryPath + "/" + fileName;
             BufferedImage bufferedImage = bufferedImageResourceLoader.loadResource(ribbonImageFilePath);
             ribbons.add(new Ribbon(bufferedImage));
         }
-        return new RibbonsManager(ribbons);
+        return ribbons;
     }
 
     private String getPath(String name) {
-        if (!name.startsWith(RIBBONS_RESOURCE_FOLDER)) {
-            name = RIBBONS_RESOURCE_FOLDER + "/" + name;
+        if (!name.startsWith(RIBBONS_RESOURCE_DIRECTORY)) {
+            name = RIBBONS_RESOURCE_DIRECTORY + "/" + name;
         }
         return name;
     }

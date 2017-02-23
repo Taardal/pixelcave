@@ -1,12 +1,17 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.entity.actor.Player;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.layer.TiledEditorLayerType;
 import no.taardal.blossom.manager.Manager;
 import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.resourceloader.BufferedImageResourceLoader;
 import no.taardal.blossom.ribbon.Ribbon;
+import no.taardal.blossom.service.SpriteSheetService;
+import no.taardal.blossom.sprite.Sprite;
+import no.taardal.blossom.sprite.SpriteSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,21 +21,32 @@ public class TiledEditorLevel implements Level {
 
     private TiledEditorMap tiledEditorMap;
     private Manager<Ribbon> ribbonManager;
+    private Player player;
 
     public TiledEditorLevel(TiledEditorMap tiledEditorMap, Manager<Ribbon> ribbonManager) {
         this.tiledEditorMap = tiledEditorMap;
         this.ribbonManager = ribbonManager;
+
+        SpriteSheetService spriteSheetService = new SpriteSheetService(new BufferedImageResourceLoader());
+        SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-violet-sheet-x1.png");
+        Sprite scorpionSprite = scorpionSpriteSheet.getSprite(0, 0);
+        player = new Player(scorpionSprite);
     }
 
     @Override
     public void update(Keyboard keyboard) {
         ribbonManager.update(keyboard);
+        player.update(keyboard);
     }
 
     @Override
     public void draw(Camera camera) {
         ribbonManager.draw(camera);
+        drawTiles(camera);
+        player.draw(camera);
+    }
 
+    private void drawTiles(Camera camera) {
         int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
         int tileHeightExponent = Math.getExponent(tiledEditorMap.getTileHeight());
 
