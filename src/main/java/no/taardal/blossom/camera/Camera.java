@@ -1,7 +1,6 @@
 package no.taardal.blossom.camera;
 
 
-import no.taardal.blossom.keyboard.Key;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.menu.MenuItem;
 
@@ -26,6 +25,7 @@ public class Camera extends Rectangle {
     }
 
     public void update(Keyboard keyboard) {
+/*
         if (keyboard.isPressed(Key.UP) || keyboard.isPressed(Key.W)) {
             y -= SPEED;
         }
@@ -38,6 +38,7 @@ public class Camera extends Rectangle {
         if (keyboard.isPressed(Key.DOWN) || keyboard.isPressed(Key.S)) {
             y += SPEED;
         }
+*/
     }
 
     public void clear() {
@@ -90,4 +91,8 @@ public class Camera extends Rectangle {
         graphics2D.drawImage(bufferedImage, destinationX1, destinationY1, destinationX2, destinationY2, sourceX1, sourceY1, sourceX2, sourceY2, null);
     }
 
+    public void drawRectangle(int x, int y, int width, int height, Color color) {
+        graphics2D.setColor(color);
+        graphics2D.drawRect(x, y, width, height);
+    }
 }

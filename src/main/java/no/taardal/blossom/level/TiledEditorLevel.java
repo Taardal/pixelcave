@@ -1,7 +1,7 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.entity.actor.Player;
+import no.taardal.blossom.entity.Player;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.layer.TiledEditorLayerType;
@@ -14,6 +14,8 @@ import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 
 public class TiledEditorLevel implements Level {
 
@@ -31,12 +33,38 @@ public class TiledEditorLevel implements Level {
         SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-violet-sheet-x1.png");
         Sprite scorpionSprite = scorpionSpriteSheet.getSprite(0, 0);
         player = new Player(scorpionSprite);
+
+        Rectangle boundingBox = new Rectangle();
+        int boundingBoxWidth = (player.getSprite().getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
+        int boundingBoxHeight = (player.getSprite().getHeight() / tiledEditorMap.getTileHeight()) * tiledEditorMap.getTileHeight();
+        LOGGER.debug("Bounding box: [{}w, {}h]", boundingBoxWidth, boundingBoxHeight);
+        boundingBox.setBounds(player.getX(), player.getY(), boundingBoxWidth, boundingBoxHeight);
+        player.setBoundingBox(boundingBox);
+
+        //player.setFalling(true);
     }
 
     @Override
     public void update(Keyboard keyboard) {
         ribbonManager.update(keyboard);
         player.update(keyboard);
+
+        /*
+        for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
+            TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
+            if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
+                int column = player.getX() / tiledEditorMap.getTileWidth();
+                int row = player.getY() / tiledEditorMap.getTileHeight();
+                int tileId = tiledEditorLayer.getData2D()[column][row];
+                if (tileId != TiledEditorMap.NO_TILE_ID) {
+                    Tile tile = tiledEditorMap.getTiles().get(tileId);
+                    if (player.getBoundingBox().intersects(tile.getBoundingBox())) {
+                        player.setFalling(false);
+                    }
+                }
+            }
+        }
+        */
     }
 
     @Override
