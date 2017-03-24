@@ -15,8 +15,6 @@ import no.taardal.blossom.sprite.SpriteSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-
 public class TiledEditorLevel implements Level {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TiledEditorLevel.class);
@@ -32,39 +30,13 @@ public class TiledEditorLevel implements Level {
         SpriteSheetService spriteSheetService = new SpriteSheetService(new BufferedImageResourceLoader());
         SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-violet-sheet-x1.png");
         Sprite scorpionSprite = scorpionSpriteSheet.getSprite(0, 0);
-        player = new Player(scorpionSprite);
-
-        Rectangle boundingBox = new Rectangle();
-        int boundingBoxWidth = (player.getSprite().getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
-        int boundingBoxHeight = (player.getSprite().getHeight() / tiledEditorMap.getTileHeight()) * tiledEditorMap.getTileHeight();
-        LOGGER.debug("Bounding box: [{}w, {}h]", boundingBoxWidth, boundingBoxHeight);
-        boundingBox.setBounds(player.getX(), player.getY(), boundingBoxWidth, boundingBoxHeight);
-        player.setBoundingBox(boundingBox);
-
-        //player.setFalling(true);
+        player = new Player(scorpionSprite, tiledEditorMap);
     }
 
     @Override
     public void update(Keyboard keyboard) {
         ribbonManager.update(keyboard);
         player.update(keyboard);
-
-        /*
-        for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
-            TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-            if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
-                int column = player.getX() / tiledEditorMap.getTileWidth();
-                int row = player.getY() / tiledEditorMap.getTileHeight();
-                int tileId = tiledEditorLayer.getData2D()[column][row];
-                if (tileId != TiledEditorMap.NO_TILE_ID) {
-                    Tile tile = tiledEditorMap.getTiles().get(tileId);
-                    if (player.getBoundingBox().intersects(tile.getBoundingBox())) {
-                        player.setFalling(false);
-                    }
-                }
-            }
-        }
-        */
     }
 
     @Override
@@ -75,13 +47,10 @@ public class TiledEditorLevel implements Level {
     }
 
     private void drawTiles(Camera camera) {
-        int tileWidthExponent = Math.getExponent(tiledEditorMap.getTileWidth());
-        int tileHeightExponent = Math.getExponent(tiledEditorMap.getTileHeight());
-
-        int topMostTileRowToDraw = ((int) camera.getMinY() - tiledEditorMap.getTileHeight()) >> tileWidthExponent;
-        int leftMostTileColumnToDraw = ((int) camera.getMinX() - tiledEditorMap.getTileWidth()) >> tileHeightExponent;
-        int rightMostTileColumnToDraw = ((int) camera.getMaxX() + tiledEditorMap.getTileWidth()) >> tileHeightExponent;
-        int bottomMostTileRowToDraw = ((int) camera.getMaxY() + tiledEditorMap.getTileHeight()) >> tileWidthExponent;
+        int topMostTileRowToDraw = ((int) camera.getMinY() - tiledEditorMap.getTileHeight()) >> tiledEditorMap.getTileWidthExponent();
+        int leftMostTileColumnToDraw = ((int) camera.getMinX() - tiledEditorMap.getTileWidth()) >> tiledEditorMap.getTileHeightExponent();
+        int rightMostTileColumnToDraw = ((int) camera.getMaxX() + tiledEditorMap.getTileWidth()) >> tiledEditorMap.getTileHeightExponent();
+        int bottomMostTileRowToDraw = ((int) camera.getMaxY() + tiledEditorMap.getTileHeight()) >> tiledEditorMap.getTileWidthExponent();
 
         for (int row = topMostTileRowToDraw; row < bottomMostTileRowToDraw; row++) {
             if (row >= tiledEditorMap.getHeight()) {

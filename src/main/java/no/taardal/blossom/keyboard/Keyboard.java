@@ -22,7 +22,7 @@ public class Keyboard implements KeyListener {
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() < MAX_KEY_CODE) {
-            LOGGER.debug(keyEvent.paramString());
+//            LOGGER.debug(keyEvent.paramString());
             keyStates[keyEvent.getKeyCode()] = true;
         }
     }
@@ -30,7 +30,7 @@ public class Keyboard implements KeyListener {
     @Override
     public void keyReleased(KeyEvent keyEvent) {
         if (keyEvent.getKeyCode() < MAX_KEY_CODE) {
-            LOGGER.debug(keyEvent.paramString());
+//            LOGGER.debug(keyEvent.paramString());
             keyStates[keyEvent.getKeyCode()] = false;
         }
     }

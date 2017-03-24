@@ -22,7 +22,9 @@ public class TiledEditorMap {
     private int height;
     private int nextObjectId;
     private int tileWidth;
+    private int tileWidthExponent;
     private int tileHeight;
+    private int tileHeightExponent;
     private int version;
 
     @Override
@@ -37,7 +39,9 @@ public class TiledEditorMap {
                 ", height=" + height +
                 ", nextObjectId=" + nextObjectId +
                 ", tileWidth=" + tileWidth +
+                ", tileWidthExponent=" + tileWidthExponent +
                 ", tileHeight=" + tileHeight +
+                ", tileHeightExponent=" + tileHeightExponent +
                 ", version=" + version +
                 '}';
     }
@@ -112,6 +116,11 @@ public class TiledEditorMap {
 
     public void setTileWidth(int tileWidth) {
         this.tileWidth = tileWidth;
+        this.tileWidthExponent = Math.getExponent(tileWidth);
+    }
+
+    public int getTileWidthExponent() {
+        return tileWidthExponent;
     }
 
     public int getTileHeight() {
@@ -120,6 +129,11 @@ public class TiledEditorMap {
 
     public void setTileHeight(int tileHeight) {
         this.tileHeight = tileHeight;
+        this.tileHeightExponent = Math.getExponent(tileHeight);
+    }
+
+    public int getTileHeightExponent() {
+        return tileHeightExponent;
     }
 
     public int getVersion() {

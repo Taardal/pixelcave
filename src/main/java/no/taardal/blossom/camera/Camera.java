@@ -50,10 +50,6 @@ public class Camera extends Rectangle {
         graphics2D.drawImage(image, x, y, null);
     }
 
-    public void drawImage1(BufferedImage bufferedImage, int x, int i) {
-        graphics2D.drawImage(bufferedImage, x, y, (int) getWidth(), (int) getHeight(),null);
-    }
-
     public void drawImageIsometric(Image image, int x, int y) {
         BufferedImage bufferedImage = (BufferedImage) image;
         int xIso = (x - y) * (bufferedImage.getWidth() / 2) - x;
@@ -94,5 +90,9 @@ public class Camera extends Rectangle {
     public void drawRectangle(int x, int y, int width, int height, Color color) {
         graphics2D.setColor(color);
         graphics2D.drawRect(x, y, width, height);
+    }
+
+    public void drawRectangle(Rectangle boundingBox, Color color) {
+        drawRectangle((int) boundingBox.getX(), (int) boundingBox.getY(), (int) boundingBox.getWidth(), (int) boundingBox.getHeight(), color);
     }
 }

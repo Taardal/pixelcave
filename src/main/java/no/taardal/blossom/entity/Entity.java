@@ -5,44 +5,44 @@ import no.taardal.blossom.keyboard.Keyboard;
 
 public abstract class Entity {
 
-    protected int x;
-    protected int y;
-    protected int velocityX;
-    protected int velocityY;
+    protected double x;
+    protected double y;
+    protected double velocityX;
+    protected double velocityY;
 
     public abstract void update(Keyboard keyboard);
 
     public abstract void draw(Camera camera);
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public int getVelocityX() {
+    public double getVelocityX() {
         return velocityX;
     }
 
-    public void setVelocityX(int velocityX) {
+    public void setVelocityX(double velocityX) {
         this.velocityX = velocityX;
     }
 
-    public int getVelocityY() {
+    public double getVelocityY() {
         return velocityY;
     }
 
-    public void setVelocityY(int velocityY) {
+    public void setVelocityY(double velocityY) {
         this.velocityY = velocityY;
     }
 }
