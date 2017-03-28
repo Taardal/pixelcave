@@ -60,7 +60,7 @@ public class Actor extends Entity {
             for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
                 TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
                 if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
-                    int column = (int) x >> tiledEditorMap.getTileWidthExponent();
+                    int column = x >> tiledEditorMap.getTileWidthExponent();
                     int row = (int) (y + getHeight() + velocityY) >> tiledEditorMap.getTileHeightExponent();
                     int tileId = tiledEditorLayer.getData2D()[column][row];
                     if (tileId != TiledEditorMap.NO_TILE_ID) {
@@ -73,13 +73,12 @@ public class Actor extends Entity {
             }
 
         }
-        boundingBox.setLocation((int) x, (int) y);
+        boundingBox.setLocation(x, y);
     }
 
     @Override
     public void draw(Camera camera) {
-        sprite.draw((int) x, (int) y, camera);
-//        camera.drawRectangle(boundingBox, Color.PINK);
+        sprite.draw(x, y, camera);
     }
 
     protected boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {

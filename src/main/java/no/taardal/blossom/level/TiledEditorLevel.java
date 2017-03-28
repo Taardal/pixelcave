@@ -15,6 +15,8 @@ import no.taardal.blossom.sprite.SpriteSheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class TiledEditorLevel implements Level {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TiledEditorLevel.class);
@@ -75,6 +77,7 @@ public class TiledEditorLevel implements Level {
                         if (tiledId != TiledEditorMap.NO_TILE_ID) {
                             tiledEditorMap.getTiles().get(tiledId).draw(x, y, camera);
                         }
+                        camera.drawRectangle(x, y, tiledEditorMap.getTileWidth(), tiledEditorMap.getTileHeight(), Color.CYAN);
                     }
                 }
             }

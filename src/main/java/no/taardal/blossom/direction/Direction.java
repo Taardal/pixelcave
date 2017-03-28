@@ -2,13 +2,14 @@ package no.taardal.blossom.direction;
 
 public enum Direction {
 
+    NO_DIRECTION,
     NORTH,
-    NORTHEAST,
+    NORTH_EAST,
     EAST,
-    SOUTHEAST,
+    SOUTH_EAST,
     SOUTH,
-    SOUTHWEST,
+    SOUTH_WEST,
     WEST,
-    NORTHWEST
+    NORTH_WEST
 
 }

@@ -3,7 +3,6 @@ package no.taardal.blossom.tile;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Tile {
@@ -14,14 +13,14 @@ public class Tile {
 
     public Tile(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
-        identifySlope();
+        direction = Direction.NO_DIRECTION;
+        slope = isSlopeTile();
     }
 
     @Override
     public String toString() {
         return "Tile{" +
-//                "bufferedImage=" + bufferedImage +
-                ", slope=" + slope +
+                "slope=" + slope +
                 ", direction=" + direction +
                 '}';
     }
@@ -44,12 +43,10 @@ public class Tile {
 
     public void draw(int x, int y, Camera camera) {
         camera.drawImage(bufferedImage, x, y);
-        if (isSlope()) {
-            camera.drawRectangle(x, y, bufferedImage.getWidth(), bufferedImage.getHeight(), Color.CYAN);
-        }
+//        camera.drawRectangle(x, y, bufferedImage.getWidth(), bufferedImage.getHeight(), Color.CYAN);
     }
 
-    private void identifySlope() {
+    private boolean isSlopeTile() {
         int[] rgbPixels = getRGBPixels();
         int leftFloorY = 0;
         int rightFloorY = 0;
@@ -69,12 +66,15 @@ public class Tile {
             }
         }
         if (leftFloorY != rightFloorY) {
-            slope = true;
             if (leftFloorY < rightFloorY) {
                 direction = Direction.WEST;
-            } else if (leftFloorY > rightFloorY) {
+            }
+            if (leftFloorY > rightFloorY) {
                 direction = Direction.EAST;
             }
+            return true;
+        } else {
+            return false;
         }
     }
 
