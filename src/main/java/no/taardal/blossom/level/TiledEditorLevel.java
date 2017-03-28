@@ -12,10 +12,9 @@ import no.taardal.blossom.ribbon.Ribbon;
 import no.taardal.blossom.service.SpriteSheetService;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
+import no.taardal.blossom.tile.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
 
 public class TiledEditorLevel implements Level {
 
@@ -49,10 +48,19 @@ public class TiledEditorLevel implements Level {
     }
 
     private void drawTiles(Camera camera) {
-        int topMostTileRowToDraw = ((int) camera.getMinY() - tiledEditorMap.getTileHeight()) >> tiledEditorMap.getTileWidthExponent();
-        int leftMostTileColumnToDraw = ((int) camera.getMinX() - tiledEditorMap.getTileWidth()) >> tiledEditorMap.getTileHeightExponent();
-        int rightMostTileColumnToDraw = ((int) camera.getMaxX() + tiledEditorMap.getTileWidth()) >> tiledEditorMap.getTileHeightExponent();
-        int bottomMostTileRowToDraw = ((int) camera.getMaxY() + tiledEditorMap.getTileHeight()) >> tiledEditorMap.getTileWidthExponent();
+        for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
+            TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
+            if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible()) {
+                drawLayerTiles(tiledEditorLayer, camera);
+            }
+        }
+    }
+
+    private void drawLayerTiles(TiledEditorLayer tiledEditorLayer, Camera camera) {
+        int topMostTileRowToDraw = ((int) camera.getMinY() - tiledEditorMap.getTileHeight()) / tiledEditorMap.getTileWidth();
+        int leftMostTileColumnToDraw = ((int) camera.getMinX() - tiledEditorMap.getTileWidth()) / tiledEditorMap.getTileHeight();
+        int rightMostTileColumnToDraw = ((int) camera.getMaxX() + tiledEditorMap.getTileWidth()) / tiledEditorMap.getTileHeight();
+        int bottomMostTileRowToDraw = ((int) camera.getMaxY() + tiledEditorMap.getTileHeight()) / tiledEditorMap.getTileWidth();
 
         for (int row = topMostTileRowToDraw; row < bottomMostTileRowToDraw; row++) {
             if (row >= tiledEditorMap.getHeight()) {
@@ -70,16 +78,14 @@ public class TiledEditorLevel implements Level {
                     continue;
                 }
                 int x = column * tiledEditorMap.getTileWidth() - (int) camera.getX();
-                for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
-                    TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-                    if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible()) {
-                        int tiledId = tiledEditorLayer.getData2D()[column][row];
-                        if (tiledId != TiledEditorMap.NO_TILE_ID) {
-                            tiledEditorMap.getTiles().get(tiledId).draw(x, y, camera);
-                        }
-                        camera.drawRectangle(x, y, tiledEditorMap.getTileWidth(), tiledEditorMap.getTileHeight(), Color.CYAN);
+                int tileId = tiledEditorLayer.getData2D()[column][row];
+                if (tileId != TiledEditorMap.NO_TILE_ID) {
+                    Tile tile = tiledEditorMap.getTiles().get(tileId);
+                    if (tile != null) {
+                        tile.draw(x, y, camera);
                     }
                 }
+//                camera.drawRectangle(x, y, tiledEditorMap.getTileWidth(), tiledEditorMap.getTileHeight(), Color.CYAN);
             }
         }
     }

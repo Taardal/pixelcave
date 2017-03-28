@@ -64,9 +64,6 @@ public class Player extends Actor {
                     int bottomRow = (y + getHeight()) / tiledEditorMap.getTileHeight();
 
                     Tile tile = getTile(column, topRow, tiledEditorLayer);
-                    if (tile != null) {
-                        LOGGER.debug(tile.toString());
-                    }
                     Tile tileBelowPlayer = getTile(column, bottomRow, tiledEditorLayer);
 
                     if (isStandingInSlope(tile, tileBelowPlayer)) {
