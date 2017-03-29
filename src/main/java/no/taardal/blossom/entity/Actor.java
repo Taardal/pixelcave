@@ -1,11 +1,13 @@
 package no.taardal.blossom.entity;
 
 import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.layer.TiledEditorLayerType;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.sprite.Sprite;
+import no.taardal.blossom.tile.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,12 +62,37 @@ public class Actor extends Entity {
             for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
                 TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
                 if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
-                    int column = x >> tiledEditorMap.getTileWidthExponent();
-                    int row = (int) (y + getHeight() + velocityY) >> tiledEditorMap.getTileHeightExponent();
+                    int column = x / tiledEditorMap.getTileWidth();
+                    int row = (int) (y + getHeight() + velocityY) / tiledEditorMap.getTileHeight();
                     int tileId = tiledEditorLayer.getData2D()[column][row];
                     if (tileId != TiledEditorMap.NO_TILE_ID) {
-                        falling = false;
-                        y = (row - 1) << tiledEditorMap.getTileHeightExponent();
+
+
+                        Tile tile = tiledEditorMap.getTiles().get(tileId);
+                        if (tile.isSlope()) {
+
+                            int slopeCollisionX = x + (getWidth() / 2);
+                            int tileX = column * tiledEditorMap.getTileWidth();
+                            int tileY = row * tiledEditorMap.getTileHeight();
+
+                            int slopeY;
+                            if (tile.getDirection() == Direction.EAST) {
+                                slopeY = (tileY + tiledEditorMap.getTileHeight()) - (slopeCollisionX - tileX);
+                            } else {
+                                slopeY = (tileY + tiledEditorMap.getTileHeight()) - ((tileX + tiledEditorMap.getTileWidth()) - slopeCollisionX);
+                            }
+
+                            if ((y + getHeight() + velocityY) > slopeY) {
+                                falling = false;
+                                y = slopeY - getHeight();
+                            } else {
+                                y += velocityY;
+                            }
+
+                        } else {
+                            falling = false;
+                            y = (row - 1) * tiledEditorMap.getTileHeight();
+                        }
                     } else {
                         y += velocityY;
                     }

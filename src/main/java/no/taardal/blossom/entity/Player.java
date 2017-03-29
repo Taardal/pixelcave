@@ -26,7 +26,7 @@ public class Player extends Actor {
         velocityX = 1;
         velocityY = 1;
         y = 130;
-        x = 144;
+        x = 224;
 
         Rectangle boundingBox = new Rectangle();
         int boundingBoxWidth = (sprite.getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
