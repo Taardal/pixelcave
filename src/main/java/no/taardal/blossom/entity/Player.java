@@ -26,7 +26,7 @@ public class Player extends Actor {
         velocityX = 1;
         velocityY = 1;
         y = 130;
-        x = 224;
+        x = 250;
 
         Rectangle boundingBox = new Rectangle();
         int boundingBoxWidth = (sprite.getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
@@ -46,12 +46,18 @@ public class Player extends Actor {
         super.update(keyboard);
 
         if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A) || keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
+            moving = true;
+
             if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A)) {
                 direction = Direction.WEST;
                 x -= velocityX;
             } else if (keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
                 direction = Direction.EAST;
                 x += velocityX;
+            }
+
+            if (x < 0) {
+                x = 0;
             }
 
             for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
@@ -101,6 +107,10 @@ public class Player extends Actor {
 
                     }
                 }
+            }
+        } else {
+            if (moving) {
+                moving = false;
             }
         }
 

@@ -3,16 +3,21 @@ package no.taardal.blossom.camera;
 
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.menu.MenuItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Camera extends Rectangle {
 
-    public static final int SPEED = 5;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Camera.class);
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
+
+    private int offsetX;
+    private int offsetY;
 
     public Camera(int width, int height) {
         super(width, height);
@@ -24,21 +29,24 @@ public class Camera extends Rectangle {
         return bufferedImage;
     }
 
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+    }
+
     public void update(Keyboard keyboard) {
-/*
-        if (keyboard.isPressed(Key.UP) || keyboard.isPressed(Key.W)) {
-            y -= SPEED;
-        }
-        if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A)) {
-            x -= SPEED;
-        }
-        if (keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
-            x += SPEED;
-        }
-        if (keyboard.isPressed(Key.DOWN) || keyboard.isPressed(Key.S)) {
-            y += SPEED;
-        }
-*/
+
     }
 
     public void clear() {
@@ -47,6 +55,8 @@ public class Camera extends Rectangle {
     }
 
     public void drawImage(Image image, int x, int y) {
+        x -= offsetX;
+        y -= offsetY;
         graphics2D.drawImage(image, x, y, null);
     }
 

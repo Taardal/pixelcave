@@ -21,6 +21,7 @@ public class Actor extends Entity {
     protected TiledEditorMap tiledEditorMap;
     protected Rectangle boundingBox;
     protected boolean falling;
+    protected boolean moving;
 
     public Actor(Sprite sprite, TiledEditorMap tiledEditorMap) {
         this.sprite = sprite;
@@ -56,17 +57,25 @@ public class Actor extends Entity {
         return sprite.getHeight();
     }
 
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
     @Override
     public void update(Keyboard keyboard) {
         if (falling) {
             for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
                 TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
                 if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
+
                     int column = x / tiledEditorMap.getTileWidth();
                     int row = (int) (y + getHeight() + velocityY) / tiledEditorMap.getTileHeight();
                     int tileId = tiledEditorLayer.getData2D()[column][row];
                     if (tileId != TiledEditorMap.NO_TILE_ID) {
-
 
                         Tile tile = tiledEditorMap.getTiles().get(tileId);
                         if (tile.isSlope()) {
@@ -93,6 +102,7 @@ public class Actor extends Entity {
                             falling = false;
                             y = (row - 1) * tiledEditorMap.getTileHeight();
                         }
+
                     } else {
                         y += velocityY;
                     }

@@ -21,7 +21,7 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     public static final int GAME_HEIGHT = 240;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
-    private static final int SCALE = 3;
+    public static final int SCALE = 3;
     private static final int NUMBER_OF_BUFFERS = 3;
 
     private Manager<GameState> gameStateManager;
@@ -54,7 +54,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     public void onUpdate() {
         keyboard.update();
         gameStateManager.update(keyboard);
-        camera.update(keyboard);
     }
 
     @Override
