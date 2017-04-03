@@ -10,6 +10,7 @@ import no.taardal.blossom.manager.RibbonsManager;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.resourceloader.BufferedImageResourceLoader;
 import no.taardal.blossom.service.SpriteSheetService;
+import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.tile.Tile;
@@ -33,9 +34,15 @@ public class TiledEditorLevel implements Level {
         this.ribbonManager = ribbonManager;
 
         SpriteSheetService spriteSheetService = new SpriteSheetService(new BufferedImageResourceLoader());
-        SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-violet-sheet-x1.png");
+        SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-black-sheet-x1.png");
         Sprite scorpionSprite = scorpionSpriteSheet.getSprite(0, 0);
-        player = new Player(scorpionSprite, tiledEditorMap);
+        AnimatedSprite animatedSprite = new AnimatedSprite(scorpionSpriteSheet, scorpionSprite.getWidth(), scorpionSprite.getHeight(), 6);
+
+        Sprite[][] sprites2D = scorpionSpriteSheet.getSprites2D();
+        Sprite[] sprites = sprites2D[1];
+        AnimatedSprite animatedSprite1 = new AnimatedSprite(sprites, scorpionSprite.getWidth(), scorpionSprite.getHeight());
+
+        player = new Player(animatedSprite1, tiledEditorMap);
     }
 
     @Override

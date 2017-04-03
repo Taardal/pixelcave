@@ -6,7 +6,7 @@ import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.layer.TiledEditorLayerType;
 import no.taardal.blossom.map.TiledEditorMap;
-import no.taardal.blossom.sprite.Sprite;
+import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.tile.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,19 +17,19 @@ public class Actor extends Entity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
-    protected Sprite sprite;
+    protected AnimatedSprite sprite;
     protected TiledEditorMap tiledEditorMap;
     protected Rectangle boundingBox;
     protected boolean falling;
     protected boolean moving;
 
-    public Actor(Sprite sprite, TiledEditorMap tiledEditorMap) {
+    public Actor(AnimatedSprite sprite, TiledEditorMap tiledEditorMap) {
         this.sprite = sprite;
         this.tiledEditorMap = tiledEditorMap;
         falling = true;
     }
 
-    public Sprite getSprite() {
+    public AnimatedSprite getAnimatedSprite() {
         return sprite;
     }
 
@@ -115,10 +115,14 @@ public class Actor extends Entity {
 
     @Override
     public void draw(Camera camera) {
-        sprite.draw(x, y, camera);
+        sprite.getSprite().draw(x, y, camera);
     }
 
     protected boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {
         return tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER;
+    }
+
+    public void move() {
+
     }
 }

@@ -9,7 +9,9 @@ public class SpriteSheet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpriteSheet.class);
 
-    private BufferedImage[][] subImages;
+    private BufferedImage[][] spriteImages;
+    private Sprite[][] sprites2D;
+    private Sprite[] sprites;
     private int spriteWidth;
     private int spriteHeight;
     private int width;
@@ -18,9 +20,43 @@ public class SpriteSheet {
     public SpriteSheet(BufferedImage bufferedImage, int spriteWidth, int spriteHeight) {
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
-        subImages = getSubImages(bufferedImage);
+        spriteImages = getSpriteImages(bufferedImage);
+        sprites2D = getSprites2D(spriteImages);
+        sprites = getSprites(sprites2D);
         width = bufferedImage.getWidth();
         height = bufferedImage.getHeight();
+    }
+
+    private Sprite[] getSprites(Sprite[][] sprites2D) {
+        Sprite[] sprites = new Sprite[sprites2D.length * sprites2D[0].length];
+        int k = 0;
+        for (int i = 0; i < sprites2D.length; i++) {
+            for (int j = 0; j < sprites2D[i].length; j++) {
+                Sprite sprite = sprites2D[i][j];
+                sprites[k] = sprite;
+                k++;
+            }
+        }
+        return sprites;
+    }
+
+    private Sprite[][] getSprites2D(BufferedImage[][] spriteImages) {
+        Sprite[][] sprites = new Sprite[spriteImages[0].length][spriteImages.length];
+        for (int i = 0; i < spriteImages.length; i++) {
+            for (int j = 0; j < spriteImages[i].length; j++) {
+                BufferedImage bufferedImage = spriteImages[i][j];
+                sprites[j][i] = new Sprite(bufferedImage);
+            }
+        }
+        return sprites;
+    }
+
+    public Sprite[][] getSprites2D() {
+        return sprites2D;
+    }
+
+    public Sprite[] getSprites() {
+        return sprites;
     }
 
     public int getSpriteWidth() {
@@ -40,10 +76,10 @@ public class SpriteSheet {
     }
 
     public Sprite getSprite(int column, int row) {
-        return new Sprite(subImages[column][row]);
+        return new Sprite(spriteImages[column][row]);
     }
 
-    private BufferedImage[][] getSubImages(BufferedImage bufferedImage) {
+    private BufferedImage[][] getSpriteImages(BufferedImage bufferedImage) {
         int columns = bufferedImage.getWidth() / spriteWidth;
         int rows = bufferedImage.getHeight() / spriteHeight;
         BufferedImage[][] subImages = new BufferedImage[columns][rows];

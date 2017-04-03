@@ -6,7 +6,7 @@ import no.taardal.blossom.keyboard.Key;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.map.TiledEditorMap;
-import no.taardal.blossom.sprite.Sprite;
+import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.tile.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,31 +19,28 @@ public class Player extends Actor {
 
     private Direction direction;
 
-    public Player(Sprite sprite, TiledEditorMap tiledEditorMap) {
-        super(sprite, tiledEditorMap);
+    public Player(AnimatedSprite animatedSprite, TiledEditorMap tiledEditorMap) {
+        super(animatedSprite, tiledEditorMap);
         direction = Direction.EAST;
 
-        velocityX = 1;
+        velocityX = 3;
         velocityY = 1;
         y = 130;
         x = 250;
 
         Rectangle boundingBox = new Rectangle();
-        int boundingBoxWidth = (sprite.getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
-        int boundingBoxHeight = (sprite.getHeight() / tiledEditorMap.getTileHeight()) * tiledEditorMap.getTileHeight();
+        int boundingBoxWidth = (animatedSprite.getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
+        int boundingBoxHeight = (animatedSprite.getHeight() / tiledEditorMap.getTileHeight()) * tiledEditorMap.getTileHeight();
         LOGGER.debug("Bounding box: [{}w, {}h]", boundingBoxWidth, boundingBoxHeight);
         boundingBox.setBounds(x, y, boundingBoxWidth, boundingBoxHeight);
         setBoundingBox(boundingBox);
     }
 
     @Override
-    public void draw(Camera camera) {
-        super.draw(camera);
-    }
-
-    @Override
     public void update(Keyboard keyboard) {
         super.update(keyboard);
+
+        sprite.update();
 
         if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A) || keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
             moving = true;
@@ -114,6 +111,11 @@ public class Player extends Actor {
             }
         }
 
+    }
+
+    @Override
+    public void draw(Camera camera) {
+        sprite.draw(x, y, direction, camera);
     }
 
     private Tile getTile(int column, int row, TiledEditorLayer tiledEditorLayer) {

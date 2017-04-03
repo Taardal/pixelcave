@@ -1,12 +1,12 @@
 package no.taardal.blossom.camera;
 
 
-import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.menu.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Camera extends Rectangle {
@@ -45,10 +45,6 @@ public class Camera extends Rectangle {
         this.offsetY = offsetY;
     }
 
-    public void update(Keyboard keyboard) {
-
-    }
-
     public void clear() {
         graphics2D.setColor(Color.BLACK);
         graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
@@ -59,6 +55,27 @@ public class Camera extends Rectangle {
         y -= offsetY;
         graphics2D.drawImage(image, x, y, null);
     }
+
+    public void drawImage(Image image, int x, int y, AffineTransform affineTransform) {
+        x -= offsetX;
+        y -= offsetY;
+        graphics2D.drawImage(image, affineTransform, null);
+    }
+
+    public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
+        graphics2D.drawImage(bufferedImage, destinationX1, destinationY1, destinationX2, destinationY2, sourceX1, sourceY1, sourceX2, sourceY2, null);
+    }
+
+    public void drawImageFlip(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
+        destinationX1 -= offsetX;
+        destinationX2 -= offsetX;
+        destinationY1 -= offsetY;
+        destinationY2 -= offsetY;
+        drawImage(bufferedImage,
+                destinationX1, destinationX2, destinationY1, destinationY2,
+                sourceX2, sourceX1, sourceY1, sourceY2);
+    }
+
 
     public void drawImageIsometric(Image image, int x, int y) {
         BufferedImage bufferedImage = (BufferedImage) image;
@@ -91,10 +108,6 @@ public class Camera extends Rectangle {
 
     public void drawImage(BufferedImage im, int destinationX1, int destinationX2, int sourceX1, int sourceX2) {
         graphics2D.drawImage(im, destinationX1, 0, destinationX2, (int) getHeight(), sourceX1, 0, sourceX2, (int) getHeight(), null);
-    }
-
-    public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
-        graphics2D.drawImage(bufferedImage, destinationX1, destinationY1, destinationX2, destinationY2, sourceX1, sourceY1, sourceX2, sourceY2, null);
     }
 
     public void drawRectangle(int x, int y, int width, int height, Color color) {
