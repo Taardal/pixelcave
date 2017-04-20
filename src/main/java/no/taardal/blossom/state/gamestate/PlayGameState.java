@@ -1,4 +1,4 @@
-package no.taardal.blossom.gamestate;
+package no.taardal.blossom.state.gamestate;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Key;

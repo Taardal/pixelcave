@@ -47,8 +47,9 @@ public class TiledEditorLevel implements Level {
 
     @Override
     public void update(Keyboard keyboard) {
-        ribbonManager.update(keyboard);
+        player.handleInput(keyboard);
         player.update(keyboard);
+        ribbonManager.update(keyboard);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class TiledEditorLevel implements Level {
             ribbonManager.moveLeft();
         }
 
-        if (camera.getOffsetX() == 0 || !player.isMoving()) {
+        if (!player.isMoving()) {
             ribbonManager.stopMovingHorizontally();
         }
 
@@ -105,7 +106,6 @@ public class TiledEditorLevel implements Level {
         int leftMostTileColumnToDraw = (camera.getOffsetX() - tiledEditorMap.getTileWidth()) / tiledEditorMap.getTileWidth();
         int rightMostTileColumnToDraw = (camera.getOffsetX() + (int) camera.getWidth() + tiledEditorMap.getTileWidth()) / tiledEditorMap.getTileWidth();
         int bottomMostTileRowToDraw = (camera.getOffsetY() + (int) camera.getHeight() + tiledEditorMap.getTileHeight()) / tiledEditorMap.getTileHeight();
-
         for (int row = topMostTileRowToDraw; row < bottomMostTileRowToDraw; row++) {
             if (row >= tiledEditorMap.getHeight()) {
                 break;

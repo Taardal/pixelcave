@@ -2,8 +2,8 @@ package no.taardal.blossom.manager;
 
 import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.gamestate.GameState;
-import no.taardal.blossom.gamestate.PlayGameState;
+import no.taardal.blossom.state.gamestate.GameState;
+import no.taardal.blossom.state.gamestate.PlayGameState;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import org.slf4j.Logger;

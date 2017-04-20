@@ -7,8 +7,8 @@ public abstract class Entity {
 
     protected int x;
     protected int y;
-    protected double velocityX;
-    protected double velocityY;
+    protected int speedX;
+    protected int speedY;
 
     public abstract void update(Keyboard keyboard);
 
@@ -30,19 +30,19 @@ public abstract class Entity {
         this.y = y;
     }
 
-    public double getVelocityX() {
-        return velocityX;
+    public int getSpeedX() {
+        return speedX;
     }
 
-    public void setVelocityX(double velocityX) {
-        this.velocityX = velocityX;
+    public void setSpeedX(int speedX) {
+        this.speedX = speedX;
     }
 
-    public double getVelocityY() {
-        return velocityY;
+    public int getSpeedY() {
+        return speedY;
     }
 
-    public void setVelocityY(double velocityY) {
-        this.velocityY = velocityY;
+    public void setSpeedY(int speedY) {
+        this.speedY = speedY;
     }
 }

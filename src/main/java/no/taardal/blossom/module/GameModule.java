@@ -4,7 +4,7 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import no.taardal.blossom.game.Game;
-import no.taardal.blossom.gamestate.GameState;
+import no.taardal.blossom.state.gamestate.GameState;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.manager.GameStateManager;

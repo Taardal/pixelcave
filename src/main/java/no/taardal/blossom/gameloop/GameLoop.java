@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 public class GameLoop implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
-    private static final int ONE_SECOND = 1000;
-    private static final int ONE_NANOSECOND = 1000000000;
-    private static final double UPDATES_PER_SECOND = 60;
-    private static final double NANOSECONDS_PER_UPDATE = ONE_NANOSECOND / UPDATES_PER_SECOND;
+    private static final int ONE_SECOND = 1;
+    private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
+    private static final int ONE_SECOND_IN_NANOSECONDS = 1000000000;
+    private static final double UPDATES_PER_SECOND_TARGET = 60;
+    private static final double NANOSECONDS_PER_UPDATE = ONE_SECOND_IN_NANOSECONDS / UPDATES_PER_SECOND_TARGET;
 
     private GameLoopListener gameLoopListener;
     private boolean running;
@@ -20,6 +21,10 @@ public class GameLoop implements Runnable {
 
     public GameLoop(GameLoopListener gameLoopListener) {
         this.gameLoopListener = gameLoopListener;
+    }
+
+    public static double getSecondsPerUpdate() {
+        return ONE_SECOND / UPDATES_PER_SECOND_TARGET;
     }
 
     public boolean isRunning() {
@@ -46,8 +51,8 @@ public class GameLoop implements Runnable {
             }
             gameLoopListener.onDraw();
             frames++;
-            if (System.currentTimeMillis() - lastTimeMillis > ONE_SECOND) {
-                lastTimeMillis += ONE_SECOND;
+            if (System.currentTimeMillis() - lastTimeMillis > ONE_SECOND_IN_MILLISECONDS) {
+                lastTimeMillis += ONE_SECOND_IN_MILLISECONDS;
                 LOGGER.info(updates + " ups, " + frames + " fps");
                 updates = 0;
                 frames = 0;

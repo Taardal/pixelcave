@@ -3,7 +3,7 @@ package no.taardal.blossom.game;
 import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.gameloop.GameLoop;
-import no.taardal.blossom.gamestate.GameState;
+import no.taardal.blossom.state.gamestate.GameState;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;

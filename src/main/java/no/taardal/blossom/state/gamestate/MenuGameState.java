@@ -1,4 +1,4 @@
-package no.taardal.blossom.gamestate;
+package no.taardal.blossom.state.gamestate;
 
 import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;

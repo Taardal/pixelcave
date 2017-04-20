@@ -3,11 +3,10 @@ package no.taardal.blossom.entity;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.layer.TiledEditorLayer;
-import no.taardal.blossom.layer.TiledEditorLayerType;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.sprite.AnimatedSprite;
-import no.taardal.blossom.tile.Tile;
+import no.taardal.blossom.state.actorstate.ActorState;
+import no.taardal.blossom.state.actorstate.FallingActorState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,13 +19,25 @@ public class Actor extends Entity {
     protected AnimatedSprite sprite;
     protected TiledEditorMap tiledEditorMap;
     protected Rectangle boundingBox;
+    protected Direction direction;
     protected boolean falling;
     protected boolean moving;
+
+    protected ActorState actorState;
 
     public Actor(AnimatedSprite sprite, TiledEditorMap tiledEditorMap) {
         this.sprite = sprite;
         this.tiledEditorMap = tiledEditorMap;
         falling = true;
+        actorState = new FallingActorState(this, tiledEditorMap);
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
     public AnimatedSprite getAnimatedSprite() {
@@ -67,62 +78,18 @@ public class Actor extends Entity {
 
     @Override
     public void update(Keyboard keyboard) {
-        if (falling) {
-            for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
-                TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-                if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
-
-                    int column = x / tiledEditorMap.getTileWidth();
-                    int row = (int) (y + getHeight() + velocityY) / tiledEditorMap.getTileHeight();
-                    int tileId = tiledEditorLayer.getData2D()[column][row];
-                    if (tileId != TiledEditorMap.NO_TILE_ID) {
-
-                        Tile tile = tiledEditorMap.getTiles().get(tileId);
-                        if (tile.isSlope()) {
-
-                            int slopeCollisionX = x + (getWidth() / 2);
-                            int tileX = column * tiledEditorMap.getTileWidth();
-                            int tileY = row * tiledEditorMap.getTileHeight();
-
-                            int slopeY;
-                            if (tile.getDirection() == Direction.EAST) {
-                                slopeY = (tileY + tiledEditorMap.getTileHeight()) - (slopeCollisionX - tileX);
-                            } else {
-                                slopeY = (tileY + tiledEditorMap.getTileHeight()) - ((tileX + tiledEditorMap.getTileWidth()) - slopeCollisionX);
-                            }
-
-                            if ((y + getHeight() + velocityY) > slopeY) {
-                                falling = false;
-                                y = slopeY - getHeight();
-                            } else {
-                                y += velocityY;
-                            }
-
-                        } else {
-                            falling = false;
-                            y = (row - 1) * tiledEditorMap.getTileHeight();
-                        }
-
-                    } else {
-                        y += velocityY;
-                    }
-                }
-            }
-
+        ActorState actorState = this.actorState.update();
+        if (actorState != null) {
+            LOGGER.debug("New actor state [{}]", actorState.toString());
+            this.actorState = actorState;
         }
-        boundingBox.setLocation(x, y);
+        sprite.update();
+        boundingBox.setLocation(getX(), getY());
     }
 
     @Override
     public void draw(Camera camera) {
-        sprite.getSprite().draw(x, y, camera);
+        sprite.draw(getX(), getY(), direction, camera);
     }
 
-    protected boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {
-        return tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER;
-    }
-
-    public void move() {
-
-    }
 }
