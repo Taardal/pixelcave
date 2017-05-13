@@ -3,6 +3,8 @@ package no.taardal.blossom.entity;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.layer.TiledEditorLayer;
+import no.taardal.blossom.layer.TiledEditorLayerType;
 import no.taardal.blossom.map.TiledEditorMap;
 import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.state.actorstate.ActorState;
@@ -15,6 +17,7 @@ import java.awt.*;
 public class Actor extends Entity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
+    private final TiledEditorLayer environmentLayer;
 
     protected AnimatedSprite sprite;
     protected TiledEditorMap tiledEditorMap;
@@ -30,6 +33,11 @@ public class Actor extends Entity {
         this.tiledEditorMap = tiledEditorMap;
         falling = true;
         actorState = new FallingActorState(this, tiledEditorMap);
+
+        environmentLayer = tiledEditorMap.getTiledEditorLayers().stream()
+                .filter(tiledEditorLayer -> tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer"))
+                .findFirst()
+                .orElse(null);
     }
 
     public Direction getDirection() {
@@ -90,6 +98,12 @@ public class Actor extends Entity {
     @Override
     public void draw(Camera camera) {
         sprite.draw(getX(), getY(), direction, camera);
+    }
+
+    public boolean isOnGround() {
+        int column = x / tiledEditorMap.getTileWidth();
+        int row = (y + getHeight()) / tiledEditorMap.getTileHeight();
+        return environmentLayer.getData2D()[column][row] != TiledEditorMap.NO_TILE_ID;
     }
 
 }

@@ -39,6 +39,10 @@ public class Keyboard implements KeyListener {
         setCurrentKeyStatesAsPreviousKeyStates();
     }
 
+    public boolean isPressed(KeyBinding keyBinding) {
+        return isPressed(keyBinding.getPrimaryKey()) || isPressed(keyBinding.getSecondaryKey());
+    }
+
     public boolean isPressed(Key key) {
         return isPressed(key.getKeyCode());
     }

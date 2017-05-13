@@ -2,7 +2,7 @@ package no.taardal.blossom.state.actorstate;
 
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.entity.Actor;
-import no.taardal.blossom.keyboard.Key;
+import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.TiledEditorLayer;
 import no.taardal.blossom.layer.TiledEditorLayerType;
@@ -13,10 +13,12 @@ public class WalkingActorState implements ActorState {
 
     private Actor actor;
     private TiledEditorMap tiledEditorMap;
+    private TiledEditorLayer environmentLayer;
 
     public WalkingActorState(Actor actor, TiledEditorMap tiledEditorMap) {
         this.actor = actor;
         this.tiledEditorMap = tiledEditorMap;
+        environmentLayer = getEnvironmentLayer(tiledEditorMap);
     }
 
     @Override
@@ -26,10 +28,10 @@ public class WalkingActorState implements ActorState {
 
     @Override
     public ActorState handleInput(Keyboard keyboard) {
-        if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A) || keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
-            if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A)) {
+        if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
+            if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 actor.setDirection(Direction.WEST);
-            } else if (keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
+            } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
                 actor.setDirection(Direction.EAST);
             }
             return null;
@@ -40,17 +42,20 @@ public class WalkingActorState implements ActorState {
 
     @Override
     public ActorState update() {
-        move();
+        moveX();
+        moveY();
         return null;
+    }
+
+    private TiledEditorLayer getEnvironmentLayer(TiledEditorMap tiledEditorMap) {
+        return tiledEditorMap.getTiledEditorLayers().stream()
+                .filter(tiledEditorLayer -> isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer"))
+                .findFirst()
+                .orElse(null);
     }
 
     private boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {
         return tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER;
-    }
-
-    public void move() {
-        moveX();
-        moveY();
     }
 
     private void moveX() {
@@ -76,63 +81,58 @@ public class WalkingActorState implements ActorState {
     }
 
     private void moveY() {
-        for (int i = 0; i < tiledEditorMap.getTiledEditorLayers().size(); i++) {
-            TiledEditorLayer tiledEditorLayer = tiledEditorMap.getTiledEditorLayers().get(i);
-            if (isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer")) {
+        int slopeCollisionX = actor.getX() + (actor.getWidth() / 2);
+        int column = slopeCollisionX / tiledEditorMap.getTileWidth();
+        int topRow = actor.getY() / tiledEditorMap.getTileHeight();
+        int bottomRow = (actor.getY() + actor.getHeight()) / tiledEditorMap.getTileHeight();
 
-                int slopeCollisionX = actor.getX() + (actor.getWidth() / 2);
-                int column = slopeCollisionX / tiledEditorMap.getTileWidth();
-                int topRow = actor.getY() / tiledEditorMap.getTileHeight();
-                int bottomRow = (actor.getY() + actor.getHeight()) / tiledEditorMap.getTileHeight();
+        Tile tile = getTile(column, topRow);
+        Tile tileBelowPlayer = getTile(column, bottomRow);
 
-                Tile tile = getTile(column, topRow, tiledEditorLayer);
-                Tile tileBelowPlayer = getTile(column, bottomRow, tiledEditorLayer);
+        if (isStandingInSlope(tile, tileBelowPlayer)) {
+            Direction slopeMovementDirection = getSlopeMovementDirection(tile, tileBelowPlayer);
+            if (slopeMovementDirection != null) {
 
-                if (isStandingInSlope(tile, tileBelowPlayer)) {
-                    Direction slopeMovementDirection = getSlopeMovementDirection(tile, tileBelowPlayer);
-                    if (slopeMovementDirection != null) {
+                int tileX = column * tiledEditorMap.getTileWidth();
+                int tileY = topRow * tiledEditorMap.getTileHeight();
+                if (tile == null || !tile.isSlope()) {
+                    tileY = bottomRow * tiledEditorMap.getTileHeight();
+                }
 
-                        int tileX = column * tiledEditorMap.getTileWidth();
-                        int tileY = topRow * tiledEditorMap.getTileHeight();
-                        if (tile == null || !tile.isSlope()) {
-                            tileY = bottomRow * tiledEditorMap.getTileHeight();
-                        }
+                /*
+                When moving SOUTH in a slope, the new Y-coordinate will be at the players feet.
+                This is compensated by subtracting the players height so that it will be at the players head.
 
-                            /*
-                            When moving SOUTH in a slope, the new Y-coordinate will be at the players feet.
-                            This is compensated by subtracting the players height so that it will be at the players head.
+                When moving EAST in a slope, the last step in X direction is equal to the X-coordinate for the next tile.
+                This means the last step in the Y-direction is "missing" because when you step to that X-coordinate we get the next tile (next column), which is not a slope tile.
+                Since the next tile is not a slope tile, we do not calculate a new Y, and we "lose" the step in the Y-direction.
+                This is compensated by manually adding or subtracting the missing step, depending on the direction.
+                */
 
-                            When moving EAST in a slope, the last step in X direction is equal to the X-coordinate for the next tile.
-                            This means the last step in the Y-direction is "missing" because when you step to that X-coordinate we get the next tile (next column), which is not a slope tile.
-                            Since the next tile is not a slope tile, we do not calculate a new Y, and we "lose" the step in the Y-direction.
-                            This is compensated by manually adding or subtracting the missing step, depending on the direction.
-                             */
+                int missingSteps = 1;
 
-                        int missingSteps = 1;
+                int y1 = 0;
+                if (slopeMovementDirection == Direction.NORTH_EAST) {
+                    y1 = tileY - (slopeCollisionX - tileX) - missingSteps;
+                } else if (slopeMovementDirection == Direction.SOUTH_EAST) {
+                    y1 = tileY + (slopeCollisionX - tileX) + missingSteps - actor.getHeight();
+                } else if (slopeMovementDirection == Direction.NORTH_WEST) {
+                    y1 = tileY - ((tileX + tiledEditorMap.getTileWidth()) - slopeCollisionX);
+                } else if (slopeMovementDirection == Direction.SOUTH_WEST) {
+                    y1 = tileY + (tiledEditorMap.getTileHeight() - (slopeCollisionX - tileX)) - actor.getHeight();
+                }
 
-                        int y1 = 0;
-                        if (slopeMovementDirection == Direction.NORTH_EAST) {
-                            y1 = tileY - (slopeCollisionX - tileX) - missingSteps;
-                        } else if (slopeMovementDirection == Direction.SOUTH_EAST) {
-                            y1 = tileY + (slopeCollisionX - tileX) + missingSteps - actor.getHeight();
-                        } else if (slopeMovementDirection == Direction.NORTH_WEST) {
-                            y1 = tileY - ((tileX + tiledEditorMap.getTileWidth()) - slopeCollisionX);
-                        } else if (slopeMovementDirection == Direction.SOUTH_WEST) {
-                            y1 = tileY + (tiledEditorMap.getTileHeight() - (slopeCollisionX - tileX)) - actor.getHeight();
-                        }
-
-                        if (y1 != 0) {
-                            actor.setY(y1);
-                        }
-                    }
-
+                if (y1 != 0) {
+                    actor.setY(y1);
                 }
             }
+
         }
+
     }
 
-    private Tile getTile(int column, int row, TiledEditorLayer tiledEditorLayer) {
-        int tileId = tiledEditorLayer.getData2D()[column][row];
+    private Tile getTile(int column, int row) {
+        int tileId = environmentLayer.getData2D()[column][row];
         return tiledEditorMap.getTiles().get(tileId);
     }
 

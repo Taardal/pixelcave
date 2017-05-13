@@ -1,7 +1,7 @@
 package no.taardal.blossom.state.actorstate;
 
 import no.taardal.blossom.entity.Actor;
-import no.taardal.blossom.keyboard.Key;
+import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.map.TiledEditorMap;
 
@@ -16,8 +16,13 @@ public class IdleActorState implements ActorState {
     }
 
     @Override
+    public String toString() {
+        return "IdleActorState{}";
+    }
+
+    @Override
     public ActorState handleInput(Keyboard keyboard) {
-        if (keyboard.isPressed(Key.LEFT) || keyboard.isPressed(Key.A) || keyboard.isPressed(Key.RIGHT) || keyboard.isPressed(Key.D)) {
+        if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             return new WalkingActorState(actor, tiledEditorMap);
         } else {
             return null;
@@ -26,11 +31,11 @@ public class IdleActorState implements ActorState {
 
     @Override
     public ActorState update() {
-        return null;
+        if (!actor.isOnGround()) {
+            return new FallingActorState(actor, tiledEditorMap);
+        } else {
+            return null;
+        }
     }
 
-    @Override
-    public String toString() {
-        return "IdleActorState{}";
-    }
 }
