@@ -8,7 +8,6 @@ import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.menu.Menu;
-import no.taardal.blossom.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +24,11 @@ public class MenuGameState implements GameState {
     private Menu menu;
     private Font headerFont;
     private Font footerFont;
-    private Service<Level> levelService;
 
     @Inject
-    public MenuGameState(Service<Level> levelService) {
-        this.levelService = levelService;
+    public MenuGameState() {
         levels = new ArrayList<>();
-        Level level = this.levelService.get("pixelcave.json");
-        levels.add(level);
+        //levels.add(level);
         menu = getMenu();
         headerFont = new Font("Arial", Font.PLAIN, 28);
         footerFont = new Font("Arial", Font.PLAIN, 10);

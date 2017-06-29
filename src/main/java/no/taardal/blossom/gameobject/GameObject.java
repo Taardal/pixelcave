@@ -1,6 +1,6 @@
 package no.taardal.blossom.gameobject;
 
-public class TiledEditorObject {
+public class GameObject {
 
     private String name;
     private String type;
@@ -12,13 +12,13 @@ public class TiledEditorObject {
     private float rotation;
     private boolean visible;
 
-    public TiledEditorObject(int id) {
+    public GameObject(int id) {
         this.id = id;
     }
 
     @Override
     public String toString() {
-        return "TiledEditorObject{" +
+        return "GameObject{" +
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", id=" + id +

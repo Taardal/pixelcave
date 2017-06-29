@@ -2,7 +2,7 @@ package no.taardal.blossom.entity;
 
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.world.World;
 import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.state.actorstate.ActorState;
 import org.slf4j.Logger;
@@ -14,8 +14,8 @@ public class Player extends Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-    public Player(AnimatedSprite animatedSprite, TiledEditorMap tiledEditorMap) {
-        super(animatedSprite, tiledEditorMap);
+    public Player(AnimatedSprite animatedSprite, World world) {
+        super(animatedSprite, world);
         direction = Direction.EAST;
 
         speedX = 1;
@@ -25,8 +25,8 @@ public class Player extends Actor {
         y = 100;
 
         Rectangle boundingBox = new Rectangle();
-        int boundingBoxWidth = (animatedSprite.getWidth() / tiledEditorMap.getTileWidth()) * tiledEditorMap.getTileWidth();
-        int boundingBoxHeight = (animatedSprite.getHeight() / tiledEditorMap.getTileHeight()) * tiledEditorMap.getTileHeight();
+        int boundingBoxWidth = (animatedSprite.getWidth() / world.getTileWidth()) * world.getTileWidth();
+        int boundingBoxHeight = (animatedSprite.getHeight() / world.getTileHeight()) * world.getTileHeight();
         LOGGER.debug("Bounding box: [{}w, {}h]", boundingBoxWidth, boundingBoxHeight);
         boundingBox.setBounds(getX(), getY(), boundingBoxWidth, boundingBoxHeight);
         setBoundingBox(boundingBox);

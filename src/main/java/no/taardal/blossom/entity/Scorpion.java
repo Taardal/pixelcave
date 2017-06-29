@@ -1,10 +1,5 @@
 package no.taardal.blossom.entity;
 
-import no.taardal.blossom.resourceloader.BufferedImageResourceLoader;
-import no.taardal.blossom.service.SpriteSheetService;
-import no.taardal.blossom.sprite.Sprite;
-import no.taardal.blossom.sprite.SpriteSheet;
-
 public class Scorpion {
 
 //    private AnimatedSprite idle;
@@ -15,9 +10,9 @@ public class Scorpion {
     private String spriteSheetPath;
 
     public Scorpion() {
-        SpriteSheetService spriteSheetService = new SpriteSheetService(new BufferedImageResourceLoader());
-        SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-black-sheet-x1.png");
-        Sprite[][] sprites2D = scorpionSpriteSheet.getSprites2D();
+        //SpriteSheetService spriteSheetService = new SpriteSheetService(new ResourceFileService());
+        //SpriteSheet scorpionSpriteSheet = spriteSheetService.get("scorpion/scorpion-black-sheet-x1.png");
+        //Sprite[][] sprites2D = scorpionSpriteSheet.getSprites2D();
 
 //        idle = new AnimatedSprite(sprites2D[0], 6);
 //        walk = new AnimatedSprite(sprites2D[1], 4);

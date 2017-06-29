@@ -4,21 +4,21 @@ import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.entity.Actor;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.layer.TiledEditorLayer;
-import no.taardal.blossom.layer.TiledEditorLayerType;
-import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.layer.Layer;
+import no.taardal.blossom.layer.LayerType;
+import no.taardal.blossom.world.World;
 import no.taardal.blossom.tile.Tile;
 
 public class WalkingActorState implements ActorState {
 
     private Actor actor;
-    private TiledEditorMap tiledEditorMap;
-    private TiledEditorLayer environmentLayer;
+    private World world;
+    private Layer environmentLayer;
 
-    public WalkingActorState(Actor actor, TiledEditorMap tiledEditorMap) {
+    public WalkingActorState(Actor actor, World world) {
         this.actor = actor;
-        this.tiledEditorMap = tiledEditorMap;
-        environmentLayer = getEnvironmentLayer(tiledEditorMap);
+        this.world = world;
+        environmentLayer = getEnvironmentLayer(world);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class WalkingActorState implements ActorState {
             }
             return null;
         } else {
-            return new IdleActorState(actor, tiledEditorMap);
+            return new IdleActorState(actor, world);
         }
     }
 
@@ -47,15 +47,15 @@ public class WalkingActorState implements ActorState {
         return null;
     }
 
-    private TiledEditorLayer getEnvironmentLayer(TiledEditorMap tiledEditorMap) {
-        return tiledEditorMap.getTiledEditorLayers().stream()
+    private Layer getEnvironmentLayer(World world) {
+        return world.getLayers().stream()
                 .filter(tiledEditorLayer -> isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer"))
                 .findFirst()
                 .orElse(null);
     }
 
-    private boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {
-        return tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER;
+    private boolean isTileLayer(Layer layer) {
+        return layer.getLayerType() == LayerType.TILELAYER;
     }
 
     private void moveX() {
@@ -73,18 +73,18 @@ public class WalkingActorState implements ActorState {
     }
 
     private int getMaxX() {
-        return tiledEditorMap.getWidth() * tiledEditorMap.getTileWidth() - actor.getWidth();
+        return world.getWidth() * world.getTileWidth() - actor.getWidth();
     }
 
     private boolean isPassedMaxX() {
-        return actor.getX() + actor.getWidth() > tiledEditorMap.getWidth() * tiledEditorMap.getTileWidth();
+        return actor.getX() + actor.getWidth() > world.getWidth() * world.getTileWidth();
     }
 
     private void moveY() {
         int slopeCollisionX = actor.getX() + (actor.getWidth() / 2);
-        int column = slopeCollisionX / tiledEditorMap.getTileWidth();
-        int topRow = actor.getY() / tiledEditorMap.getTileHeight();
-        int bottomRow = (actor.getY() + actor.getHeight()) / tiledEditorMap.getTileHeight();
+        int column = slopeCollisionX / world.getTileWidth();
+        int topRow = actor.getY() / world.getTileHeight();
+        int bottomRow = (actor.getY() + actor.getHeight()) / world.getTileHeight();
 
         Tile tile = getTile(column, topRow);
         Tile tileBelowPlayer = getTile(column, bottomRow);
@@ -93,10 +93,10 @@ public class WalkingActorState implements ActorState {
             Direction slopeMovementDirection = getSlopeMovementDirection(tile, tileBelowPlayer);
             if (slopeMovementDirection != null) {
 
-                int tileX = column * tiledEditorMap.getTileWidth();
-                int tileY = topRow * tiledEditorMap.getTileHeight();
+                int tileX = column * world.getTileWidth();
+                int tileY = topRow * world.getTileHeight();
                 if (tile == null || !tile.isSlope()) {
-                    tileY = bottomRow * tiledEditorMap.getTileHeight();
+                    tileY = bottomRow * world.getTileHeight();
                 }
 
                 /*
@@ -117,9 +117,9 @@ public class WalkingActorState implements ActorState {
                 } else if (slopeMovementDirection == Direction.SOUTH_EAST) {
                     y1 = tileY + (slopeCollisionX - tileX) + missingSteps - actor.getHeight();
                 } else if (slopeMovementDirection == Direction.NORTH_WEST) {
-                    y1 = tileY - ((tileX + tiledEditorMap.getTileWidth()) - slopeCollisionX);
+                    y1 = tileY - ((tileX + world.getTileWidth()) - slopeCollisionX);
                 } else if (slopeMovementDirection == Direction.SOUTH_WEST) {
-                    y1 = tileY + (tiledEditorMap.getTileHeight() - (slopeCollisionX - tileX)) - actor.getHeight();
+                    y1 = tileY + (world.getTileHeight() - (slopeCollisionX - tileX)) - actor.getHeight();
                 }
 
                 if (y1 != 0) {
@@ -132,8 +132,8 @@ public class WalkingActorState implements ActorState {
     }
 
     private Tile getTile(int column, int row) {
-        int tileId = environmentLayer.getData2D()[column][row];
-        return tiledEditorMap.getTiles().get(tileId);
+        int tileId = environmentLayer.getTileGrid()[column][row];
+        return world.getTiles().get(tileId);
     }
 
     private boolean isStandingInSlope(Tile tile, Tile tileBelow) {

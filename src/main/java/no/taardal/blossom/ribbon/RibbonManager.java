@@ -1,12 +1,11 @@
-package no.taardal.blossom.manager;
+package no.taardal.blossom.ribbon;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.ribbon.Ribbon;
 
 import java.util.List;
 
-public class RibbonsManager implements Manager<Ribbon> {
+public class RibbonManager {
 
     private static final int HORIZONTAL_SPEED = 5;
     private static final int VERTICAL_SPEED = 1;
@@ -15,19 +14,17 @@ public class RibbonsManager implements Manager<Ribbon> {
 
     private List<Ribbon> ribbons;
 
-    public RibbonsManager(List<Ribbon> ribbons) {
+    public RibbonManager(List<Ribbon> ribbons) {
         this.ribbons = ribbons;
         setRibbonSpeeds(ribbons);
     }
 
-    @Override
     public void update(Keyboard keyboard) {
         for (int i = 0; i < ribbons.size(); i++) {
             ribbons.get(i).update();
         }
     }
 
-    @Override
     public void draw(Camera camera) {
         for (int i = 0; i < ribbons.size(); i++) {
             ribbons.get(i).draw(camera);

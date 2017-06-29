@@ -2,7 +2,7 @@ package no.taardal.blossom.tile;
 
 import java.util.List;
 
-public class TiledEditorTileSet {
+public class TileSet {
 
     private List<Tile> tiles;
     private String name;
@@ -19,7 +19,7 @@ public class TiledEditorTileSet {
 
     @Override
     public String toString() {
-        return "TiledEditorTileSet{" +
+        return "TileSet{" +
                 "tiles=" + tiles +
                 ", name='" + name + '\'' +
                 ", imagePath='" + imagePath + '\'' +

@@ -1,9 +1,6 @@
-package no.taardal.blossom.manager;
+package no.taardal.blossom.state.gamestate;
 
-import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.state.gamestate.GameState;
-import no.taardal.blossom.state.gamestate.PlayGameState;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import org.slf4j.Logger;
@@ -11,18 +8,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class GameStateManager implements Manager<GameState> {
+public class GameStateManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameStateManager.class);
 
     private GameState gameState;
 
-    @Inject
     public GameStateManager(List<Level> levels) {
         gameState = new PlayGameState(levels.get(0));
     }
 
-    @Override
     public void update(Keyboard keyboard) {
         GameState gameState = this.gameState.update(keyboard);
         if (gameState != null) {
@@ -31,7 +26,6 @@ public class GameStateManager implements Manager<GameState> {
         }
     }
 
-    @Override
     public void draw(Camera camera) {
         gameState.draw(camera);
     }

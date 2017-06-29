@@ -3,16 +3,16 @@ package no.taardal.blossom.state.actorstate;
 import no.taardal.blossom.entity.Actor;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.world.World;
 
 public class IdleActorState implements ActorState {
 
     private Actor actor;
-    private TiledEditorMap tiledEditorMap;
+    private World world;
 
-    public IdleActorState(Actor actor, TiledEditorMap tiledEditorMap) {
+    public IdleActorState(Actor actor, World world) {
         this.actor = actor;
-        this.tiledEditorMap = tiledEditorMap;
+        this.world = world;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class IdleActorState implements ActorState {
     @Override
     public ActorState handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-            return new WalkingActorState(actor, tiledEditorMap);
+            return new WalkingActorState(actor, world);
         } else {
             return null;
         }
@@ -32,7 +32,7 @@ public class IdleActorState implements ActorState {
     @Override
     public ActorState update() {
         if (!actor.isOnGround()) {
-            return new FallingActorState(actor, tiledEditorMap);
+            return new FallingActorState(actor, world);
         } else {
             return null;
         }

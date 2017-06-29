@@ -1,26 +1,26 @@
 package no.taardal.blossom.jsondeserializer;
 
 import com.google.gson.*;
-import no.taardal.blossom.layer.TiledEditorLayer;
+import no.taardal.blossom.layer.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 
-public class TiledEditorLayersDeserializer implements JsonDeserializer<TiledEditorLayer[]> {
+public class TiledEditorLayersDeserializer implements JsonDeserializer<Layer[]> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TiledEditorLayersDeserializer.class);
 
     @Override
-    public TiledEditorLayer[] deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
+    public Layer[] deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         try {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
-            TiledEditorLayer[] tiledEditorLayers = new TiledEditorLayer[jsonArray.size()];
+            Layer[] layers = new Layer[jsonArray.size()];
             for (int i = 0; i < jsonArray.size(); i++) {
-                tiledEditorLayers[i] = jsonDeserializationContext.deserialize(jsonArray.get(i), TiledEditorLayer.class);
+                layers[i] = jsonDeserializationContext.deserialize(jsonArray.get(i), Layer.class);
             }
-            LOGGER.info("Deserialized [{}] layers.", tiledEditorLayers.length);
-            return tiledEditorLayers;
+            LOGGER.info("Deserialized [{}] layers.", layers.length);
+            return layers;
         } catch (JsonParseException e) {
             LOGGER.error("Could not deserialize layers json array.", e);
             throw new RuntimeException(e);

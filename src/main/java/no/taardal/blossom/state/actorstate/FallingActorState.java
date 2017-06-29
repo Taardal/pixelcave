@@ -3,9 +3,9 @@ package no.taardal.blossom.state.actorstate;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.entity.Actor;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.layer.TiledEditorLayer;
-import no.taardal.blossom.layer.TiledEditorLayerType;
-import no.taardal.blossom.map.TiledEditorMap;
+import no.taardal.blossom.layer.Layer;
+import no.taardal.blossom.layer.LayerType;
+import no.taardal.blossom.world.World;
 import no.taardal.blossom.tile.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +15,14 @@ public class FallingActorState implements ActorState {
     private static final Logger LOGGER = LoggerFactory.getLogger(FallingActorState.class);
 
     private Actor actor;
-    private TiledEditorMap tiledEditorMap;
-    private TiledEditorLayer environmentLayer;
+    private World world;
+    private Layer environmentLayer;
     private int speedY;
 
-    public FallingActorState(Actor actor, TiledEditorMap tiledEditorMap) {
+    public FallingActorState(Actor actor, World world) {
         this.actor = actor;
-        this.tiledEditorMap = tiledEditorMap;
-        environmentLayer = getEnvironmentLayer(tiledEditorMap);
+        this.world = world;
+        environmentLayer = getEnvironmentLayer(world);
         speedY = 1;
     }
 
@@ -39,31 +39,31 @@ public class FallingActorState implements ActorState {
     @Override
     public ActorState update() {
         if (actor.isOnGround()) {
-            return new IdleActorState(actor, tiledEditorMap);
+            return new IdleActorState(actor, world);
         } else {
             fall();
             return null;
         }
     }
 
-    private TiledEditorLayer getEnvironmentLayer(TiledEditorMap tiledEditorMap) {
-        return tiledEditorMap.getTiledEditorLayers().stream()
+    private Layer getEnvironmentLayer(World world) {
+        return world.getLayers().stream()
                 .filter(tiledEditorLayer -> isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer"))
                 .findFirst()
                 .orElse(null);
     }
 
-    private boolean isTileLayer(TiledEditorLayer tiledEditorLayer) {
-        return tiledEditorLayer.getTiledEditorLayerType() == TiledEditorLayerType.TILELAYER;
+    private boolean isTileLayer(Layer layer) {
+        return layer.getLayerType() == LayerType.TILELAYER;
     }
 
     private void fall() {
-        int column = actor.getX() / tiledEditorMap.getTileWidth();
-        int row = (actor.getY() + actor.getHeight() + speedY) / tiledEditorMap.getTileHeight();
-        int tileId = environmentLayer.getData2D()[column][row];
+        int column = actor.getX() / world.getTileWidth();
+        int row = (actor.getY() + actor.getHeight() + speedY) / world.getTileHeight();
+        int tileId = environmentLayer.getTileGrid()[column][row];
 
-        if (tileId != TiledEditorMap.NO_TILE_ID) {
-            Tile tile = tiledEditorMap.getTiles().get(tileId);
+        if (tileId != World.NO_TILE_ID) {
+            Tile tile = world.getTiles().get(tileId);
             if (tile.isSlope()) {
                 landOnSlope(column, row, tile);
             } else {
@@ -76,14 +76,14 @@ public class FallingActorState implements ActorState {
 
     private void landOnSlope(int column, int row, Tile tile) {
         int slopeCollisionX = actor.getX() + (actor.getWidth() / 2);
-        int tileX = column * tiledEditorMap.getTileWidth();
-        int tileY = row * tiledEditorMap.getTileHeight();
+        int tileX = column * world.getTileWidth();
+        int tileY = row * world.getTileHeight();
 
         int slopeY;
         if (tile.getDirection() == Direction.EAST) {
-            slopeY = (tileY + tiledEditorMap.getTileHeight()) - (slopeCollisionX - tileX);
+            slopeY = (tileY + world.getTileHeight()) - (slopeCollisionX - tileX);
         } else {
-            slopeY = (tileY + tiledEditorMap.getTileHeight()) - ((tileX + tiledEditorMap.getTileWidth()) - slopeCollisionX);
+            slopeY = (tileY + world.getTileHeight()) - ((tileX + world.getTileWidth()) - slopeCollisionX);
         }
 
         if ((actor.getY() + actor.getHeight() + speedY) > slopeY) {
@@ -94,7 +94,7 @@ public class FallingActorState implements ActorState {
     }
 
     private void landOnFlatGround(int row) {
-        actor.setY((row - 1) * tiledEditorMap.getTileHeight());
+        actor.setY((row - 1) * world.getTileHeight());
     }
 
 }

@@ -3,16 +3,17 @@ package no.taardal.blossom.game;
 import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.gameloop.GameLoop;
-import no.taardal.blossom.state.gamestate.GameState;
 import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.level.Level;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
-import no.taardal.blossom.manager.Manager;
+import no.taardal.blossom.state.gamestate.GameStateManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.util.List;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
@@ -21,17 +22,17 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     public static final int GAME_HEIGHT = 240;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
-    public static final int SCALE = 3;
+    private static final int SCALE = 3;
     private static final int NUMBER_OF_BUFFERS = 3;
 
-    private Manager<GameState> gameStateManager;
+    private GameStateManager gameStateManager;
     private GameLoop gameLoop;
     private Keyboard keyboard;
     private Camera camera;
 
     @Inject
-    public Game(Manager<GameState> gameStateManager) {
-        this.gameStateManager = gameStateManager;
+    public Game(List<Level> levels) {
+        this.gameStateManager = new GameStateManager(levels);
         this.gameLoop = new GameLoop(this);
         this.keyboard = new Keyboard();
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);

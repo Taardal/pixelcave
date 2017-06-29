@@ -1,19 +1,18 @@
 package no.taardal.blossom.layer;
 
-import no.taardal.blossom.gameobject.TiledEditorObject;
+import no.taardal.blossom.gameobject.GameObject;
 import no.taardal.blossom.order.DrawOrder;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class TiledEditorLayer {
+public class Layer {
 
     private String name;
-    private TiledEditorLayerType tiledEditorLayerType;
-    private List<TiledEditorObject> tiledEditorObjects;
+    private LayerType layerType;
+    private List<GameObject> gameObjects;
     private DrawOrder drawOrder;
-    private int[][] data2D;
-    private int[] data;
+    private int[][] tileGrid;
     private int x;
     private int y;
     private int width;
@@ -23,13 +22,12 @@ public class TiledEditorLayer {
 
     @Override
     public String toString() {
-        return "TiledEditorLayer{" +
+        return "Layer{" +
                 "name='" + name + '\'' +
-                ", tiledEditorLayerType=" + tiledEditorLayerType +
-                ", tiledEditorObjects=" + tiledEditorObjects +
+                ", layerType=" + layerType +
+                ", gameObjects=" + gameObjects +
                 ", drawOrder=" + drawOrder +
-                ", data2D=" + Arrays.toString(data2D) +
-                ", data=" + Arrays.toString(data) +
+                ", tileGrid=" + Arrays.toString(tileGrid) +
                 ", x=" + x +
                 ", y=" + y +
                 ", width=" + width +
@@ -47,20 +45,20 @@ public class TiledEditorLayer {
         this.name = name;
     }
 
-    public TiledEditorLayerType getTiledEditorLayerType() {
-        return tiledEditorLayerType;
+    public LayerType getLayerType() {
+        return layerType;
     }
 
-    public void setTiledEditorLayerType(TiledEditorLayerType tiledEditorLayerType) {
-        this.tiledEditorLayerType = tiledEditorLayerType;
+    public void setLayerType(LayerType layerType) {
+        this.layerType = layerType;
     }
 
-    public List<TiledEditorObject> getTiledEditorObjects() {
-        return tiledEditorObjects;
+    public List<GameObject> getGameObjects() {
+        return gameObjects;
     }
 
-    public void setTiledEditorObjects(List<TiledEditorObject> tiledEditorObjects) {
-        this.tiledEditorObjects = tiledEditorObjects;
+    public void setGameObjects(List<GameObject> gameObjects) {
+        this.gameObjects = gameObjects;
     }
 
     public DrawOrder getDrawOrder() {
@@ -71,20 +69,12 @@ public class TiledEditorLayer {
         this.drawOrder = drawOrder;
     }
 
-    public int[][] getData2D() {
-        return data2D;
+    public int[][] getTileGrid() {
+        return tileGrid;
     }
 
-    public void setData2D(int[][] data2D) {
-        this.data2D = data2D;
-    }
-
-    public int[] getData() {
-        return data;
-    }
-
-    public void setData(int[] data) {
-        this.data = data;
+    public void setTileGrid(int[][] data2D) {
+        this.tileGrid = data2D;
     }
 
     public int getX() {

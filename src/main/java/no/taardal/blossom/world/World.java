@@ -1,20 +1,20 @@
-package no.taardal.blossom.map;
+package no.taardal.blossom.world;
 
-import no.taardal.blossom.layer.TiledEditorLayer;
+import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.orientation.Orientation;
 import no.taardal.blossom.order.RenderOrder;
 import no.taardal.blossom.tile.Tile;
-import no.taardal.blossom.tile.TiledEditorTileSet;
+import no.taardal.blossom.tile.TileSet;
 
 import java.util.List;
 import java.util.Map;
 
-public class TiledEditorMap {
+public class World {
 
     public static final int NO_TILE_ID = 0;
 
-    private List<TiledEditorLayer> tiledEditorLayers;
-    private List<TiledEditorTileSet> tiledEditorTileSets;
+    private List<Layer> layers;
+    private List<TileSet> tileSets;
     private Map<Integer, Tile> tiles;
     private Orientation orientation;
     private RenderOrder renderOrder;
@@ -22,16 +22,14 @@ public class TiledEditorMap {
     private int height;
     private int nextObjectId;
     private int tileWidth;
-    private int tileWidthExponent;
     private int tileHeight;
-    private int tileHeightExponent;
     private int version;
 
     @Override
     public String toString() {
-        return "TiledEditorMap{" +
-                "tiledEditorLayers=" + tiledEditorLayers +
-                ", tiledEditorTileSets=" + tiledEditorTileSets +
+        return "World{" +
+                "layers=" + layers +
+                ", tileSets=" + tileSets +
                 ", tiles=" + tiles +
                 ", orientation=" + orientation +
                 ", renderOrder=" + renderOrder +
@@ -39,27 +37,25 @@ public class TiledEditorMap {
                 ", height=" + height +
                 ", nextObjectId=" + nextObjectId +
                 ", tileWidth=" + tileWidth +
-                ", tileWidthExponent=" + tileWidthExponent +
                 ", tileHeight=" + tileHeight +
-                ", tileHeightExponent=" + tileHeightExponent +
                 ", version=" + version +
                 '}';
     }
 
-    public List<TiledEditorLayer> getTiledEditorLayers() {
-        return tiledEditorLayers;
+    public List<Layer> getLayers() {
+        return layers;
     }
 
-    public void setTiledEditorLayers(List<TiledEditorLayer> tiledEditorLayers) {
-        this.tiledEditorLayers = tiledEditorLayers;
+    public void setLayers(List<Layer> layers) {
+        this.layers = layers;
     }
 
-    public List<TiledEditorTileSet> getTiledEditorTileSets() {
-        return tiledEditorTileSets;
+    public List<TileSet> getTileSets() {
+        return tileSets;
     }
 
-    public void setTiledEditorTileSets(List<TiledEditorTileSet> tiledEditorTileSets) {
-        this.tiledEditorTileSets = tiledEditorTileSets;
+    public void setTileSets(List<TileSet> tileSets) {
+        this.tileSets = tileSets;
     }
 
     public Map<Integer, Tile> getTiles() {
@@ -116,11 +112,6 @@ public class TiledEditorMap {
 
     public void setTileWidth(int tileWidth) {
         this.tileWidth = tileWidth;
-        this.tileWidthExponent = Math.getExponent(tileWidth);
-    }
-
-    public int getTileWidthExponent() {
-        return tileWidthExponent;
     }
 
     public int getTileHeight() {
@@ -129,11 +120,6 @@ public class TiledEditorMap {
 
     public void setTileHeight(int tileHeight) {
         this.tileHeight = tileHeight;
-        this.tileHeightExponent = Math.getExponent(tileHeight);
-    }
-
-    public int getTileHeightExponent() {
-        return tileHeightExponent;
     }
 
     public int getVersion() {
