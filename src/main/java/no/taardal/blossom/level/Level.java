@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
+import java.util.Iterator;
 
 public class Level {
 
@@ -51,8 +52,8 @@ public class Level {
     }
 
     private void drawTiles(Camera camera) {
-        for (int i = 0; i < world.getLayers().size(); i++) {
-            Layer layer = world.getLayers().get(i);
+        for (Iterator<Layer> layerIterator = world.getLayers().values().iterator(); layerIterator.hasNext();) {
+            Layer layer = layerIterator.next();
             if (layer.isVisible() && layer.getLayerType() == LayerType.TILELAYER) {
                 drawTiles(layer, camera);
             }

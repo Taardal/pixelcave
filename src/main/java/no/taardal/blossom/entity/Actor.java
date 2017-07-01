@@ -3,12 +3,10 @@ package no.taardal.blossom.entity;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.layer.Layer;
-import no.taardal.blossom.layer.LayerType;
-import no.taardal.blossom.world.World;
 import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.state.actorstate.ActorState;
 import no.taardal.blossom.state.actorstate.FallingActorState;
+import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,6 @@ import java.awt.*;
 public class Actor extends Entity {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
-    private final Layer environmentLayer;
 
     protected AnimatedSprite sprite;
     protected World world;
@@ -33,11 +30,6 @@ public class Actor extends Entity {
         this.world = world;
         falling = true;
         actorState = new FallingActorState(this, world);
-
-        environmentLayer = world.getLayers().stream()
-                .filter(tiledEditorLayer -> tiledEditorLayer.getLayerType() == LayerType.TILELAYER && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer"))
-                .findFirst()
-                .orElse(null);
     }
 
     public Direction getDirection() {
@@ -103,7 +95,7 @@ public class Actor extends Entity {
     public boolean isOnGround() {
         int column = x / world.getTileWidth();
         int row = (y + getHeight()) / world.getTileHeight();
-        return environmentLayer.getTileGrid()[column][row] != World.NO_TILE_ID;
+        return world.getLayers().get("main").getTileGrid()[column][row] != World.NO_TILE_ID;
     }
 
 }

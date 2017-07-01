@@ -3,10 +3,8 @@ package no.taardal.blossom.state.actorstate;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.entity.Actor;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.layer.Layer;
-import no.taardal.blossom.layer.LayerType;
-import no.taardal.blossom.world.World;
 import no.taardal.blossom.tile.Tile;
+import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +14,11 @@ public class FallingActorState implements ActorState {
 
     private Actor actor;
     private World world;
-    private Layer environmentLayer;
     private int speedY;
 
     public FallingActorState(Actor actor, World world) {
         this.actor = actor;
         this.world = world;
-        environmentLayer = getEnvironmentLayer(world);
         speedY = 1;
     }
 
@@ -46,21 +42,10 @@ public class FallingActorState implements ActorState {
         }
     }
 
-    private Layer getEnvironmentLayer(World world) {
-        return world.getLayers().stream()
-                .filter(tiledEditorLayer -> isTileLayer(tiledEditorLayer) && tiledEditorLayer.isVisible() && tiledEditorLayer.getName().equals("environment_layer"))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private boolean isTileLayer(Layer layer) {
-        return layer.getLayerType() == LayerType.TILELAYER;
-    }
-
     private void fall() {
         int column = actor.getX() / world.getTileWidth();
         int row = (actor.getY() + actor.getHeight() + speedY) / world.getTileHeight();
-        int tileId = environmentLayer.getTileGrid()[column][row];
+        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
 
         if (tileId != World.NO_TILE_ID) {
             Tile tile = world.getTiles().get(tileId);

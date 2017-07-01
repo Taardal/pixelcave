@@ -2,11 +2,11 @@ package no.taardal.blossom.jsondeserializer;
 
 import com.google.gson.*;
 import no.taardal.blossom.layer.Layer;
+import no.taardal.blossom.order.RenderOrder;
+import no.taardal.blossom.orientation.Orientation;
+import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TileSet;
 import no.taardal.blossom.world.World;
-import no.taardal.blossom.orientation.Orientation;
-import no.taardal.blossom.order.RenderOrder;
-import no.taardal.blossom.tile.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TiledEditorWorldDeserializer implements JsonDeserializer<World> {
 
@@ -54,10 +55,10 @@ public class TiledEditorWorldDeserializer implements JsonDeserializer<World> {
         return Orientation.valueOf(orientation.toUpperCase().replaceAll("-", "_"));
     }
 
-    private List<Layer> getLayers(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext) {
+    private Map<String, Layer> getLayers(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext) {
         JsonArray layersJsonArray = jsonObject.get("layers").getAsJsonArray();
         Layer[] layers = jsonDeserializationContext.deserialize(layersJsonArray, Layer[].class);
-        return Arrays.asList(layers);
+        return Arrays.stream(layers).collect(Collectors.toMap(Layer::getName, layer -> layer));
     }
 
     private List<TileSet> getTileSets(JsonObject jsonObject, JsonDeserializationContext jsonDeserializationContext) {

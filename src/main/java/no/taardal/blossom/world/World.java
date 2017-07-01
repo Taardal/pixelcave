@@ -13,9 +13,9 @@ public class World {
 
     public static final int NO_TILE_ID = 0;
 
-    private List<Layer> layers;
-    private List<TileSet> tileSets;
+    private Map<String, Layer> layers;
     private Map<Integer, Tile> tiles;
+    private List<TileSet> tileSets;
     private Orientation orientation;
     private RenderOrder renderOrder;
     private int width;
@@ -42,20 +42,12 @@ public class World {
                 '}';
     }
 
-    public List<Layer> getLayers() {
+    public Map<String, Layer> getLayers() {
         return layers;
     }
 
-    public void setLayers(List<Layer> layers) {
+    public void setLayers(Map<String, Layer> layers) {
         this.layers = layers;
-    }
-
-    public List<TileSet> getTileSets() {
-        return tileSets;
-    }
-
-    public void setTileSets(List<TileSet> tileSets) {
-        this.tileSets = tileSets;
     }
 
     public Map<Integer, Tile> getTiles() {
@@ -64,6 +56,14 @@ public class World {
 
     public void setTiles(Map<Integer, Tile> tiles) {
         this.tiles = tiles;
+    }
+
+    public List<TileSet> getTileSets() {
+        return tileSets;
+    }
+
+    public void setTileSets(List<TileSet> tileSets) {
+        this.tileSets = tileSets;
     }
 
     public Orientation getOrientation() {
