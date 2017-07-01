@@ -18,7 +18,8 @@ public class RibbonManager {
         this.ribbons = setRibbonSpeeds(ribbons);
     }
 
-    public void update(Direction direction) {
+    public void update(Camera camera) {
+        Direction direction = getDirection(camera);
         for (int i = 0; i < ribbons.size(); i++) {
             ribbons.get(i).update(direction);
         }
@@ -38,6 +39,16 @@ public class RibbonManager {
             speedFactor += SPEED_FACTOR_INCREMENT;
         }
         return ribbons;
+    }
+
+    private Direction getDirection(Camera camera) {
+        if (camera.getDirection() == Direction.WEST) {
+            return Direction.EAST;
+        } else if (camera.getDirection() == Direction.EAST) {
+            return Direction.WEST;
+        } else {
+            return Direction.NO_DIRECTION;
+        }
     }
 
 }
