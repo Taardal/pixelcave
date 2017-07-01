@@ -1,6 +1,8 @@
 package no.taardal.blossom.camera;
 
 
+import no.taardal.blossom.direction.Direction;
+import no.taardal.blossom.game.Game;
 import no.taardal.blossom.menu.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,17 +14,21 @@ import java.awt.image.BufferedImage;
 public class Camera extends Rectangle {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Camera.class);
+    private static final float TWEEN = 0.03f;
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
-
+    private Direction direction;
     private int offsetX;
     private int offsetY;
+    private int previousOffsetX;
+    private int previousOffsetY;
 
     public Camera(int width, int height) {
         super(width, height);
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         graphics2D = bufferedImage.createGraphics();
+        direction = Direction.NO_DIRECTION;
     }
 
     public BufferedImage getBufferedImage() {
@@ -33,16 +39,47 @@ public class Camera extends Rectangle {
         return offsetX;
     }
 
-    public void setOffsetX(int offsetX) {
-        this.offsetX = offsetX;
-    }
-
     public int getOffsetY() {
         return offsetY;
     }
 
-    public void setOffsetY(int offsetY) {
-        this.offsetY = offsetY;
+    public int getPreviousOffsetX() {
+        return previousOffsetX;
+    }
+
+    public int getPreviousOffsetY() {
+        return previousOffsetY;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void update(int x, int y) {
+        previousOffsetX = offsetX;
+        previousOffsetY = offsetY;
+
+        float deltaX = ((x - Game.GAME_WIDTH / 2) - offsetX) * TWEEN;
+        float deltaY = ((y - Game.GAME_HEIGHT / 2) - offsetY) * TWEEN;
+
+        offsetX += deltaX;
+        offsetY += deltaY;
+
+        if (deltaX > 1) {
+            direction = Direction.EAST;
+        } else if (deltaX < 0) {
+            direction = Direction.WEST;
+        } else {
+            direction = Direction.NO_DIRECTION;
+        }
+
+        if (offsetX <= 0) {
+            offsetX = 0;
+            direction = Direction.NO_DIRECTION;
+        }
+        if (offsetY < 0) {
+            offsetY = 0;
+        }
     }
 
     public void clear() {
@@ -66,6 +103,7 @@ public class Camera extends Rectangle {
         graphics2D.drawImage(bufferedImage, destinationX1, destinationY1, destinationX2, destinationY2, sourceX1, sourceY1, sourceX2, sourceY2, null);
     }
 
+
     public void drawImageFlip(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
         destinationX1 -= offsetX;
         destinationX2 -= offsetX;
@@ -75,7 +113,6 @@ public class Camera extends Rectangle {
                 destinationX1, destinationX2, destinationY1, destinationY2,
                 sourceX2, sourceX1, sourceY1, sourceY2);
     }
-
 
     public void drawImageIsometric(Image image, int x, int y) {
         BufferedImage bufferedImage = (BufferedImage) image;

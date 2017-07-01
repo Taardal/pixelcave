@@ -25,6 +25,7 @@ public class IdleActorState implements ActorState {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             return new WalkingActorState(actor, world);
         } else {
+            actor.setMoving(false);
             return null;
         }
     }

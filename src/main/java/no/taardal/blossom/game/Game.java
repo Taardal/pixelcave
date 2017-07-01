@@ -54,7 +54,7 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     @Override
     public void onUpdate() {
         keyboard.update();
-        gameStateManager.update(keyboard);
+        gameStateManager.update(keyboard, camera);
     }
 
     @Override

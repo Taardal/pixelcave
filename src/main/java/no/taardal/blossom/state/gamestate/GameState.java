@@ -5,7 +5,7 @@ import no.taardal.blossom.keyboard.Keyboard;
 
 public interface GameState {
 
-    GameState update(Keyboard keyboard);
+    GameState update(Keyboard keyboard, Camera camera);
     void draw(Camera camera);
 
 }

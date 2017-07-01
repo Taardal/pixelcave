@@ -10,7 +10,7 @@ public class PauseGameState implements GameState {
     }
 
     @Override
-    public GameState update(Keyboard keyboard) {
+    public GameState update(Keyboard keyboard, Camera camera) {
         return null;
     }
 

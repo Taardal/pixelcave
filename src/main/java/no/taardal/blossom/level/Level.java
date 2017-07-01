@@ -1,18 +1,18 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.entity.Player;
-import no.taardal.blossom.game.Game;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.layer.LayerType;
-import no.taardal.blossom.world.World;
 import no.taardal.blossom.ribbon.RibbonManager;
 import no.taardal.blossom.service.ResourceFileService;
 import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.tile.Tile;
+import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +25,6 @@ public class Level {
     private World world;
     private RibbonManager ribbonManager;
     private Player player;
-
-    Camera camera;
-    int x1 = 0;
-    int y1 = 0;
 
     public Level(World world, RibbonManager ribbonManager) {
         this.world = world;
@@ -45,82 +41,60 @@ public class Level {
 
         player = new Player(animatedSprite1, world);
     }
-    
-    public void update(Keyboard keyboard) {
+
+    public void update(Keyboard keyboard, Camera camera) {
         player.handleInput(keyboard);
         player.update(keyboard);
-        ribbonManager.update(keyboard);
+        camera.update(player.getX(), player.getY());
+        ribbonManager.update(getRibbonDirection(camera));
     }
 
     public void draw(Camera camera) {
-        this.camera = camera;
-
-        float tween = 0.03f;
-
-        int x1 = player.getX() - Game.GAME_WIDTH / 2;
-        int y1 = player.getY() - Game.GAME_HEIGHT / 2;
-
-        this.x1 += (x1 - this.x1) * tween;
-        this.y1 += (y1 - this.y1) * tween;
-
-        if (this.x1 < 0) {
-            this.x1 = 0;
-        }
-        if (this.y1 < 0) {
-            this.y1 = 0;
-        }
-
-        int previousOffsetX = camera.getOffsetX();
-        int previousOffsetY = camera.getOffsetY();
-
-        camera.setOffsetX(this.x1);
-        camera.setOffsetY(this.y1);
-
-        if (camera.getOffsetX() < previousOffsetX) {
-            ribbonManager.moveRight();
-        } else if (camera.getOffsetX() > previousOffsetX) {
-            ribbonManager.moveLeft();
-        }
-
-        if (!player.isMoving()) {
-            ribbonManager.stopMovingHorizontally();
-        }
-
         ribbonManager.draw(camera);
         drawTiles(camera);
         player.draw(camera);
     }
 
+    private Direction getRibbonDirection(Camera camera) {
+        if (camera.getDirection() == Direction.WEST) {
+            return Direction.EAST;
+        } else if (camera.getDirection() == Direction.EAST) {
+            return Direction.WEST;
+        } else {
+            return Direction.NO_DIRECTION;
+        }
+    }
+
     private void drawTiles(Camera camera) {
         for (int i = 0; i < world.getLayers().size(); i++) {
             Layer layer = world.getLayers().get(i);
-            if (isTileLayer(layer) && layer.isVisible()) {
-                drawLayerTiles(layer, camera);
+            if (layer.isVisible() && layer.getLayerType() == LayerType.TILELAYER) {
+                drawTiles(layer, camera);
             }
         }
     }
 
-    private void drawLayerTiles(Layer layer, Camera camera) {
-        int topMostTileRowToDraw = (camera.getOffsetY() - world.getTileHeight()) / world.getTileHeight();
-        int leftMostTileColumnToDraw = (camera.getOffsetX() - world.getTileWidth()) / world.getTileWidth();
-        int rightMostTileColumnToDraw = (camera.getOffsetX() + (int) camera.getWidth() + world.getTileWidth()) / world.getTileWidth();
-        int bottomMostTileRowToDraw = (camera.getOffsetY() + (int) camera.getHeight() + world.getTileHeight()) / world.getTileHeight();
-        for (int row = topMostTileRowToDraw; row < bottomMostTileRowToDraw; row++) {
+    private void drawTiles(Layer layer, Camera camera) {
+        int topMostRowToDraw = (camera.getOffsetY() - world.getTileHeight()) / world.getTileHeight();
+        int leftMostColumnToDraw = (camera.getOffsetX() - world.getTileWidth()) / world.getTileWidth();
+        int rightMostColumnToDraw = (camera.getOffsetX() + (int) camera.getWidth() + world.getTileWidth()) / world.getTileWidth();
+        int bottomMostRowToDraw = (camera.getOffsetY() + (int) camera.getHeight() + world.getTileHeight()) / world.getTileHeight();
+        for (int row = topMostRowToDraw; row < bottomMostRowToDraw; row++) {
             if (row >= world.getHeight()) {
                 break;
             }
             if (row < 0) {
                 continue;
             }
-            int y = row * world.getTileHeight() - (int) camera.getY();
-            for (int column = leftMostTileColumnToDraw; column < rightMostTileColumnToDraw; column++) {
+            int y = row * world.getTileHeight();
+            for (int column = leftMostColumnToDraw; column < rightMostColumnToDraw; column++) {
                 if (column >= world.getWidth()) {
                     break;
                 }
                 if (column < 0) {
                     continue;
                 }
-                int x = column * world.getTileWidth() - (int) camera.getX();
+                int x = column * world.getTileWidth();
                 int tileId = layer.getTileGrid()[column][row];
                 if (tileId != World.NO_TILE_ID) {
                     Tile tile = world.getTiles().get(tileId);
@@ -130,10 +104,6 @@ public class Level {
                 }
             }
         }
-    }
-
-    private boolean isTileLayer(Layer layer) {
-        return layer.getLayerType() == LayerType.TILELAYER;
     }
 
 }

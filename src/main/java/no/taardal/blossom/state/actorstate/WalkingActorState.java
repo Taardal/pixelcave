@@ -29,6 +29,7 @@ public class WalkingActorState implements ActorState {
     @Override
     public ActorState handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
+            actor.setMoving(true);
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 actor.setDirection(Direction.WEST);
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {

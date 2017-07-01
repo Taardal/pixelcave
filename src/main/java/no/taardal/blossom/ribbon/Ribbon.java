@@ -1,6 +1,7 @@
 package no.taardal.blossom.ribbon;
 
 import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.game.Game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,6 @@ public class Ribbon {
     private int bufferedImageY;
     private int speedX;
     private int speedY;
-    private boolean movingRight;
-    private boolean movingLeft;
-    private boolean movingUp;
-    private boolean movingDown;
 
     public Ribbon(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
@@ -33,34 +30,18 @@ public class Ribbon {
         this.speedY = speedY;
     }
 
-    public void setMovingRight(boolean movingRight) {
-        this.movingRight = movingRight;
-    }
-
-    public void setMovingLeft(boolean movingLeft) {
-        this.movingLeft = movingLeft;
-    }
-
-    public void setMovingUp(boolean movingUp) {
-        this.movingUp = movingUp;
-    }
-
-    public void setMovingDown(boolean movingDown) {
-        this.movingDown = movingDown;
-    }
-
-    public void update() {
-        if (movingRight) {
+    public void update(Direction direction) {
+        if (direction == Direction.EAST) {
             bufferedImageX = (bufferedImageX + speedX) % bufferedImage.getWidth();
-        } else if (movingLeft) {
+        } else if (direction == Direction.WEST) {
             bufferedImageX = (bufferedImageX - speedX) % bufferedImage.getWidth();
         }
-        if (movingUp) {
+        if (direction == Direction.NORTH) {
             bufferedImageY -= speedY;
             if (bufferedImageY < 0) {
                 bufferedImageY = 0;
             }
-        } else if (movingDown) {
+        } else if (direction == Direction.SOUTH) {
             bufferedImageY += speedY;
             if (bufferedImageY + Game.GAME_HEIGHT > bufferedImage.getHeight()) {
                 bufferedImageY = bufferedImage.getHeight() - Game.GAME_HEIGHT;
