@@ -38,9 +38,9 @@ public class Level {
         player = new Player(animatedSprite1, world);
     }
 
-    public void update(Keyboard keyboard, Camera camera) {
+    public void update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
         player.handleInput(keyboard);
-        player.update(keyboard);
+        player.update(secondsSinceLastUpdate, keyboard);
         camera.update(player.getX(), player.getY());
         ribbonManager.update(camera);
     }

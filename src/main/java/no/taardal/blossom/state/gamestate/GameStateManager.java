@@ -18,8 +18,8 @@ public class GameStateManager {
         gameState = new PlayGameState(levels.get(0));
     }
 
-    public void update(Keyboard keyboard, Camera camera) {
-        GameState gameState = this.gameState.update(keyboard, camera);
+    public void update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
+        GameState gameState = this.gameState.update(secondsSinceLastUpdate, keyboard, camera);
         if (gameState != null) {
             LOGGER.debug("Changing game state to [{}]", gameState);
             this.gameState = gameState;

@@ -59,8 +59,8 @@ public class Camera extends Rectangle {
         previousOffsetX = offsetX;
         previousOffsetY = offsetY;
 
-        float deltaX = ((x - Game.GAME_WIDTH / 2) - offsetX) * TWEEN;
-        float deltaY = ((y - Game.GAME_HEIGHT / 2) - offsetY) * TWEEN;
+        float deltaX = ((x - Game.GAME_WIDTH / 2) - offsetX);
+        float deltaY = ((y - Game.GAME_HEIGHT / 2) - offsetY);
 
         offsetX += deltaX;
         offsetY += deltaY;

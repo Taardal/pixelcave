@@ -18,12 +18,12 @@ public class PlayGameState implements GameState {
     }
 
     @Override
-    public GameState update(Keyboard keyboard, Camera camera) {
+    public GameState update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
         if (keyboard.isPressed(Key.ESCAPE)) {
             LOGGER.debug("Entering pause state.");
             return new PauseGameState(level);
         } else {
-            level.update(keyboard, camera);
+            level.update(secondsSinceLastUpdate, keyboard, camera);
             return null;
         }
     }

@@ -35,7 +35,7 @@ public class MenuGameState implements GameState {
     }
 
     @Override
-    public GameState update(Keyboard keyboard, Camera camera) {
+    public GameState update(double timeSinceLastUpdate, Keyboard keyboard, Camera camera) {
         if (keyboard.isPressed(Key.ENTER)) {
             if (menu.getSelectedMenuItem() == 0) {
                 LOGGER.info("Entering play state on level [{}].", levels.get(0));

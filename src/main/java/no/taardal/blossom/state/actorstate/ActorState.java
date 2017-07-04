@@ -4,8 +4,10 @@ import no.taardal.blossom.keyboard.Keyboard;
 
 public interface ActorState {
 
+    void onEntry();
+
     ActorState handleInput(Keyboard keyboard);
 
-    ActorState update();
+    ActorState update(double timeSinceLastUpdate);
 
 }

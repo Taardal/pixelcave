@@ -16,8 +16,8 @@ public class IdleActorState implements ActorState {
     }
 
     @Override
-    public String toString() {
-        return "IdleActorState{}";
+    public void onEntry() {
+
     }
 
     @Override
@@ -25,18 +25,18 @@ public class IdleActorState implements ActorState {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             return new WalkingActorState(actor, world);
         } else {
-            actor.setMoving(false);
             return null;
         }
     }
 
     @Override
-    public ActorState update() {
-        if (!actor.isOnGround()) {
-            return new FallingActorState(actor, world);
-        } else {
-            return null;
-        }
+    public ActorState update(double timeSinceLastUpdate) {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return "IdleActorState{}";
     }
 
 }

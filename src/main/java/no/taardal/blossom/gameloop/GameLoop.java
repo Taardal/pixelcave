@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 public class GameLoop implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
-    private static final int ONE_SECOND = 1;
     private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
     private static final int ONE_SECOND_IN_NANOSECONDS = 1000000000;
     private static final double UPDATES_PER_SECOND_TARGET = 60;
@@ -18,13 +17,10 @@ public class GameLoop implements Runnable {
     private int frames;
     private int updates;
     private float delta;
+    private double nanosecondsSinceLastUpdate;
 
     public GameLoop(GameLoopListener gameLoopListener) {
         this.gameLoopListener = gameLoopListener;
-    }
-
-    public static double getSecondsPerUpdate() {
-        return ONE_SECOND / UPDATES_PER_SECOND_TARGET;
     }
 
     public boolean isRunning() {
@@ -42,12 +38,15 @@ public class GameLoop implements Runnable {
         long lastTimeNano = System.nanoTime();
         while (running) {
             long currentTimeNano = System.nanoTime();
-            delta += (currentTimeNano - lastTimeNano) / NANOSECONDS_PER_UPDATE;
+            long timeSinceLastPass = currentTimeNano - lastTimeNano;
+            nanosecondsSinceLastUpdate += timeSinceLastPass;
+            delta += timeSinceLastPass / NANOSECONDS_PER_UPDATE;
             lastTimeNano = currentTimeNano;
             if (delta >= 1) {
-                gameLoopListener.onUpdate();
+                gameLoopListener.onUpdate(nanosecondsSinceLastUpdate / ONE_SECOND_IN_NANOSECONDS);
                 updates++;
                 delta--;
+                nanosecondsSinceLastUpdate = 0;
             }
             gameLoopListener.onDraw();
             frames++;
@@ -58,7 +57,6 @@ public class GameLoop implements Runnable {
                 frames = 0;
             }
         }
-        LOGGER.info("Game loop completed.");
     }
 
 }

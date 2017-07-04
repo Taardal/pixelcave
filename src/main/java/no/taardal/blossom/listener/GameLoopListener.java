@@ -2,7 +2,7 @@ package no.taardal.blossom.listener;
 
 public interface GameLoopListener {
 
-    void onUpdate();
+    void onUpdate(double secondsSinceLastUpdate);
 
     void onDraw();
 

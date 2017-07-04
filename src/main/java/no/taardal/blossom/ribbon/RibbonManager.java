@@ -7,9 +7,9 @@ import java.util.List;
 
 public class RibbonManager {
 
-    private static final int HORIZONTAL_SPEED = 4;
+    private static final int HORIZONTAL_SPEED = 5;
     private static final int VERTICAL_SPEED = 1;
-    private static final double BASE_SPEED_FACTOR = 0.16;
+    private static final double BASE_SPEED_FACTOR = 0.2;
     private static final double SPEED_FACTOR_INCREMENT = 0.19;
 
     private List<Ribbon> ribbons;

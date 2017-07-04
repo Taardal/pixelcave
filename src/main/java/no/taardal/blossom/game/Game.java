@@ -48,13 +48,16 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     @Override
     public synchronized void onExit() {
         LOGGER.info("Exiting game.");
+        if (gameLoop.isRunning()) {
+            gameLoop.setRunning(false);
+        }
         System.exit(0);
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate(double secondsSinceLastUpdate) {
         keyboard.update();
-        gameStateManager.update(keyboard, camera);
+        gameStateManager.update(secondsSinceLastUpdate, keyboard, camera);
     }
 
     @Override
