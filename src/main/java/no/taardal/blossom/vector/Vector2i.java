@@ -56,6 +56,25 @@ public class Vector2i {
         return multiply(1 / value);
     }
 
+    public void addAssign(Vector2i vector2i) {
+        x += vector2i.getX();
+        y += vector2i.getY();
+    }
+
+    public void subtractAssign(Vector2i vector2i) {
+        x -= vector2i.getX();
+        y -= vector2i.getY();
+    }
+
+    public void multiplyAssign(int value) {
+        x *= value;
+        y *= value;
+    }
+
+    public void divideAssign(int value) {
+        multiplyAssign(1 / value);
+    }
+
     public Vector2i minus() {
         return new Vector2i(-x, -y);
     }
@@ -96,25 +115,6 @@ public class Vector2i {
             }
         }
         return false;
-    }
-
-    public void addEq(Vector2i vector2i) {
-        x += vector2i.getX();
-        y += vector2i.getY();
-    }
-
-    public void subtractEq(Vector2i vector2i) {
-        x -= vector2i.getX();
-        y -= vector2i.getY();
-    }
-
-    public void multiplyEq(int value) {
-        x *= value;
-        y *= value;
-    }
-
-    public void divideEq(int value) {
-         multiplyEq(1 / value);
     }
 
 }

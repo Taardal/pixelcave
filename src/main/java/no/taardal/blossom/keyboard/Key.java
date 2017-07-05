@@ -6,6 +6,7 @@ public enum Key {
 
     ENTER(KeyEvent.VK_ENTER),
     ESCAPE(KeyEvent.VK_ESCAPE),
+    SPACE(KeyEvent.VK_SPACE),
     UP(KeyEvent.VK_UP),
     LEFT(KeyEvent.VK_LEFT),
     DOWN(KeyEvent.VK_DOWN),
