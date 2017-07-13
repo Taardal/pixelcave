@@ -7,55 +7,49 @@ import java.awt.image.BufferedImage;
 
 public class AnimatedSprite {
 
-    private SpriteSheet sheet;
-    private Sprite sprite;
-    private int width;
-    private int height;
-    private int frame = 0;
-    private int rate = 10;
-    private int length = -1;
-    private int time = 0;
-    private int flip = 0;
-    private int animationSize = 0;
+    private static final int DEFAULT_FRAME_RATE = 10;
 
     private Sprite[] sprites;
+    private Sprite sprite;
+    private int frame;
+    private int frameRate;
+    private int updatesSinceLastFrame;
 
-    public AnimatedSprite(SpriteSheet spriteSheet, int width, int height, int length) {
-        this.sheet = spriteSheet;
-        this.width = width;
-        this.height = height;
-        this.length = length;
-        sprite = spriteSheet.getSprites()[0];
+    private AnimatedSprite() {
+        frameRate = DEFAULT_FRAME_RATE;
     }
 
-    public AnimatedSprite(Sprite[] sprites, int width, int height) {
-        this.width = width;
-        this.height = height;
+    public AnimatedSprite(Sprite[] sprites) {
+        this();
         this.sprites = sprites;
         sprite = sprites[0];
-        length = 4;
+    }
+
+    public int getWidth() {
+        return sprite.getWidth();
+    }
+
+    public int getHeight() {
+        return sprite.getHeight();
+    }
+
+    public int getFrameRate() {
+        return frameRate;
+    }
+
+    public void setFrameRate(int frameRate) {
+        this.frameRate = frameRate;
     }
 
     public void update() {
-        time++;
-        if (time % rate == 0) {
-            if (frame >= length - 1) {
-                frame = length - 1;
-                flip = 1;
-            } else if (frame <= 1) {
-                frame = 1;
-                flip = 0;
+        updatesSinceLastFrame++;
+        if (updatesSinceLastFrame % frameRate == 0) {
+            sprite = sprites[frame];
+            frame++;
+            if (frame > sprites.length - 1) {
+                frame = 0;
             }
-            if (sprites != null) {
-                sprite = sprites[frame];
-            } else {
-                sprite = sheet.getSprites()[frame];
-            }
-            if (flip == 1) {
-                frame --;
-            } else {
-                frame++;
-            }
+            updatesSinceLastFrame = 0;
         }
     }
 
@@ -76,29 +70,5 @@ public class AnimatedSprite {
         } else {
             camera.drawImage(sprite.getBufferedImage(), x, y);
         }
-    }
-
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public void setFrameRates(int frames) {
-        rate = frames;
-    }
-
-    public void setFrame(int frame) {
-        if (sprites != null) {
-            sprite = sprites[frame];
-        } else {
-            sprite = sheet.getSprites()[frame];
-        }
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
     }
 }

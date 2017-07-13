@@ -6,16 +6,11 @@ import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.layer.LayerType;
 import no.taardal.blossom.ribbon.RibbonManager;
-import no.taardal.blossom.service.ResourceFileService;
-import no.taardal.blossom.sprite.AnimatedSprite;
-import no.taardal.blossom.sprite.Sprite;
-import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.image.BufferedImage;
 import java.util.Iterator;
 
 public class Level {
@@ -29,18 +24,12 @@ public class Level {
     public Level(World world, RibbonManager ribbonManager) {
         this.world = world;
         this.ribbonManager = ribbonManager;
-
-        BufferedImage bufferedImage = new ResourceFileService().getImage("spritesheets/scorpion/scorpion-black-sheet-x1.png");
-        SpriteSheet scorpionSpriteSheet = new SpriteSheet(bufferedImage, 16, 16);
-        Sprite scorpionSprite = scorpionSpriteSheet.getSprite(0, 0);
-        Sprite[] sprites = scorpionSpriteSheet.getSprites2D()[1];
-        AnimatedSprite animatedSprite1 = new AnimatedSprite(sprites, scorpionSprite.getWidth(), scorpionSprite.getHeight());
-        player = new Player(animatedSprite1, world);
+        player = new Player(world);
     }
 
     public void update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
         player.handleInput(keyboard);
-        player.update(secondsSinceLastUpdate, keyboard);
+        player.update(secondsSinceLastUpdate);
         camera.update(player.getX(), player.getY());
         ribbonManager.update(camera);
     }

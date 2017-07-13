@@ -2,11 +2,8 @@ package no.taardal.blossom.entity;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.AnimatedSprite;
 import no.taardal.blossom.state.actorstate.ActorState;
-import no.taardal.blossom.state.actorstate.FallingActorState;
-import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
@@ -16,29 +13,38 @@ public class Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
-    AnimatedSprite sprite;
+    AnimatedSprite animatedSprite;
     World world;
     ActorState actorState;
     Vector2d position;
     Vector2d velocity;
     Direction direction;
-    boolean falling;
 
-    public boolean isFalling() {
-        return falling;
-    }
-
-    public void setFalling(boolean falling) {
-        this.falling = falling;
-    }
-
-    public Actor(AnimatedSprite sprite, World world) {
-        this.sprite = sprite;
+    public Actor(World world) {
         this.world = world;
         position = new Vector2d(200, 100);
         velocity = Vector2d.zero();
-        actorState = new FallingActorState(this, world);
-        actorState.onEntry();
+    }
+
+    public void update(double timeSinceLastUpdate) {
+        ActorState actorState = this.actorState.update(timeSinceLastUpdate);
+        if (actorState != null) {
+            LOGGER.debug("New actor state [{}]", actorState.toString());
+            actorState.onEntry();
+            this.actorState = actorState;
+        }
+        animatedSprite.update();
+    }
+
+    public void draw(Camera camera) {
+        animatedSprite.draw(getX(), getY(), direction, camera);
+    }
+
+    public boolean isOnGround() {
+        int column = getX() / world.getTileWidth();
+        int row = (getY() + getHeight()) / world.getTileHeight();
+        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
+        return tileId != World.NO_TILE_ID;
     }
 
     public int getX() {
@@ -50,23 +56,19 @@ public class Actor {
     }
 
     public int getWidth() {
-        return sprite.getWidth();
+        return animatedSprite.getWidth();
     }
 
     public int getHeight() {
-        return sprite.getHeight();
+        return animatedSprite.getHeight();
     }
 
     public AnimatedSprite getAnimatedSprite() {
-        return sprite;
+        return animatedSprite;
     }
 
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setAnimatedSprite(AnimatedSprite animatedSprite) {
+        this.animatedSprite = animatedSprite;
     }
 
     public Vector2d getPosition() {
@@ -85,42 +87,11 @@ public class Actor {
         this.velocity = velocity;
     }
 
-    public void update(double timeSinceLastUpdate, Keyboard keyboard) {
-        ActorState actorState = this.actorState.update(timeSinceLastUpdate);
-        if (actorState != null) {
-            LOGGER.debug("New actor state [{}]", actorState.toString());
-            actorState.onEntry();
-            this.actorState = actorState;
-        }
-        sprite.update();
+    public Direction getDirection() {
+        return direction;
     }
 
-    public void draw(Camera camera) {
-        sprite.draw(getX(), getY(), direction, camera);
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
-
-    public boolean isOnGround() {
-        int column = getX() / world.getTileWidth();
-        int row = (getY() + getHeight()) / world.getTileHeight();
-        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
-        if (tileId != World.NO_TILE_ID) {
-            Tile tile = world.getTiles().get(tileId);
-            if (!tile.isSlope()) {
-                return true;
-            } else {
-                int slopeCollisionX = getX() + (getWidth() / 2);
-                int tileX = column * world.getTileWidth();
-                int tileY = row * world.getTileHeight();
-                int slopeY;
-                if (tile.getDirection() == Direction.EAST) {
-                    slopeY = (tileY + world.getTileHeight()) - (slopeCollisionX - tileX);
-                } else {
-                    slopeY = (tileY + world.getTileHeight()) - ((tileX + world.getTileWidth()) - slopeCollisionX);
-                }
-                return getY() + getHeight() >= slopeY;
-            }
-        }
-        return false;
-    }
-
 }
