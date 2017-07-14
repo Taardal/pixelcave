@@ -1,10 +1,10 @@
 package no.taardal.blossom.state.actorstate;
 
-import no.taardal.blossom.entity.Actor;
+import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
-public class ActorIdleState implements ActorState {
+public abstract class ActorIdleState implements ActorState {
 
     Actor actor;
     World world;

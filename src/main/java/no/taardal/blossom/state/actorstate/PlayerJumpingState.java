@@ -1,6 +1,6 @@
 package no.taardal.blossom.state.actorstate;
 
-import no.taardal.blossom.entity.Actor;
+import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 

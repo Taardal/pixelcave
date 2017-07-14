@@ -1,4 +1,4 @@
-package no.taardal.blossom.entity;
+package no.taardal.blossom.actor;
 
 public class Scorpion {
 

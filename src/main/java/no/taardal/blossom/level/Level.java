@@ -1,7 +1,7 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.entity.Player;
+import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.layer.LayerType;

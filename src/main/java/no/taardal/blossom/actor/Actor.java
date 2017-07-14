@@ -1,4 +1,4 @@
-package no.taardal.blossom.entity;
+package no.taardal.blossom.actor;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;

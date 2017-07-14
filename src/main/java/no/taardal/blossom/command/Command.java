@@ -1,6 +1,6 @@
 package no.taardal.blossom.command;
 
-import no.taardal.blossom.entity.Actor;
+import no.taardal.blossom.actor.Actor;
 
 public interface Command {
 

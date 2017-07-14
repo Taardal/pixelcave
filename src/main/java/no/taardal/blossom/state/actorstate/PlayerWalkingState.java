@@ -1,7 +1,7 @@
 package no.taardal.blossom.state.actorstate;
 
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.entity.Actor;
+import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.AnimatedSprite;
