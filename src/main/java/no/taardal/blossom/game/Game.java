@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
-    public static final String GAME_TITLE = "Blossom";
+    public static final String GAME_TITLE = "PixelCave";
     public static final int GAME_WIDTH = 320;
     public static final int GAME_HEIGHT = 240;
 
