@@ -4,6 +4,8 @@ public interface ActorState {
 
     void onEntry();
 
-    ActorState update(double timeSinceLastUpdate);
+    void update(double timeSinceLastUpdate);
+
+    void onExit();
 
 }

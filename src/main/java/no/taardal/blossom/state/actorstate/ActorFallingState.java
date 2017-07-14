@@ -24,12 +24,7 @@ public abstract class ActorFallingState implements ActorState {
         falling = true;
     }
 
-    public abstract ActorState getIdleState();
-
-    @Override
-    public String toString() {
-        return "ActorFallingState{}";
-    }
+    public abstract void onLanded();
 
     @Override
     public void onEntry() {
@@ -37,13 +32,22 @@ public abstract class ActorFallingState implements ActorState {
     }
 
     @Override
-    public ActorState update(double secondsSinceLastUpdate) {
+    public void update(double secondsSinceLastUpdate) {
         if (!falling && actor.getVelocity().getY() >= 0) {
-            return getIdleState();
+            onLanded();
         } else {
             fall(secondsSinceLastUpdate);
-            return null;
         }
+    }
+
+    @Override
+    public void onExit() {
+
+    }
+
+    @Override
+    public String toString() {
+        return "ActorFallingState{}";
     }
 
     void fall(double secondsSinceLastUpdate) {
@@ -93,6 +97,13 @@ public abstract class ActorFallingState implements ActorState {
             velocityY = TERMINAL_VELOCITY;
         }
         return new Vector2d(actor.getVelocity().getX(), velocityY);
+    }
+
+    public boolean isOnGround() {
+        int column = actor.getX() / world.getTileWidth();
+        int row = (actor.getY() + actor.getHeight()) / world.getTileHeight();
+        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
+        return tileId != World.NO_TILE_ID;
     }
 
 }

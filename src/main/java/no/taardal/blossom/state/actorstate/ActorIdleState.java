@@ -20,8 +20,13 @@ public abstract class ActorIdleState implements ActorState {
     }
 
     @Override
-    public ActorState update(double timeSinceLastUpdate) {
-        return null;
+    public void update(double timeSinceLastUpdate) {
+
+    }
+
+    @Override
+    public void onExit() {
+
     }
 
     @Override

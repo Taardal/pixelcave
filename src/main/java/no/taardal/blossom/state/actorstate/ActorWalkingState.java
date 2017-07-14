@@ -29,10 +29,14 @@ public abstract class ActorWalkingState implements ActorState {
     }
 
     @Override
-    public ActorState update(double timeSinceLastUpdate) {
-        Vector2d vector2d = actor.getVelocity().multiply(timeSinceLastUpdate);
-        actor.getPosition().addAssign(vector2d);
-        return null;
+    public void update(double timeSinceLastUpdate) {
+        Vector2d distance = actor.getVelocity().multiply(timeSinceLastUpdate);
+        actor.setPosition(actor.getPosition().add(distance));
+    }
+
+    @Override
+    public void onExit() {
+
     }
 
     @Override

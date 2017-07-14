@@ -2,49 +2,72 @@ package no.taardal.blossom.actor;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.sprite.AnimatedSprite;
+import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.state.actorstate.ActorState;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Iterator;
+
 public class Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
-    AnimatedSprite animatedSprite;
+    Animation animation;
     World world;
-    ActorState actorState;
     Vector2d position;
     Vector2d velocity;
     Direction direction;
+    Deque<ActorState> states;
 
-    public Actor(World world) {
-        this.world = world;
-        position = new Vector2d(200, 100);
-        velocity = Vector2d.zero();
+    private Actor() {
+        states = new ArrayDeque<>();
     }
 
-    public void update(double timeSinceLastUpdate) {
-        ActorState actorState = this.actorState.update(timeSinceLastUpdate);
-        if (actorState != null) {
-            LOGGER.debug("New actor state [{}]", actorState.toString());
-            actorState.onEntry();
-            this.actorState = actorState;
+    public Actor(World world) {
+        this();
+        this.world = world;
+    }
+
+    public void update(double secondsSinceLastUpdate) {
+        if (!states.isEmpty()) {
+            for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
+                iterator.next().update(secondsSinceLastUpdate);
+            }
         }
-        animatedSprite.update();
+        if (animation != null) {
+            animation.update();
+        }
     }
 
     public void draw(Camera camera) {
-        animatedSprite.draw(getX(), getY(), direction, camera);
+        if (animation != null) {
+            animation.draw(getX(), getY(), direction, camera);
+        }
     }
 
-    public boolean isOnGround() {
-        int column = getX() / world.getTileWidth();
-        int row = (getY() + getHeight()) / world.getTileHeight();
-        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
-        return tileId != World.NO_TILE_ID;
+    public void pushState(ActorState actorState) {
+        actorState.onEntry();
+        states.addFirst(actorState);
+    }
+
+    public void popState() {
+        if (!states.isEmpty()) {
+            states.getFirst().onExit();
+            states.removeFirst();
+            if (!states.isEmpty()) {
+                states.getFirst().onEntry();
+            }
+        }
+    }
+
+    public void changeState(ActorState actorState) {
+        popState();
+        pushState(actorState);
     }
 
     public int getX() {
@@ -56,19 +79,19 @@ public class Actor {
     }
 
     public int getWidth() {
-        return animatedSprite.getWidth();
+        return animation.getWidth();
     }
 
     public int getHeight() {
-        return animatedSprite.getHeight();
+        return animation.getHeight();
     }
 
-    public AnimatedSprite getAnimatedSprite() {
-        return animatedSprite;
+    public Animation getAnimation() {
+        return animation;
     }
 
-    public void setAnimatedSprite(AnimatedSprite animatedSprite) {
-        this.animatedSprite = animatedSprite;
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
     }
 
     public Vector2d getPosition() {

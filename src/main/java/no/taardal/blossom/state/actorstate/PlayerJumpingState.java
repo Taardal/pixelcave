@@ -1,13 +1,13 @@
 package no.taardal.blossom.state.actorstate;
 
-import no.taardal.blossom.actor.Actor;
+import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
 public class PlayerJumpingState extends PlayerFallingState {
 
-    public PlayerJumpingState(Actor actor, World world) {
-        super(actor, world);
+    public PlayerJumpingState(Player player, World world) {
+        super(player, world);
     }
 
     @Override

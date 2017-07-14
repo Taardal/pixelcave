@@ -1,10 +1,10 @@
 package no.taardal.blossom.state.actorstate;
 
+import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.sprite.AnimatedSprite;
+import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.sprite.SpriteSheetBuilder;
@@ -14,23 +14,23 @@ import no.taardal.blossom.world.World;
 public class PlayerWalkingState extends ActorWalkingState implements PlayerState {
 
     private static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder().directory("scorpion").fileName("scorpion-black-sheet-x1.png").spriteWidth(16).spriteHeight(16).build();
-    private static final AnimatedSprite ANIMATED_SPRITE = getAnimatedSprite();
+    private static final Animation WALKING_ANIMATION = getWalkingAnimation();
 
-    public PlayerWalkingState(Actor actor, World world) {
-        super(actor, world);
+    public PlayerWalkingState(Player player, World world) {
+        super(player, world);
     }
 
     @Override
     public void onEntry() {
         super.onEntry();
-        actor.setAnimatedSprite(ANIMATED_SPRITE);
+        actor.setAnimation(WALKING_ANIMATION);
     }
 
     @Override
-    public PlayerState handleInput(Keyboard keyboard) {
+    public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
             actor.setVelocity(new Vector2d(actor.getVelocity().getX(), -200));
-            return new PlayerJumpingState(actor, world);
+            actor.changeState(new PlayerJumpingState((Player) actor, world));
         }
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
@@ -40,17 +40,20 @@ public class PlayerWalkingState extends ActorWalkingState implements PlayerState
                 actor.setDirection(Direction.EAST);
                 actor.setVelocity(new Vector2d(200, 0));
             }
-            return null;
+        } else {
+            actor.changeState(new PlayerIdleState((Player) actor, world));
         }
-        return new PlayerIdleState(actor, world);
+        if (keyboard.isPressed(KeyBinding.ATTACK)) {
+            actor.pushState(new PlayerAttackState((Player) actor, world));
+        }
     }
 
-    private static AnimatedSprite getAnimatedSprite() {
+    private static Animation getWalkingAnimation() {
         Sprite[] sprites = new Sprite[4];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = SPRITE_SHEET.getSprites()[i][1];
         }
-        return new AnimatedSprite(sprites);
+        return new Animation(sprites);
     }
 
 }

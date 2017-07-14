@@ -19,18 +19,16 @@ public class Player extends Actor {
 
     public Player(World world) {
         super(world);
-        direction = Direction.EAST;
         position = new Vector2d(250, 50);
-        actorState = new PlayerFallingState(this, world);
-        actorState.onEntry();
+        velocity = Vector2d.zero();
+        direction = Direction.EAST;
+        pushState(new PlayerFallingState(this, world));
     }
 
     public void handleInput(Keyboard keyboard) {
-        PlayerState playerState = ((PlayerState) actorState).handleInput(keyboard);
-        if (playerState != null) {
-            LOGGER.debug("New actor state [{}]", playerState.toString());
-            playerState.onEntry();
-            actorState = playerState;
+        if (!states.isEmpty()) {
+            PlayerState playerState = (PlayerState) states.getFirst();
+            playerState.handleInput(keyboard);
         }
     }
 
