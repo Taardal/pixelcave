@@ -1,7 +1,6 @@
 package no.taardal.blossom.state.gamestate;
 
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.keyboard.Key;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import org.slf4j.Logger;
@@ -19,13 +18,8 @@ public class PlayGameState implements GameState {
 
     @Override
     public GameState update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
-        if (keyboard.isPressed(Key.ESCAPE)) {
-            LOGGER.debug("Entering pause state.");
-            return new PauseGameState(level);
-        } else {
-            level.update(secondsSinceLastUpdate, keyboard, camera);
-            return null;
-        }
+        level.update(secondsSinceLastUpdate, keyboard, camera);
+        return null;
     }
 
     @Override

@@ -7,7 +7,8 @@ import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
-import no.taardal.blossom.state.gamestate.GameStateManager;
+import no.taardal.blossom.state.gamestate.GameState;
+import no.taardal.blossom.state.gamestate.PlayGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,18 +26,18 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     private static final int SCALE = 3;
     private static final int NUMBER_OF_BUFFERS = 3;
 
-    private GameStateManager gameStateManager;
     private GameLoop gameLoop;
     private Keyboard keyboard;
     private Camera camera;
+    private GameState gameState;
 
     @Inject
     public Game(List<Level> levels) {
-        this.gameStateManager = new GameStateManager(levels);
         this.gameLoop = new GameLoop(this);
         this.keyboard = new Keyboard();
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
+        gameState = new PlayGameState(levels.get(0));
     }
 
     public synchronized void start() {
@@ -57,7 +58,11 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     @Override
     public void onUpdate(double secondsSinceLastUpdate) {
         keyboard.update();
-        gameStateManager.update(secondsSinceLastUpdate, keyboard, camera);
+        GameState gameState = this.gameState.update(secondsSinceLastUpdate, keyboard, camera);
+        if (gameState != null) {
+            LOGGER.debug("Changing game state to [{}]", gameState);
+            this.gameState = gameState;
+        }
     }
 
     @Override
@@ -67,7 +72,7 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
             createBufferStrategy(NUMBER_OF_BUFFERS);
         } else {
             camera.clear();
-            gameStateManager.draw(camera);
+            gameState.draw(camera);
             drawCameraToBuffer(bufferStrategy);
             bufferStrategy.show();
         }
