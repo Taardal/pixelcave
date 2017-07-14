@@ -5,21 +5,24 @@ import no.taardal.blossom.direction.Direction;
 
 import java.awt.image.BufferedImage;
 
-public class AnimatedSprite {
+public class Animation {
 
     private static final int DEFAULT_FRAME_RATE = 10;
 
     private Sprite[] sprites;
     private Sprite sprite;
     private int frame;
-    private int frameRate;
+    private int updatesPerFrame;
     private int updatesSinceLastFrame;
+    private boolean indefinite;
+    private boolean finished;
 
-    private AnimatedSprite() {
-        frameRate = DEFAULT_FRAME_RATE;
+    private Animation() {
+        updatesPerFrame = DEFAULT_FRAME_RATE;
+        indefinite = true;
     }
 
-    public AnimatedSprite(Sprite[] sprites) {
+    public Animation(Sprite[] sprites) {
         this();
         this.sprites = sprites;
         sprite = sprites[0];
@@ -33,24 +36,55 @@ public class AnimatedSprite {
         return sprite.getHeight();
     }
 
-    public int getFrameRate() {
-        return frameRate;
+    public int getUpdatesPerFrame() {
+        return updatesPerFrame;
     }
 
-    public void setFrameRate(int frameRate) {
-        this.frameRate = frameRate;
+    public void setUpdatesPerFrame(int updatesPerFrame) {
+        this.updatesPerFrame = updatesPerFrame;
+    }
+
+    public boolean isIndefinite() {
+        return indefinite;
+    }
+
+    public void setIndefinite(boolean indefinite) {
+        this.indefinite = indefinite;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+        if (finished) {
+            indefinite = false;
+        }
     }
 
     public void update() {
-        updatesSinceLastFrame++;
-        if (updatesSinceLastFrame % frameRate == 0) {
-            sprite = sprites[frame];
-            frame++;
-            if (frame > sprites.length - 1) {
-                frame = 0;
+        if (!finished) {
+            updatesSinceLastFrame++;
+            if (updatesSinceLastFrame >= updatesPerFrame) {
+                updatesSinceLastFrame = 0;
+                sprite = sprites[frame];
+                frame++;
+                if (frame > sprites.length - 1) {
+                    if (indefinite) {
+                        frame = 0;
+                    } else {
+                        finished = true;
+                    }
+                }
             }
-            updatesSinceLastFrame = 0;
         }
+    }
+
+    public void reset() {
+        finished = false;
+        frame = 0;
+        updatesSinceLastFrame = 0;
     }
 
     public void draw(int x, int y, Direction direction, Camera camera) {
