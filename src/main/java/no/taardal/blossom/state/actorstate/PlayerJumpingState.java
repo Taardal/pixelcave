@@ -34,6 +34,12 @@ public class PlayerJumpingState extends PlayerFallingState {
     }
 
     @Override
+    public void onExit() {
+        super.onExit();
+        JUMP_ANIMATION.reset();
+    }
+
+    @Override
     public String toString() {
         return "PlayerJumpingState{}";
     }

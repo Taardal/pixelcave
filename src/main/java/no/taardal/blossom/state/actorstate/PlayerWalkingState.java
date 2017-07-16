@@ -50,7 +50,7 @@ public class PlayerWalkingState extends ActorWalkingState<Player> implements Pla
             actor.changeState(new PlayerJumpingState(actor, world));
         }
         if (keyboard.isPressed(KeyBinding.ATTACK)) {
-            actor.pushState(new PlayerAttackState(actor));
+            actor.pushState(new PlayerAttackingState(actor));
         }
     }
 

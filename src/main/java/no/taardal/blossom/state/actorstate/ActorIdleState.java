@@ -26,7 +26,7 @@ public abstract class ActorIdleState<T extends Actor> implements ActorState {
 
     @Override
     public void onExit() {
-        getAnimation().reset();
+
     }
 
     @Override

@@ -7,13 +7,13 @@ import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
 
-public class PlayerAttackState implements PlayerState {
+public class PlayerAttackingState implements PlayerState {
 
     private static final Animation ATTACK_ANIMATION = getAttackAnimation();
 
     private Player player;
 
-    public PlayerAttackState(Player player) {
+    public PlayerAttackingState(Player player) {
         this.player = player;
     }
 
@@ -56,7 +56,7 @@ public class PlayerAttackState implements PlayerState {
 
     @Override
     public String toString() {
-        return "PlayerAttackState{}";
+        return "PlayerAttackingState{}";
     }
 
     private static Animation getAttackAnimation() {
