@@ -34,6 +34,10 @@ public class Animation {
         return sprite.getHeight();
     }
 
+    public int getFrame() {
+        return frame;
+    }
+
     public int getUpdatesPerFrame() {
         return updatesPerFrame;
     }
@@ -93,5 +97,4 @@ public class Animation {
     public void drawFlippedHorizontally(Actor actor, Camera camera) {
         sprite.drawFlippedHorizontally(actor.getX(), actor.getY(), camera);
     }
-
 }

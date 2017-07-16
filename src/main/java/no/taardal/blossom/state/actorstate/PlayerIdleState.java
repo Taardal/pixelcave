@@ -41,7 +41,12 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
         } else if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
             actor.changeState(new PlayerJumpingState(actor, world));
         } else if (keyboard.isPressed(KeyBinding.ATTACK)) {
-            actor.pushState(new PlayerAttackState(actor));
+            actor.pushState(new PlayerAttackingState(actor));
+        } else if (keyboard.isPressed(KeyBinding.DEFEND)) {
+            actor.changeState(new PlayerDefendingState(actor, world));
+        }
+        else if (keyboard.isPressed(KeyBinding.TUMBLE)) {
+            actor.changeState(new PlayerTumblingState(actor, world));
         }
     }
 
@@ -56,7 +61,7 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i][0];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(15);
+        animation.setUpdatesPerFrame(10);
         return animation;
     }
 

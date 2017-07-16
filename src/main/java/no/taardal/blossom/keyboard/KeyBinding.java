@@ -6,7 +6,9 @@ public enum KeyBinding {
     RIGHT_MOVEMENT(Key.RIGHT, Key.D),
     UP_MOVEMENT(Key.SPACE, Key.W),
     DOWN_MOVEMENT(Key.DOWN, Key.S),
-    ATTACK(Key.Q, Key.E);
+    ATTACK(Key.E, Key.E),
+    DEFEND(Key.Q, Key.Q),
+    TUMBLE(Key.F, Key.F);
 
     private Key primaryKey;
     private Key secondaryKey;

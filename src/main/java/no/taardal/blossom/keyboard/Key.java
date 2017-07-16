@@ -16,7 +16,8 @@ public enum Key {
     S(KeyEvent.VK_S),
     D(KeyEvent.VK_D),
     Q(KeyEvent.VK_Q),
-    E(KeyEvent.VK_E);
+    E(KeyEvent.VK_E),
+    F(KeyEvent.VK_F);
 
     private int keyCode;
 
