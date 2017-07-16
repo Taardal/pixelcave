@@ -1,38 +1,52 @@
 package no.taardal.blossom.state.actorstate;
 
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
-import no.taardal.blossom.world.World;
 
 public class PlayerAttackState implements PlayerState {
 
     private static final Animation ATTACK_ANIMATION = getAttackAnimation();
 
     private Player player;
-    private World world;
 
-    public PlayerAttackState(Player player, World world) {
+    public PlayerAttackState(Player player) {
         this.player = player;
-        this.world = world;
+    }
+
+    @Override
+    public Animation getAnimation() {
+        return ATTACK_ANIMATION;
     }
 
     @Override
     public void onEntry() {
-        player.setAnimation(ATTACK_ANIMATION);
+
     }
 
     @Override
     public void update(double timeSinceLastUpdate) {
-        if (ATTACK_ANIMATION.isFinished()) {
+        getAnimation().update();
+        if (getAnimation().isFinished()) {
             player.popState();
         }
     }
 
     @Override
+    public void draw(Camera camera) {
+        if (player.getDirection() == Direction.EAST) {
+            getAnimation().draw(player, camera);
+        } else {
+            getAnimation().drawFlippedHorizontally(player, camera);
+        }
+    }
+
+    @Override
     public void onExit() {
-        ATTACK_ANIMATION.reset();
+        getAnimation().reset();
     }
 
     @Override

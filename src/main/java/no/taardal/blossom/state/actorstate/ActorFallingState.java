@@ -8,17 +8,17 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ActorFallingState implements ActorState {
+public abstract class ActorFallingState<T extends Actor> implements ActorState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorFallingState.class);
     private static final double GRAVITY = 250;
     private static final int TERMINAL_VELOCITY = 300;
 
-    Actor actor;
+    T actor;
     World world;
     boolean falling;
 
-    public ActorFallingState(Actor actor, World world) {
+    public ActorFallingState(T actor, World world) {
         this.actor = actor;
         this.world = world;
         falling = true;
@@ -33,6 +33,7 @@ public abstract class ActorFallingState implements ActorState {
 
     @Override
     public void update(double secondsSinceLastUpdate) {
+        getAnimation().update();
         if (!falling && actor.getVelocity().getY() >= 0) {
             onLanded();
         } else {
@@ -42,7 +43,7 @@ public abstract class ActorFallingState implements ActorState {
 
     @Override
     public void onExit() {
-
+        getAnimation().reset();
     }
 
     @Override

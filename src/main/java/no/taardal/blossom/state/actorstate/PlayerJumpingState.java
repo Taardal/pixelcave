@@ -19,21 +19,23 @@ public class PlayerJumpingState extends PlayerFallingState {
     }
 
     @Override
+    public Animation getAnimation() {
+        if (actor.getVelocity().getY() < 0) {
+            return JUMP_ANIMATION;
+        } else {
+            return super.getAnimation();
+        }
+    }
+
+    @Override
     public void onEntry() {
         super.onEntry();
-        actor.setAnimation(JUMP_ANIMATION);
         actor.setVelocity(new Vector2d(actor.getVelocity().getX(), VELOCITY_Y));
     }
 
     @Override
-    public void onExit() {
-        super.onExit();
-        JUMP_ANIMATION.reset();
-    }
-
-    @Override
-    public void update(double secondsSinceLastUpdate) {
-        super.update(secondsSinceLastUpdate);
+    public String toString() {
+        return "PlayerJumpingState{}";
     }
 
     private static Animation getJumpAnimation() {
@@ -45,10 +47,5 @@ public class PlayerJumpingState extends PlayerFallingState {
         animation.setUpdatesPerFrame(8);
         animation.setIndefinite(false);
         return animation;
-    }
-
-    @Override
-    public String toString() {
-        return "PlayerJumpingState{}";
     }
 }

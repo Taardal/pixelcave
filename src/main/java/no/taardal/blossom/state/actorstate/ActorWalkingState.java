@@ -7,14 +7,14 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ActorWalkingState implements ActorState {
+public abstract class ActorWalkingState<T extends Actor> implements ActorState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorWalkingState.class);
 
-    Actor actor;
+    T actor;
     World world;
 
-    public ActorWalkingState(Actor actor, World world) {
+    public ActorWalkingState(T actor, World world) {
         this.actor = actor;
         this.world = world;
     }
@@ -30,13 +30,14 @@ public abstract class ActorWalkingState implements ActorState {
 
     @Override
     public void update(double timeSinceLastUpdate) {
+        getAnimation().update();
         Vector2d distance = actor.getVelocity().multiply(timeSinceLastUpdate);
         actor.setPosition(actor.getPosition().add(distance));
     }
 
     @Override
     public void onExit() {
-
+        getAnimation().reset();
     }
 
     @Override

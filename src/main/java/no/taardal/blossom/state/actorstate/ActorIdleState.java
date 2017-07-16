@@ -4,12 +4,12 @@ import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
-public abstract class ActorIdleState implements ActorState {
+public abstract class ActorIdleState<T extends Actor> implements ActorState {
 
-    Actor actor;
+    T actor;
     World world;
 
-    public ActorIdleState(Actor actor, World world) {
+    public ActorIdleState(T actor, World world) {
         this.actor = actor;
         this.world = world;
     }
@@ -20,13 +20,13 @@ public abstract class ActorIdleState implements ActorState {
     }
 
     @Override
-    public void update(double timeSinceLastUpdate) {
-
+    public void update(double secondsSinceLastUpdate) {
+        getAnimation().update();
     }
 
     @Override
     public void onExit() {
-
+        getAnimation().reset();
     }
 
     @Override

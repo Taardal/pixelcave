@@ -1,6 +1,7 @@
 package no.taardal.blossom.state.actorstate;
 
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
@@ -9,7 +10,7 @@ import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
-public class PlayerFallingState extends ActorFallingState implements PlayerState {
+public class PlayerFallingState extends ActorFallingState<Player> implements PlayerState {
 
     private static final Animation FALLING_ANIMATION = getFallingAnimation();
     private static final Animation LANDING_ANIMATION = getLandingAnimation();
@@ -20,24 +21,38 @@ public class PlayerFallingState extends ActorFallingState implements PlayerState
     }
 
     @Override
-    public void onEntry() {
-        super.onEntry();
-        actor.setAnimation(FALLING_ANIMATION);
+    public void onLanded() {
+        if (actor.getVelocity().getX() == 0) {
+            if (getAnimation().isFinished()) {
+                actor.changeState(new PlayerIdleState(actor, world));
+            }
+        } else {
+            actor.changeState(new PlayerIdleState(actor, world));
+        }
+    }
+
+    @Override
+    public Animation getAnimation() {
+        if (falling) {
+            return FALLING_ANIMATION;
+        } else {
+            return LANDING_ANIMATION;
+        }
+    }
+
+    @Override
+    public void draw(Camera camera) {
+        if (actor.getDirection() == Direction.EAST) {
+            getAnimation().draw(actor, camera);
+        } else {
+            getAnimation().drawFlippedHorizontally(actor, camera);
+        }
     }
 
     @Override
     public void onExit() {
-        super.onExit();
         FALLING_ANIMATION.reset();
         LANDING_ANIMATION.reset();
-    }
-
-    @Override
-    public void update(double secondsSinceLastUpdate) {
-        super.update(secondsSinceLastUpdate);
-        if (falling && actor.getVelocity().getY() > 0) {
-            actor.setAnimation(FALLING_ANIMATION);
-        }
     }
 
     @Override
@@ -60,17 +75,8 @@ public class PlayerFallingState extends ActorFallingState implements PlayerState
     }
 
     @Override
-    public void onLanded() {
-        if (!actor.getAnimation().equals(LANDING_ANIMATION)) {
-            actor.setAnimation(LANDING_ANIMATION);
-        }
-        if (actor.getVelocity().getX() == 0) {
-            if (LANDING_ANIMATION.isFinished()) {
-                actor.changeState(new PlayerIdleState((Player) actor, world));
-            }
-        } else {
-            actor.changeState(new PlayerIdleState((Player) actor, world));
-        }
+    public String toString() {
+        return "PlayerFallingState{}";
     }
 
     private static Animation getFallingAnimation() {

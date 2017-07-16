@@ -2,7 +2,6 @@ package no.taardal.blossom.actor;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.state.actorstate.ActorState;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
@@ -17,7 +16,6 @@ public class Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
-    Animation animation;
     World world;
     Vector2d position;
     Vector2d velocity;
@@ -34,18 +32,13 @@ public class Actor {
     }
 
     public void update(double secondsSinceLastUpdate) {
-        if (!states.isEmpty()) {
-            //LOGGER.debug("Updating state [{}]", states.getFirst());
-            //states.getFirst().update(secondsSinceLastUpdate);
-            for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
-                iterator.next().update(secondsSinceLastUpdate);
-            }
+        for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
+            iterator.next().update(secondsSinceLastUpdate);
         }
-        animation.update();
     }
 
     public void draw(Camera camera) {
-        animation.draw(getX(), getY(), direction, camera);
+        states.getFirst().draw(camera);
     }
 
     public void pushState(ActorState actorState) {
@@ -54,12 +47,10 @@ public class Actor {
     }
 
     public void popState() {
+        states.getFirst().onExit();
+        states.removeFirst();
         if (!states.isEmpty()) {
-            states.getFirst().onExit();
-            states.removeFirst();
-            if (!states.isEmpty()) {
-                states.getFirst().onEntry();
-            }
+            states.getFirst().onEntry();
         }
     }
 
@@ -77,19 +68,11 @@ public class Actor {
     }
 
     public int getWidth() {
-        return animation.getWidth();
+        return states.getFirst().getAnimation().getWidth();
     }
 
     public int getHeight() {
-        return animation.getHeight();
-    }
-
-    public Animation getAnimation() {
-        return animation;
-    }
-
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
+        return states.getFirst().getAnimation().getHeight();
     }
 
     public Vector2d getPosition() {
