@@ -1,9 +1,7 @@
 package no.taardal.blossom.sprite;
 
+import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.direction.Direction;
-
-import java.awt.image.BufferedImage;
 
 public class Animation {
 
@@ -88,27 +86,12 @@ public class Animation {
         updatesSinceLastFrame = 0;
     }
 
-    public void draw(int x, int y, Direction direction, Camera camera) {
-        if (direction == Direction.WEST) {
-            BufferedImage bufferedImage = sprite.getBufferedImage();
-
-            int destinationX1 = x;
-            int destinationX2 = x + getWidth();
-            int destinationY1 = y;
-            int destinationY2 = y + getHeight();
-            int sourceX1 = 0;
-            int sourceX2 = bufferedImage.getWidth();
-            int sourceY1 = 0;
-            int sourceY2 = bufferedImage.getHeight();
-
-            camera.drawImageFlippedHorizontally(bufferedImage, destinationX1, destinationX2, destinationY1, destinationY2, sourceX1, sourceX2, sourceY1, sourceY2);
-        } else {
-            camera.drawImage(sprite.getBufferedImage(), x, y);
-        }
+    public void draw(Actor actor, Camera camera) {
+        sprite.draw(actor.getX(), actor.getY(), camera);
     }
 
-    public void drawFlippedHorizontally(int x, int y, Camera camera) {
-        sprite.drawFlippedHorizontally(x, y, camera);
+    public void drawFlippedHorizontally(Actor actor, Camera camera) {
+        sprite.drawFlippedHorizontally(actor.getX(), actor.getY(), camera);
     }
 
 }

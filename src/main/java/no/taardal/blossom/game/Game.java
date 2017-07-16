@@ -49,9 +49,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     @Override
     public synchronized void onExit() {
         LOGGER.info("Exiting game.");
-        if (gameLoop.isRunning()) {
-            gameLoop.setRunning(false);
-        }
         System.exit(0);
     }
 
