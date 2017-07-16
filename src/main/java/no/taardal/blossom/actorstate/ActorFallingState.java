@@ -1,4 +1,4 @@
-package no.taardal.blossom.state.actorstate;
+package no.taardal.blossom.actorstate;
 
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.actor.Actor;
@@ -14,9 +14,9 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
     private static final double GRAVITY = 250;
     private static final int TERMINAL_VELOCITY = 300;
 
-    T actor;
-    World world;
-    boolean falling;
+    protected T actor;
+    protected World world;
+    protected boolean falling;
 
     public ActorFallingState(T actor, World world) {
         this.actor = actor;

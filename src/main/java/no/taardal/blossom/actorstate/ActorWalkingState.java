@@ -1,4 +1,4 @@
-package no.taardal.blossom.state.actorstate;
+package no.taardal.blossom.actorstate;
 
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.actor.Actor;
@@ -11,8 +11,8 @@ public abstract class ActorWalkingState<T extends Actor> implements ActorState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorWalkingState.class);
 
-    T actor;
-    World world;
+    protected T actor;
+    protected World world;
 
     public ActorWalkingState(T actor, World world) {
         this.actor = actor;

@@ -2,7 +2,7 @@ package no.taardal.blossom.actor;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.state.actorstate.ActorState;
+import no.taardal.blossom.actorstate.ActorState;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
@@ -29,34 +29,6 @@ public class Actor {
     public Actor(World world) {
         this();
         this.world = world;
-    }
-
-    public void update(double secondsSinceLastUpdate) {
-        for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
-            iterator.next().update(secondsSinceLastUpdate);
-        }
-    }
-
-    public void draw(Camera camera) {
-        states.getFirst().draw(camera);
-    }
-
-    public void pushState(ActorState actorState) {
-        actorState.onEntry();
-        states.addFirst(actorState);
-    }
-
-    public void popState() {
-        states.getFirst().onExit();
-        states.removeFirst();
-        if (!states.isEmpty()) {
-            states.getFirst().onEntry();
-        }
-    }
-
-    public void changeState(ActorState actorState) {
-        popState();
-        pushState(actorState);
     }
 
     public int getX() {
@@ -97,5 +69,33 @@ public class Actor {
 
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public void update(double secondsSinceLastUpdate) {
+        for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
+            iterator.next().update(secondsSinceLastUpdate);
+        }
+    }
+
+    public void draw(Camera camera) {
+        states.getFirst().draw(camera);
+    }
+
+    public void pushState(ActorState actorState) {
+        actorState.onEntry();
+        states.addFirst(actorState);
+    }
+
+    public void popState() {
+        states.getFirst().onExit();
+        states.removeFirst();
+        if (!states.isEmpty()) {
+            states.getFirst().onEntry();
+        }
+    }
+
+    public void changeState(ActorState actorState) {
+        popState();
+        pushState(actorState);
     }
 }

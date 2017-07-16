@@ -1,4 +1,4 @@
-package no.taardal.blossom.state.actorstate;
+package no.taardal.blossom.actorstate;
 
 import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.vector.Vector2d;
@@ -6,8 +6,8 @@ import no.taardal.blossom.world.World;
 
 public abstract class ActorIdleState<T extends Actor> implements ActorState {
 
-    T actor;
-    World world;
+    protected T actor;
+    protected World world;
 
     public ActorIdleState(T actor, World world) {
         this.actor = actor;

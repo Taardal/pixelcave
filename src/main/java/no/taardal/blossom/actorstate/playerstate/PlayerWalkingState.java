@@ -1,6 +1,7 @@
-package no.taardal.blossom.state.actorstate;
+package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.actorstate.ActorWalkingState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;

@@ -1,4 +1,4 @@
-package no.taardal.blossom.state.actorstate;
+package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.camera.Camera;
