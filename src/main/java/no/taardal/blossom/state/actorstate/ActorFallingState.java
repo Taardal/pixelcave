@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public abstract class ActorFallingState implements ActorState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorFallingState.class);
-    private static final double GRAVITY = 500;
+    private static final double GRAVITY = 250;
     private static final int TERMINAL_VELOCITY = 300;
 
     Actor actor;
@@ -72,7 +72,7 @@ public abstract class ActorFallingState implements ActorState {
                     falling = false;
                 }
             } else {
-                int y = (row - 1) * world.getTileHeight();
+                int y = (row * world.getTileHeight()) - actor.getHeight();
                 nextPosition = new Vector2d(nextPosition.getX(), y);
                 falling = false;
             }

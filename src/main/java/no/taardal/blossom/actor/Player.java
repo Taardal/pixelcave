@@ -13,13 +13,18 @@ import org.slf4j.LoggerFactory;
 
 public class Player extends Actor {
 
-    public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder().directory("scorpion").fileName("scorpion-black-sheet-x1.png").spriteWidth(16).spriteHeight(16).build();
+    public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
+            .directory("knight")
+            .fileName("spritesheet-knight-black.png")
+            .spriteWidth(40)
+            .spriteHeight(40)
+            .build();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
     public Player(World world) {
         super(world);
-        position = new Vector2d(250, 50);
+        position = new Vector2d(200, 50);
         velocity = Vector2d.zero();
         direction = Direction.EAST;
         pushState(new PlayerFallingState(this, world));

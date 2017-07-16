@@ -35,19 +35,17 @@ public class Actor {
 
     public void update(double secondsSinceLastUpdate) {
         if (!states.isEmpty()) {
+            //LOGGER.debug("Updating state [{}]", states.getFirst());
+            //states.getFirst().update(secondsSinceLastUpdate);
             for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
                 iterator.next().update(secondsSinceLastUpdate);
             }
         }
-        if (animation != null) {
-            animation.update();
-        }
+        animation.update();
     }
 
     public void draw(Camera camera) {
-        if (animation != null) {
-            animation.draw(getX(), getY(), direction, camera);
-        }
+        animation.draw(getX(), getY(), direction, camera);
     }
 
     public void pushState(ActorState actorState) {

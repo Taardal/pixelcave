@@ -46,12 +46,12 @@ public class PlayerAttackState implements PlayerState {
     }
 
     private static Animation getAttackAnimation() {
-        Sprite[] sprites = new Sprite[5];
+        Sprite[] sprites = new Sprite[9];
         for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = Player.SPRITE_SHEET.getSprites()[i][2];
+            sprites[i] = Player.SPRITE_SHEET.getSprites()[i][1];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(10);
+        animation.setUpdatesPerFrame(5);
         animation.setIndefinite(false);
         return animation;
     }

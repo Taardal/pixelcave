@@ -65,9 +65,7 @@ public class Animation {
 
     public void update() {
         if (!finished) {
-            updatesSinceLastFrame++;
             if (updatesSinceLastFrame >= updatesPerFrame) {
-                updatesSinceLastFrame = 0;
                 sprite = sprites[frame];
                 frame++;
                 if (frame > sprites.length - 1) {
@@ -77,18 +75,21 @@ public class Animation {
                         finished = true;
                     }
                 }
+                updatesSinceLastFrame = 0;
             }
+            updatesSinceLastFrame++;
         }
     }
 
     public void reset() {
         finished = false;
+        sprite = sprites[0];
         frame = 0;
         updatesSinceLastFrame = 0;
     }
 
     public void draw(int x, int y, Direction direction, Camera camera) {
-        if (direction == Direction.EAST) {
+        if (direction == Direction.WEST) {
             BufferedImage bufferedImage = sprite.getBufferedImage();
 
             int destinationX1 = x;
@@ -100,9 +101,14 @@ public class Animation {
             int sourceY1 = 0;
             int sourceY2 = bufferedImage.getHeight();
 
-            camera.drawImageFlip(bufferedImage, destinationX1, destinationX2, destinationY1, destinationY2, sourceX1, sourceX2, sourceY1, sourceY2);
+            camera.drawImageFlippedHorizontally(bufferedImage, destinationX1, destinationX2, destinationY1, destinationY2, sourceX1, sourceX2, sourceY1, sourceY2);
         } else {
             camera.drawImage(sprite.getBufferedImage(), x, y);
         }
     }
+
+    public void drawFlippedHorizontally(int x, int y, Camera camera) {
+        sprite.drawFlippedHorizontally(x, y, camera);
+    }
+
 }
