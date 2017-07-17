@@ -1,5 +1,6 @@
 package no.taardal.blossom.level;
 
+import no.taardal.blossom.actor.Naga;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.keyboard.Keyboard;
@@ -20,11 +21,13 @@ public class Level {
     private World world;
     private RibbonManager ribbonManager;
     private Player player;
+    private Naga naga;
 
     public Level(World world, RibbonManager ribbonManager) {
         this.world = world;
         this.ribbonManager = ribbonManager;
         player = new Player(world);
+        naga = new Naga(world);
     }
 
     public void update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
@@ -32,12 +35,14 @@ public class Level {
         player.update(secondsSinceLastUpdate);
         camera.update(player.getX(), player.getY());
         ribbonManager.update(camera);
+        naga.update(secondsSinceLastUpdate);
     }
 
     public void draw(Camera camera) {
         ribbonManager.draw(camera);
         drawTiles(camera);
         player.draw(camera);
+        naga.draw(camera);
     }
 
     private void drawTiles(Camera camera) {
