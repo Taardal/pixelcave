@@ -52,7 +52,7 @@ public class PlayerAttackingMidAirState implements PlayerState {
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i][11];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(10);
+        animation.setUpdatesPerFrame(7);
         animation.setIndefinite(false);
         return animation;
     }

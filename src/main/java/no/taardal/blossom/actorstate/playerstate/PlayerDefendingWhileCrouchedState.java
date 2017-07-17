@@ -1,8 +1,6 @@
 package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
-import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
@@ -57,7 +55,7 @@ public class PlayerDefendingWhileCrouchedState implements PlayerState {
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i][5];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(10);
+        animation.setUpdatesPerFrame(5);
         animation.setIndefinite(false);
         return animation;
     }

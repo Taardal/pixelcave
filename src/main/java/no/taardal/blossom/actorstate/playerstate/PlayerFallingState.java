@@ -2,7 +2,6 @@ package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.actorstate.ActorFallingState;
-import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
@@ -87,7 +86,6 @@ public class PlayerFallingState extends ActorFallingState<Player> implements Pla
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i + 7][10];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(8);
         animation.setIndefinite(false);
         return animation;
     }

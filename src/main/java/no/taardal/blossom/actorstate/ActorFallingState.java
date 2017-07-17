@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public abstract class ActorFallingState<T extends Actor> implements ActorState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorFallingState.class);
-    private static final double GRAVITY = 250;
+    private static final double GRAVITY = 500;
     private static final int TERMINAL_VELOCITY = 300;
 
     protected T actor;

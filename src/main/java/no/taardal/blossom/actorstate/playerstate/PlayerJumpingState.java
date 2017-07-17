@@ -20,7 +20,7 @@ public class PlayerJumpingState extends PlayerFallingState {
 
     @Override
     public Animation getAnimation() {
-        if (actor.getVelocity().getY() < 0) {
+        if (actor.getVelocity().getY() < 100) {
             return JUMP_ANIMATION;
         } else {
             return super.getAnimation();
@@ -50,7 +50,6 @@ public class PlayerJumpingState extends PlayerFallingState {
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i][10];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(8);
         animation.setIndefinite(false);
         return animation;
     }

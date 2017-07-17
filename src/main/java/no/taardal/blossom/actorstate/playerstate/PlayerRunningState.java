@@ -2,7 +2,6 @@ package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.actorstate.ActorWalkingState;
-import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
@@ -13,8 +12,8 @@ import no.taardal.blossom.world.World;
 
 public class PlayerRunningState extends ActorWalkingState<Player> implements PlayerState {
 
-    private static final Animation WALKING_ANIMATION = getWalkingAnimation();
-    public static final int RUNNING_VELOCITY_X = 200;
+    private static final Animation RUNNING_ANIMATION = getRunningAnimation();
+    public static final int RUNNING_VELOCITY_X = 100;
 
     public PlayerRunningState(Player player, World world) {
         super(player, world);
@@ -22,7 +21,7 @@ public class PlayerRunningState extends ActorWalkingState<Player> implements Pla
 
     @Override
     public Animation getAnimation() {
-        return WALKING_ANIMATION;
+        return RUNNING_ANIMATION;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class PlayerRunningState extends ActorWalkingState<Player> implements Pla
         }
     }
 
-    private static Animation getWalkingAnimation() {
+    private static Animation getRunningAnimation() {
         Sprite[] sprites = new Sprite[10];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i][8];

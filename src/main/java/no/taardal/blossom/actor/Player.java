@@ -25,7 +25,7 @@ public class Player extends Actor {
 
     public Player(World world) {
         super(world);
-        position = new Vector2d(200, 50);
+        position = new Vector2d(230, 100);
         velocity = Vector2d.zero();
         direction = Direction.EAST;
         pushState(new PlayerFallingState(this, world));
