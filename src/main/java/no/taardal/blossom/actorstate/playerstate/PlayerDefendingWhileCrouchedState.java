@@ -41,10 +41,7 @@ public class PlayerDefendingWhileCrouchedState implements PlayerState {
 
     @Override
     public void handleInput(Keyboard keyboard) {
-        if (!keyboard.isPressed(KeyBinding.DEFEND)) {
-            player.popState();
-        }
-        if (!keyboard.isPressed(KeyBinding.CROUCH)) {
+        if (!keyboard.isPressed(KeyBinding.CROUCH) || !keyboard.isPressed(KeyBinding.DEFEND)) {
             player.popState();
         }
     }

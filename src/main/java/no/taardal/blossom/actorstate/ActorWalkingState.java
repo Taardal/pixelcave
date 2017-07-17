@@ -19,12 +19,14 @@ public abstract class ActorWalkingState<T extends Actor> implements ActorState {
         this.world = world;
     }
 
+    protected abstract int getVelocityX();
+
     @Override
     public void onEntry() {
         if (actor.getDirection() == Direction.WEST) {
-            actor.setVelocity(new Vector2d(-200, 0));
+            actor.setVelocity(new Vector2d(-getVelocityX(), actor.getVelocity().getY()));
         } else if (actor.getDirection() == Direction.EAST) {
-            actor.setVelocity(new Vector2d(200, 0));
+            actor.setVelocity(new Vector2d(getVelocityX(), actor.getVelocity().getY()));
         }
     }
 

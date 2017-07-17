@@ -13,10 +13,14 @@ import no.taardal.blossom.world.World;
 public class PlayerRunningState extends ActorWalkingState<Player> implements PlayerState {
 
     private static final Animation RUNNING_ANIMATION = getRunningAnimation();
-    public static final int RUNNING_VELOCITY_X = 100;
 
     public PlayerRunningState(Player player, World world) {
         super(player, world);
+    }
+
+    @Override
+    public int getVelocityX() {
+        return 100;
     }
 
     @Override
@@ -29,10 +33,10 @@ public class PlayerRunningState extends ActorWalkingState<Player> implements Pla
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 actor.setDirection(Direction.WEST);
-                actor.setVelocity(new Vector2d(-RUNNING_VELOCITY_X, actor.getVelocity().getY()));
+                actor.setVelocity(new Vector2d(-getVelocityX(), actor.getVelocity().getY()));
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
                 actor.setDirection(Direction.EAST);
-                actor.setVelocity(new Vector2d(RUNNING_VELOCITY_X, actor.getVelocity().getY()));
+                actor.setVelocity(new Vector2d(getVelocityX(), actor.getVelocity().getY()));
             }
         } else {
             actor.changeState(new PlayerIdleState(actor, world));

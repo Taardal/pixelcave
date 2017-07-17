@@ -5,7 +5,7 @@ import no.taardal.blossom.camera.Camera;
 
 public class Animation {
 
-    private static final int DEFAULT_FRAME_RATE = 10;
+    private static final int DEFAULT_UPDATES_PER_FRAME = 5;
 
     private Sprite[] sprites;
     private Sprite sprite;
@@ -16,7 +16,7 @@ public class Animation {
     private boolean finished;
 
     private Animation() {
-        updatesPerFrame = DEFAULT_FRAME_RATE;
+        updatesPerFrame = DEFAULT_UPDATES_PER_FRAME;
         indefinite = true;
     }
 
@@ -68,14 +68,15 @@ public class Animation {
     public void update() {
         if (!finished) {
             if (updatesSinceLastFrame >= updatesPerFrame) {
-                sprite = sprites[frame];
-                frame++;
                 if (frame > sprites.length - 1) {
                     if (indefinite) {
                         frame = 0;
                     } else {
                         finished = true;
                     }
+                } else {
+                    sprite = sprites[frame];
+                    frame++;
                 }
                 updatesSinceLastFrame = 0;
             }
