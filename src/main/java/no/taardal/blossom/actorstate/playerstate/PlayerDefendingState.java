@@ -53,7 +53,7 @@ public class PlayerDefendingState implements PlayerState {
     @Override
     public void handleInput(Keyboard keyboard) {
         if (!keyboard.isPressed(KeyBinding.DEFEND)) {
-            player.changeState(new PlayerIdleState(player, world));
+            player.popState();
         }
     }
 

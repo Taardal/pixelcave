@@ -11,11 +11,12 @@ import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
-public class PlayerWalkingState extends ActorWalkingState<Player> implements PlayerState {
+public class PlayerRunningState extends ActorWalkingState<Player> implements PlayerState {
 
     private static final Animation WALKING_ANIMATION = getWalkingAnimation();
+    public static final int RUNNING_VELOCITY_X = 200;
 
-    public PlayerWalkingState(Player player, World world) {
+    public PlayerRunningState(Player player, World world) {
         super(player, world);
     }
 
@@ -38,17 +39,25 @@ public class PlayerWalkingState extends ActorWalkingState<Player> implements Pla
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 actor.setDirection(Direction.WEST);
-                actor.setVelocity(new Vector2d(-200, 0));
+                actor.setVelocity(new Vector2d(-RUNNING_VELOCITY_X, actor.getVelocity().getY()));
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
                 actor.setDirection(Direction.EAST);
-                actor.setVelocity(new Vector2d(200, 0));
+                actor.setVelocity(new Vector2d(RUNNING_VELOCITY_X, actor.getVelocity().getY()));
             }
         } else {
             actor.changeState(new PlayerIdleState(actor, world));
         }
         if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
-            actor.setVelocity(new Vector2d(actor.getVelocity().getX(), -200));
             actor.changeState(new PlayerJumpingState(actor, world));
+        }
+        if (keyboard.isPressed(KeyBinding.CROUCH)) {
+            actor.changeState(new PlayerCrouchingState(actor, world));
+        }
+        if (keyboard.isPressed(KeyBinding.TUMBLE)) {
+            actor.changeState(new PlayerTumblingState(actor, world));
+        }
+        if (keyboard.isPressed(KeyBinding.DEFEND)) {
+            actor.pushState(new PlayerDefendingState(actor, world));
         }
         if (keyboard.isPressed(KeyBinding.ATTACK)) {
             actor.pushState(new PlayerAttackingState(actor));

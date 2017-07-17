@@ -38,16 +38,17 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
     @Override
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-            actor.changeState(new PlayerWalkingState(actor, world));
+            actor.changeState(new PlayerRunningState(actor, world));
         } else if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
             actor.changeState(new PlayerJumpingState(actor, world));
+        } else if (keyboard.isPressed(KeyBinding.CROUCH)) {
+            actor.changeState(new PlayerCrouchingState(actor, world));
+        } else if (keyboard.isPressed(KeyBinding.TUMBLE)) {
+            actor.changeState(new PlayerTumblingState(actor, world));
+        } else if (keyboard.isPressed(KeyBinding.DEFEND)) {
+            actor.pushState(new PlayerDefendingState(actor, world));
         } else if (keyboard.isPressed(KeyBinding.ATTACK)) {
             actor.pushState(new PlayerAttackingState(actor));
-        } else if (keyboard.isPressed(KeyBinding.DEFEND)) {
-            actor.changeState(new PlayerDefendingState(actor, world));
-        }
-        else if (keyboard.isPressed(KeyBinding.TUMBLE)) {
-            actor.changeState(new PlayerTumblingState(actor, world));
         }
     }
 
@@ -62,7 +63,7 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
             sprites[i] = Player.SPRITE_SHEET.getSprites()[i][0];
         }
         Animation animation = new Animation(sprites);
-        animation.setUpdatesPerFrame(10);
+        animation.setUpdatesPerFrame(15);
         return animation;
     }
 

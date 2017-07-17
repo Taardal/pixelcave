@@ -6,20 +6,23 @@ import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
+import no.taardal.blossom.world.World;
 
-public class PlayerAttackingState implements PlayerState {
+public class PlayerAttackingMidAirState implements PlayerState {
 
-    private static final Animation ATTACK_ANIMATION = getAttackAnimation();
+    private static final Animation ATTACKING_WHILE_CROUCHED_ANIMATION = getAttackingWhileCrouchedAnimation();
 
     private Player player;
+    private World world;
 
-    public PlayerAttackingState(Player player) {
+    public PlayerAttackingMidAirState(Player player, World world) {
         this.player = player;
+        this.world = world;
     }
 
     @Override
     public Animation getAnimation() {
-        return ATTACK_ANIMATION;
+        return ATTACKING_WHILE_CROUCHED_ANIMATION;
     }
 
     @Override
@@ -54,20 +57,14 @@ public class PlayerAttackingState implements PlayerState {
 
     }
 
-    @Override
-    public String toString() {
-        return "PlayerAttackingState{}";
-    }
-
-    private static Animation getAttackAnimation() {
-        Sprite[] sprites = new Sprite[9];
+    private static Animation getAttackingWhileCrouchedAnimation() {
+        Sprite[] sprites = new Sprite[3];
         for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = Player.SPRITE_SHEET.getSprites()[i][1];
+            sprites[i] = Player.SPRITE_SHEET.getSprites()[i][11];
         }
         Animation animation = new Animation(sprites);
         animation.setUpdatesPerFrame(10);
         animation.setIndefinite(false);
         return animation;
     }
-
 }

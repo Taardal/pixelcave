@@ -73,6 +73,9 @@ public class PlayerFallingState extends ActorFallingState<Player> implements Pla
         } else {
             actor.setVelocity(new Vector2d(0, actor.getVelocity().getY()));
         }
+        if (keyboard.isPressed(KeyBinding.ATTACK) && actor.getVelocity().getY() >= 0) {
+            actor.pushState(new PlayerAttackingMidAirState(actor, world));
+        }
     }
 
     @Override

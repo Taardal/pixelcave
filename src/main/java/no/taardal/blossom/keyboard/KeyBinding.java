@@ -8,7 +8,8 @@ public enum KeyBinding {
     DOWN_MOVEMENT(Key.DOWN, Key.S),
     ATTACK(Key.E, Key.E),
     DEFEND(Key.Q, Key.Q),
-    TUMBLE(Key.F, Key.F);
+    TUMBLE(Key.F, Key.F),
+    CROUCH(Key.C, Key.C);
 
     private Key primaryKey;
     private Key secondaryKey;
