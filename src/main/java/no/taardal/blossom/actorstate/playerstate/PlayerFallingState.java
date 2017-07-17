@@ -42,15 +42,6 @@ public class PlayerFallingState extends ActorFallingState<Player> implements Pla
     }
 
     @Override
-    public void draw(Camera camera) {
-        if (actor.getDirection() == Direction.EAST) {
-            getAnimation().draw(actor, camera);
-        } else {
-            getAnimation().drawFlippedHorizontally(actor, camera);
-        }
-    }
-
-    @Override
     public void onExit() {
         FALLING_ANIMATION.reset();
         LANDING_ANIMATION.reset();

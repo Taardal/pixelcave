@@ -1,8 +1,9 @@
 package no.taardal.blossom.actor;
 
+import no.taardal.blossom.actorstate.ActorState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.actorstate.ActorState;
+import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Iterator;
 
 public class Actor {
 
@@ -40,11 +40,11 @@ public class Actor {
     }
 
     public int getWidth() {
-        return states.getFirst().getAnimation().getWidth();
+        return getAnimation().getWidth();
     }
 
     public int getHeight() {
-        return states.getFirst().getAnimation().getHeight();
+        return getAnimation().getHeight();
     }
 
     public Vector2d getPosition() {
@@ -71,14 +71,19 @@ public class Actor {
         this.direction = direction;
     }
 
+    public Animation getAnimation() {
+        return states.getFirst().getAnimation();
+    }
+
     public void update(double secondsSinceLastUpdate) {
-        for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
-            iterator.next().update(secondsSinceLastUpdate);
-        }
+        states.getFirst().update(secondsSinceLastUpdate);
+        //for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
+        //iterator.next().update(secondsSinceLastUpdate);
+        //}
     }
 
     public void draw(Camera camera) {
-        states.getFirst().draw(camera);
+        getAnimation().draw(this, camera);
     }
 
     public void pushState(ActorState actorState) {
@@ -90,7 +95,7 @@ public class Actor {
         states.getFirst().onExit();
         states.removeFirst();
         if (!states.isEmpty()) {
-            states.getFirst().onEntry();
+            //states.getFirst().onEntry();
         }
     }
 

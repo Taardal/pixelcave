@@ -1,5 +1,6 @@
 package no.taardal.blossom.actor;
 
+import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.SpriteSheet;
@@ -15,7 +16,7 @@ public class Player extends Actor {
 
     public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
             .directory("knight")
-            .fileName("spritesheet-knight-black.png")
+            .fileName("spritesheet-knight-red.png")
             .spriteWidth(40)
             .spriteHeight(40)
             .build();
@@ -28,6 +29,15 @@ public class Player extends Actor {
         velocity = Vector2d.zero();
         direction = Direction.EAST;
         pushState(new PlayerFallingState(this, world));
+    }
+
+    @Override
+    public void draw(Camera camera) {
+        if (direction == Direction.WEST) {
+            getAnimation().drawFlippedHorizontally(this, camera);
+        } else {
+            super.draw(camera);
+        }
     }
 
     public void handleInput(Keyboard keyboard) {

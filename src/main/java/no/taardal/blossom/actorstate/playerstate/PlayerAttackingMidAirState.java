@@ -1,8 +1,6 @@
 package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
-import no.taardal.blossom.camera.Camera;
-import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
@@ -35,15 +33,6 @@ public class PlayerAttackingMidAirState implements PlayerState {
         getAnimation().update();
         if (getAnimation().isFinished()) {
             player.popState();
-        }
-    }
-
-    @Override
-    public void draw(Camera camera) {
-        if (player.getDirection() == Direction.EAST) {
-            getAnimation().draw(player, camera);
-        } else {
-            getAnimation().drawFlippedHorizontally(player, camera);
         }
     }
 

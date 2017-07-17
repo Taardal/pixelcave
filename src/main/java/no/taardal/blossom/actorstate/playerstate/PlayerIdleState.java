@@ -27,15 +27,6 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
     }
 
     @Override
-    public void draw(Camera camera) {
-        if (actor.getDirection() == Direction.EAST) {
-            getAnimation().draw(actor, camera);
-        } else {
-            getAnimation().drawFlippedHorizontally(actor, camera);
-        }
-    }
-
-    @Override
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             actor.changeState(new PlayerRunningState(actor, world));

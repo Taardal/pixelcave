@@ -36,15 +36,6 @@ public class PlayerAttackingState implements PlayerState {
     }
 
     @Override
-    public void draw(Camera camera) {
-        if (player.getDirection() == Direction.EAST) {
-            getAnimation().draw(player, camera);
-        } else {
-            getAnimation().drawFlippedHorizontally(player, camera);
-        }
-    }
-
-    @Override
     public void onExit() {
         getAnimation().reset();
     }
