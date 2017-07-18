@@ -5,6 +5,8 @@ import no.taardal.blossom.actorstate.ActorDeadState;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
 
+import java.awt.*;
+
 public class NagaDeadState extends ActorDeadState<Naga> implements EnemyState {
 
     private static final Animation DEATH_ANIMATION = getDeathAnimation();
@@ -16,6 +18,11 @@ public class NagaDeadState extends ActorDeadState<Naga> implements EnemyState {
     @Override
     public Animation getAnimation() {
         return DEATH_ANIMATION;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return null;
     }
 
     @Override

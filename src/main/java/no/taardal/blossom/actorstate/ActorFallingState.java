@@ -24,8 +24,6 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
         falling = true;
     }
 
-    public abstract void onLanded();
-
     @Override
     public void onEntry() {
         falling = true;
@@ -39,6 +37,7 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
         } else {
             fall(secondsSinceLastUpdate);
         }
+        updateBounds();
     }
 
     @Override
@@ -50,6 +49,10 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
     public String toString() {
         return "ActorFallingState{}";
     }
+
+    protected abstract void updateBounds();
+
+    protected abstract void onLanded();
 
     void fall(double secondsSinceLastUpdate) {
         actor.setPosition(getNextPosition(secondsSinceLastUpdate));

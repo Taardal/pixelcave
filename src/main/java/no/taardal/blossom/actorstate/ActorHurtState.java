@@ -15,10 +15,14 @@ public abstract class ActorHurtState<T extends Actor, E extends Actor> implement
     @Override
     public void onEntry() {
         actor.setHealth(actor.getHealth() - attacker.getDamage());
+        updateBounds();
     }
 
     @Override
     public void onExit() {
         getAnimation().reset();
     }
+
+    protected abstract void updateBounds();
+
 }

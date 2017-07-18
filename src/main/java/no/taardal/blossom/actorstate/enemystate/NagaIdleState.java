@@ -8,10 +8,13 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class NagaIdleState extends ActorIdleState<Naga> implements EnemyState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NagaIdleState.class);
     private static final Animation IDLE_ANIMATION = getIdleAnimation();
+    private static final Rectangle BOUNDS = new Rectangle(20, 34);
 
     public NagaIdleState(Naga naga, World world) {
         super(naga, world);
@@ -23,8 +26,20 @@ public class NagaIdleState extends ActorIdleState<Naga> implements EnemyState {
     }
 
     @Override
+    public Rectangle getBounds() {
+        return BOUNDS;
+    }
+
+    @Override
     public void nextMove() {
 
+    }
+
+    @Override
+    protected void updateBounds() {
+        int boundsX = actor.getX() + 22;
+        int boundsY = (actor.getY() + actor.getHeight()) - (int) BOUNDS.getHeight();
+        BOUNDS.setLocation(boundsX, boundsY);
     }
 
     private static Animation getIdleAnimation() {

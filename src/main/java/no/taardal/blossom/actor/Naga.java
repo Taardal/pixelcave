@@ -11,6 +11,8 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class Naga extends Actor {
 
     public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
@@ -33,8 +35,17 @@ public class Naga extends Actor {
     }
 
     @Override
+    public int getWidth() {
+        return SPRITE_SHEET.getSpriteWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return SPRITE_SHEET.getSpriteHeight();
+    }
+
+    @Override
     public void onAttacked(Actor attacker) {
-        LOGGER.debug("OnAttacked [{}]", this);
         pushState(new NagaHurtState(this, attacker));
     }
 
@@ -44,6 +55,9 @@ public class Naga extends Actor {
             getAnimation().drawFlippedHorizontally(this, camera);
         } else {
             super.draw(camera);
+        }
+        if (getBounds() != null) {
+            camera.drawRectangle(getBounds(), Color.RED);
         }
     }
 

@@ -10,7 +10,11 @@ import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
+import java.awt.*;
+
 public class PlayerFallingState extends ActorFallingState<Player> implements PlayerState {
+
+    static final Rectangle BOUNDS = new Rectangle(19, 30);
 
     private static final Animation FALLING_ANIMATION = getFallingAnimation();
     private static final Animation LANDING_ANIMATION = getLandingAnimation();
@@ -21,23 +25,17 @@ public class PlayerFallingState extends ActorFallingState<Player> implements Pla
     }
 
     @Override
-    public void onLanded() {
-        if (actor.getVelocity().getX() == 0) {
-            if (getAnimation().isFinished()) {
-                actor.changeState(new PlayerIdleState(actor, world));
-            }
-        } else {
-            actor.changeState(new PlayerIdleState(actor, world));
-        }
-    }
-
-    @Override
     public Animation getAnimation() {
         if (falling) {
             return FALLING_ANIMATION;
         } else {
             return LANDING_ANIMATION;
         }
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return BOUNDS;
     }
 
     @Override
@@ -73,8 +71,33 @@ public class PlayerFallingState extends ActorFallingState<Player> implements Pla
         return "PlayerFallingState{}";
     }
 
+    @Override
+    protected void updateBounds() {
+        int boundsY;
+        boundsY = (actor.getY() + actor.getHeight()) - (int) BOUNDS.getHeight();
+        int boundsX;
+        int marginX = 5;
+        if (actor.getDirection() == Direction.EAST) {
+            boundsX = actor.getX() + marginX;
+        } else {
+            boundsX = actor.getX() + actor.getWidth() - (int) BOUNDS.getWidth() - marginX;
+        }
+        BOUNDS.setLocation(boundsX, boundsY);
+    }
+
+    @Override
+    protected void onLanded() {
+        if (actor.getVelocity().getX() == 0) {
+            if (getAnimation().isFinished()) {
+                actor.changeState(new PlayerIdleState(actor, world));
+            }
+        } else {
+            actor.changeState(new PlayerIdleState(actor, world));
+        }
+    }
+
     private static Animation getFallingAnimation() {
-        Sprite[] sprites = new Sprite[]{Player.SPRITE_SHEET.getSprites()[6][10]};
+        Sprite[] sprites = {Player.SPRITE_SHEET.getSprites()[6][10]};
         Animation animation = new Animation(sprites);
         animation.setIndefinite(true);
         return animation;

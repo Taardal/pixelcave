@@ -10,9 +10,12 @@ import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
+import java.awt.*;
+
 public class PlayerRunningState extends ActorWalkingState<Player> implements PlayerState {
 
     private static final Animation RUNNING_ANIMATION = getRunningAnimation();
+    private static final Rectangle BOUNDS = new Rectangle(27, 27);
 
     public PlayerRunningState(Player player, World world) {
         super(player, world);
@@ -26,6 +29,17 @@ public class PlayerRunningState extends ActorWalkingState<Player> implements Pla
     @Override
     public Animation getAnimation() {
         return RUNNING_ANIMATION;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return BOUNDS;
+    }
+
+    @Override
+    public void update(double secondsSinceLastUpdate) {
+        super.update(secondsSinceLastUpdate);
+        updateBounds();
     }
 
     @Override
@@ -56,6 +70,18 @@ public class PlayerRunningState extends ActorWalkingState<Player> implements Pla
         if (keyboard.isPressed(KeyBinding.ATTACK)) {
             actor.pushState(new PlayerAttackingState(actor));
         }
+    }
+
+    @Override
+    protected void updateBounds() {
+        int boundsY = (actor.getY() + actor.getHeight()) - (int) BOUNDS.getHeight();
+        int boundsX;
+        if (actor.getDirection() == Direction.EAST) {
+            boundsX = actor.getX() + 8;
+        } else {
+            boundsX = actor.getX() + actor.getWidth() - (int) BOUNDS.getWidth() - 8;
+        }
+        BOUNDS.setLocation(boundsX, boundsY);
     }
 
     private static Animation getRunningAnimation() {

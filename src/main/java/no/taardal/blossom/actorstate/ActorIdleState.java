@@ -17,6 +17,7 @@ public abstract class ActorIdleState<T extends Actor> implements ActorState {
     @Override
     public void onEntry() {
         actor.setVelocity(Vector2d.zero());
+        updateBounds();
     }
 
     @Override
@@ -33,5 +34,7 @@ public abstract class ActorIdleState<T extends Actor> implements ActorState {
     public String toString() {
         return "ActorIdleState{}";
     }
+
+    protected abstract void updateBounds();
 
 }

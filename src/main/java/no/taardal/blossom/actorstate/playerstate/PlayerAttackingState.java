@@ -9,17 +9,20 @@ import no.taardal.blossom.sprite.Sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class PlayerAttackingState implements PlayerState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerAttackingState.class);
     private static final Animation ATTACK_ANIMATION = getAttackAnimation();
-    private static final int RANGE = 20;
 
     private Player player;
-    private boolean attacked;
+    private Rectangle attackBounds;
+    private boolean enemiesAttacked;
 
     public PlayerAttackingState(Player player) {
         this.player = player;
+        attackBounds = getAttackBounds();
     }
 
     @Override
@@ -28,20 +31,13 @@ public class PlayerAttackingState implements PlayerState {
     }
 
     @Override
-    public void onEntry() {
-
+    public Rectangle getBounds() {
+        return attackBounds;
     }
 
-    private boolean isInRange(Actor enemy) {
-        double enemyLeftX = enemy.getPosition().getX();
-        double enemyRightX = enemyLeftX + enemy.getWidth();
-        double playerLeftX = player.getPosition().getX();
-        double playerRightX = playerLeftX + player.getWidth();
-        if (player.getDirection() == Direction.EAST) {
-            return playerRightX < enemyLeftX && (playerRightX + RANGE) > enemyLeftX;
-        } else {
-            return playerLeftX > enemyRightX && (playerLeftX - RANGE) < enemyRightX;
-        }
+    @Override
+    public void onEntry() {
+
     }
 
     @Override
@@ -49,16 +45,16 @@ public class PlayerAttackingState implements PlayerState {
         getAnimation().update();
         if (getAnimation().isFinished()) {
             player.popState();
-        } else if (!attacked && getAnimation().getFrame() == 4) {
+        } else if (!enemiesAttacked && getAnimation().getFrame() == 4) {
             attackEnemiesInRange();
-            attacked = true;
+            enemiesAttacked = true;
         }
     }
 
     @Override
     public void onExit() {
         getAnimation().reset();
-        attacked = false;
+        enemiesAttacked = false;
     }
 
     @Override
@@ -82,10 +78,23 @@ public class PlayerAttackingState implements PlayerState {
         return animation;
     }
 
+    private Rectangle getAttackBounds() {
+        int width = 20;
+        int height = (int) (player.getBounds().getHeight() / 2) + 5;
+        int y = (int) (player.getBounds().getY());
+        int x;
+        if (player.getDirection() == Direction.EAST) {
+            x = (int) (player.getBounds().getX() + (player.getBounds().getWidth() / 2));
+        } else {
+            x = (int) player.getBounds().getX() - 10;
+        }
+        return new Rectangle(x, y, width, height);
+    }
+
     private void attackEnemiesInRange() {
         for (int i = 0; i < player.getEnemies().size(); i++) {
             Actor enemy = player.getEnemies().get(i);
-            if (isInRange(enemy)) {
+            if (attackBounds.intersects(enemy.getBounds())) {
                 enemy.onAttacked(player);
             }
         }

@@ -28,6 +28,9 @@ public abstract class Actor {
 
     private Actor() {
         states = new ArrayDeque<>();
+        position = Vector2d.zero();
+        velocity = Vector2d.zero();
+        direction = Direction.EAST;
     }
 
     public Actor(World world) {
@@ -103,18 +106,21 @@ public abstract class Actor {
         return states.getFirst().getAnimation();
     }
 
+    public Rectangle getBounds() {
+        return states.getFirst().getBounds();
+    }
+
     public abstract void onAttacked(Actor attacker);
 
     public void update(double secondsSinceLastUpdate) {
         states.getFirst().update(secondsSinceLastUpdate);
-        //for (Iterator<ActorState> iterator = states.iterator(); iterator.hasNext(); ) {
-        //iterator.next().update(secondsSinceLastUpdate);
-        //}
     }
 
     public void draw(Camera camera) {
         getAnimation().draw(this, camera);
-        camera.drawRectangle(getX(), getY(), getWidth(), getHeight(), Color.RED);
+        if (getBounds() != null) {
+            camera.drawRectangle(getX(), getY(), getAnimation().getWidth(), getAnimation().getHeight(), Color.YELLOW);
+        }
     }
 
     public void pushState(ActorState actorState) {
@@ -125,9 +131,6 @@ public abstract class Actor {
     public void popState() {
         states.getFirst().onExit();
         states.removeFirst();
-        if (!states.isEmpty()) {
-            //states.getFirst().onEntry();
-        }
     }
 
     public void changeState(ActorState actorState) {

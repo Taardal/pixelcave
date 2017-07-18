@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class Camera extends Rectangle {
@@ -85,14 +86,17 @@ public class Camera extends Rectangle {
         graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
     }
 
-    public void drawImage(BufferedImage image, int x, int y) {
+    public void drawImage(BufferedImage bufferedImage, int x, int y) {
         x -= offsetX;
         y -= offsetY;
-        graphics2D.drawImage(image, x, y, null);
+        graphics2D.drawImage(bufferedImage, x, y, null);
     }
 
     public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
-        graphics2D.drawImage(bufferedImage, destinationX1, destinationY1, destinationX2, destinationY2, sourceX1, sourceY1, sourceX2, sourceY2, null);
+        graphics2D.drawImage(bufferedImage,
+                destinationX1, destinationY1, destinationX2, destinationY2,
+                sourceX1, sourceY1, sourceX2, sourceY2,
+                null);
     }
 
     public void drawImageFlippedHorizontally(BufferedImage bufferedImage, int x, int y) {
@@ -124,4 +128,18 @@ public class Camera extends Rectangle {
         graphics2D.fillOval(x, y, diameter, diameter);
     }
 
+    public void drawRectangle(int x, int y, int width, int height, Color color) {
+        x -= offsetX;
+        y -= offsetY;
+        graphics2D.setColor(color);
+        graphics2D.drawRect(x, y, width, height);
+    }
+
+    public void drawRectangle(Rectangle rectangle, Color color) {
+        drawRectangle(rectangle.x, rectangle.y, (int) rectangle.getWidth(), (int) rectangle.getHeight(), color);
+    }
+
+    public void drawRectangle(Rectangle2D rectangle, Color color) {
+        drawRectangle((int) rectangle.getX(), (int) rectangle.getY(), (int) rectangle.getWidth(), (int) rectangle.getHeight(), color);
+    }
 }

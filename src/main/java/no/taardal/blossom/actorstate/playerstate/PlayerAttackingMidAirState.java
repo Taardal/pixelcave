@@ -1,10 +1,14 @@
 package no.taardal.blossom.actorstate.playerstate;
 
+import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.world.World;
+
+import java.awt.*;
 
 public class PlayerAttackingMidAirState implements PlayerState {
 
@@ -12,15 +16,23 @@ public class PlayerAttackingMidAirState implements PlayerState {
 
     private Player player;
     private World world;
+    private Rectangle attackBounds;
+    private boolean enemiesAttacked;
 
     public PlayerAttackingMidAirState(Player player, World world) {
         this.player = player;
         this.world = world;
+        attackBounds = getAttackBounds();
     }
 
     @Override
     public Animation getAnimation() {
         return ATTACKING_WHILE_CROUCHED_ANIMATION;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return attackBounds;
     }
 
     @Override
@@ -33,6 +45,9 @@ public class PlayerAttackingMidAirState implements PlayerState {
         getAnimation().update();
         if (getAnimation().isFinished()) {
             player.popState();
+        } else if (!enemiesAttacked && getAnimation().getFrame() == 1) {
+            attackEnemiesInRange();
+            enemiesAttacked = true;
         }
     }
 
@@ -56,4 +71,27 @@ public class PlayerAttackingMidAirState implements PlayerState {
         animation.setIndefinite(false);
         return animation;
     }
+
+    private Rectangle getAttackBounds() {
+        int width = 20;
+        int height = (int) (player.getBounds().getHeight() / 2) + 5;
+        int y = (int) (player.getBounds().getY());
+        int x;
+        if (player.getDirection() == Direction.EAST) {
+            x = (int) (player.getBounds().getX() + (player.getBounds().getWidth() / 2));
+        } else {
+            x = (int) player.getBounds().getX() - 10;
+        }
+        return new Rectangle(x, y, width, height);
+    }
+
+    private void attackEnemiesInRange() {
+        for (int i = 0; i < player.getEnemies().size(); i++) {
+            Actor enemy = player.getEnemies().get(i);
+            if (attackBounds.intersects(enemy.getBounds())) {
+                enemy.onAttacked(player);
+            }
+        }
+    }
+
 }

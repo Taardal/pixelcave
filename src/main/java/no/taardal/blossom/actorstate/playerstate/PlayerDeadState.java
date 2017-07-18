@@ -6,6 +6,8 @@ import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
 
+import java.awt.*;
+
 public class PlayerDeadState extends ActorDeadState<Player> implements PlayerState {
 
     private static final Animation DEATH_ANIMATION = getDeathAnimation();
@@ -17,6 +19,11 @@ public class PlayerDeadState extends ActorDeadState<Player> implements PlayerSta
     @Override
     public Animation getAnimation() {
         return DEATH_ANIMATION;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return null;
     }
 
     @Override

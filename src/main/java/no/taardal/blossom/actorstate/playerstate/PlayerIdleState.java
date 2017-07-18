@@ -2,7 +2,6 @@ package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.actorstate.ActorIdleState;
-import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
@@ -12,10 +11,13 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class PlayerIdleState extends ActorIdleState<Player> implements PlayerState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PlayerIdleState.class);
     private static final Animation IDLE_ANIMATION = getIdleAnimation();
+    private static final Rectangle BOUNDS = new Rectangle(19, 30);
 
     public PlayerIdleState(Player player, World world) {
         super(player, world);
@@ -24,6 +26,11 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
     @Override
     public Animation getAnimation() {
         return IDLE_ANIMATION;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return BOUNDS;
     }
 
     @Override
@@ -46,6 +53,19 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
     @Override
     public String toString() {
         return "PlayerIdleState{}";
+    }
+
+    @Override
+    protected void updateBounds() {
+        int boundsY = (actor.getY() + actor.getHeight()) - (int) BOUNDS.getHeight();
+        int boundsX;
+        int marginX = 5;
+        if (actor.getDirection() == Direction.EAST) {
+            boundsX = actor.getX() + marginX;
+        } else {
+            boundsX = actor.getX() + actor.getWidth() - (int) BOUNDS.getWidth() - marginX;
+        }
+        BOUNDS.setLocation(boundsX, boundsY);
     }
 
     private static Animation getIdleAnimation() {

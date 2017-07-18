@@ -12,9 +12,13 @@ public class SpriteSheet {
     private Sprite[][] sprites;
     private int width;
     private int height;
+    private int spriteWidth;
+    private int spriteHeight;
 
     public SpriteSheet(BufferedImage bufferedImage, int spriteWidth, int spriteHeight) {
-        sprites = getSpriteImages(bufferedImage, spriteWidth, spriteHeight);
+        this.spriteWidth = spriteWidth;
+        this.spriteHeight = spriteHeight;
+        sprites = getSpriteImages(bufferedImage);
         width = bufferedImage.getWidth();
         height = bufferedImage.getHeight();
     }
@@ -31,11 +35,15 @@ public class SpriteSheet {
         return height;
     }
 
-    public Sprite getSprite(int column, int row) {
-        return sprites[column][row];
+    public int getSpriteWidth() {
+        return spriteWidth;
     }
 
-    private Sprite[][] getSpriteImages(BufferedImage bufferedImage, int spriteWidth, int spriteHeight) {
+    public int getSpriteHeight() {
+        return spriteHeight;
+    }
+
+    private Sprite[][] getSpriteImages(BufferedImage bufferedImage) {
         int columns = bufferedImage.getWidth() / spriteWidth;
         int rows = bufferedImage.getHeight() / spriteHeight;
         Sprite[][] sprites = new Sprite[columns][rows];

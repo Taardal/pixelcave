@@ -1,15 +1,19 @@
 package no.taardal.blossom.actorstate.playerstate;
 
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.world.World;
 
+import java.awt.*;
+
 public class PlayerCrouchingState implements PlayerState {
 
     private static final Animation CROUCH_ANIMATION = getCrouchAnimation();
+    private static final Rectangle BOUNDS = new Rectangle(19, 20);
 
     private Player player;
     private World world;
@@ -25,12 +29,17 @@ public class PlayerCrouchingState implements PlayerState {
     }
 
     @Override
-    public void onEntry() {
-
+    public Rectangle getBounds() {
+        return BOUNDS;
     }
 
     @Override
-    public void update(double timeSinceLastUpdate) {
+    public void onEntry() {
+        updateBounds();
+    }
+
+    @Override
+    public void update(double secondsSinceLastUpdate) {
         getAnimation().update();
     }
 
@@ -60,4 +69,16 @@ public class PlayerCrouchingState implements PlayerState {
         animation.setIndefinite(false);
         return animation;
     }
+
+    private void updateBounds() {
+        int boundsY = (player.getY() + player.getHeight()) - (int) BOUNDS.getHeight();
+        int boundsX;
+        if (player.getDirection() == Direction.EAST) {
+            boundsX = player.getX() + 5;
+        } else {
+            boundsX = player.getX() + player.getWidth() - (int) BOUNDS.getWidth() - 5;
+        }
+        BOUNDS.setLocation(boundsX, boundsY);
+    }
+
 }

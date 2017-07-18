@@ -13,13 +13,14 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.List;
 
 public class Player extends Actor {
 
     public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
             .directory("knight")
-            .fileName("spritesheet-knight-red.png")
+            .fileName("spritesheet-knight-black.png")
             .spriteWidth(40)
             .spriteHeight(40)
             .build();
@@ -43,6 +44,16 @@ public class Player extends Actor {
         this.enemies = enemies;
     }
 
+    @Override
+    public int getWidth() {
+        return SPRITE_SHEET.getSpriteWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return SPRITE_SHEET.getSpriteHeight();
+    }
+
     public List<Actor> getEnemies() {
         return enemies;
     }
@@ -58,6 +69,9 @@ public class Player extends Actor {
             getAnimation().drawFlippedHorizontally(this, camera);
         } else {
             super.draw(camera);
+        }
+        if (getBounds() != null) {
+            camera.drawRectangle(getBounds(), Color.RED);
         }
     }
 

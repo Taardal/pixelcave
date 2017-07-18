@@ -1,7 +1,7 @@
 package no.taardal.blossom.actorstate;
 
-import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.actor.Actor;
+import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
@@ -18,8 +18,6 @@ public abstract class ActorWalkingState<T extends Actor> implements ActorState {
         this.actor = actor;
         this.world = world;
     }
-
-    protected abstract int getVelocityX();
 
     @Override
     public void onEntry() {
@@ -46,5 +44,9 @@ public abstract class ActorWalkingState<T extends Actor> implements ActorState {
     public String toString() {
         return "ActorWalkingState{}";
     }
+
+    protected abstract void updateBounds();
+
+    protected abstract int getVelocityX();
 
 }
