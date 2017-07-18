@@ -1,16 +1,19 @@
 package no.taardal.blossom.actor;
 
+import no.taardal.blossom.actorstate.playerstate.PlayerFallingState;
+import no.taardal.blossom.actorstate.playerstate.PlayerHurtState;
+import no.taardal.blossom.actorstate.playerstate.PlayerState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.sprite.SpriteSheetBuilder;
-import no.taardal.blossom.actorstate.playerstate.PlayerFallingState;
-import no.taardal.blossom.actorstate.playerstate.PlayerState;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class Player extends Actor {
 
@@ -23,12 +26,30 @@ public class Player extends Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
+    private List<Actor> enemies;
+
     public Player(World world) {
         super(world);
-        position = new Vector2d(230, 100);
+        position = new Vector2d(209, 133);
         velocity = Vector2d.zero();
         direction = Direction.EAST;
+        health = 100;
+        damage = 50;
         pushState(new PlayerFallingState(this, world));
+    }
+
+    public Player(World world, List<Actor> enemies) {
+        this(world);
+        this.enemies = enemies;
+    }
+
+    public List<Actor> getEnemies() {
+        return enemies;
+    }
+
+    @Override
+    public void onAttacked(Actor attacker) {
+        pushState(new PlayerHurtState(this, attacker));
     }
 
     @Override

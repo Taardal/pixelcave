@@ -1,5 +1,6 @@
 package no.taardal.blossom.level;
 
+import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.actor.Naga;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.actor.Player;
@@ -12,7 +13,9 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Level {
 
@@ -21,13 +24,16 @@ public class Level {
     private World world;
     private RibbonManager ribbonManager;
     private Player player;
-    private Naga naga;
+    private List<Actor> enemies;
 
     public Level(World world, RibbonManager ribbonManager) {
         this.world = world;
         this.ribbonManager = ribbonManager;
-        player = new Player(world);
-        naga = new Naga(world);
+
+        enemies = new ArrayList<>();
+        enemies.add(new Naga(world));
+
+        player = new Player(world, enemies);
     }
 
     public void update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
@@ -35,18 +41,29 @@ public class Level {
         player.update(secondsSinceLastUpdate);
         camera.update(player.getX(), player.getY());
         ribbonManager.update(camera);
-        naga.update(secondsSinceLastUpdate);
+
+        for (Iterator<Actor> iterator = enemies.iterator(); iterator.hasNext(); ) {
+            Actor enemy = iterator.next();
+            if (enemy.isDead()) {
+                iterator.remove();
+            } else {
+                enemy.update(secondsSinceLastUpdate);
+            }
+        }
     }
 
     public void draw(Camera camera) {
         ribbonManager.draw(camera);
         drawTiles(camera);
         player.draw(camera);
-        naga.draw(camera);
+
+        for (Iterator<Actor> iterator = enemies.iterator(); iterator.hasNext(); ) {
+            iterator.next().draw(camera);
+        }
     }
 
     private void drawTiles(Camera camera) {
-        for (Iterator<Layer> layerIterator = world.getLayers().values().iterator(); layerIterator.hasNext();) {
+        for (Iterator<Layer> layerIterator = world.getLayers().values().iterator(); layerIterator.hasNext(); ) {
             Layer layer = layerIterator.next();
             if (layer.isVisible() && layer.getLayerType() == LayerType.TILELAYER) {
                 drawTiles(layer, camera);

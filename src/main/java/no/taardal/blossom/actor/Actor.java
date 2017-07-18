@@ -9,10 +9,11 @@ import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class Actor {
+public abstract class Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
@@ -21,6 +22,9 @@ public class Actor {
     Vector2d velocity;
     Direction direction;
     Deque<ActorState> states;
+    int health;
+    int damage;
+    boolean dead;
 
     private Actor() {
         states = new ArrayDeque<>();
@@ -71,9 +75,35 @@ public class Actor {
         this.direction = direction;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
     public Animation getAnimation() {
         return states.getFirst().getAnimation();
     }
+
+    public abstract void onAttacked(Actor attacker);
 
     public void update(double secondsSinceLastUpdate) {
         states.getFirst().update(secondsSinceLastUpdate);
@@ -84,6 +114,7 @@ public class Actor {
 
     public void draw(Camera camera) {
         getAnimation().draw(this, camera);
+        camera.drawRectangle(getX(), getY(), getWidth(), getHeight(), Color.RED);
     }
 
     public void pushState(ActorState actorState) {

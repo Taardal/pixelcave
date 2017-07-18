@@ -1,6 +1,7 @@
 package no.taardal.blossom.actor;
 
-import no.taardal.blossom.actorstate.enemystate.NagaAttackingState;
+import no.taardal.blossom.actorstate.enemystate.NagaHurtState;
+import no.taardal.blossom.actorstate.enemystate.NagaIdleState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.sprite.SpriteSheet;
@@ -26,7 +27,15 @@ public class Naga extends Actor {
         velocity = Vector2d.zero();
         direction = Direction.WEST;
         position = new Vector2d(250, 133);
-        pushState(new NagaAttackingState(this, world));
+        health = 50;
+        damage = 20;
+        pushState(new NagaIdleState(this, world));
+    }
+
+    @Override
+    public void onAttacked(Actor attacker) {
+        LOGGER.debug("OnAttacked [{}]", this);
+        pushState(new NagaHurtState(this, attacker));
     }
 
     @Override
@@ -38,4 +47,16 @@ public class Naga extends Actor {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Naga{" +
+                "position=" + position +
+                ", velocity=" + velocity +
+                ", direction=" + direction +
+                ", states=" + states +
+                ", health=" + health +
+                ", damage=" + damage +
+                ", dead=" + dead +
+                '}';
+    }
 }
