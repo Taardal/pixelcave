@@ -2,6 +2,7 @@ package no.taardal.blossom.actorstate.enemystate;
 
 import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.actor.Naga;
+import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.actorstate.ActorHurtState;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
@@ -40,7 +41,7 @@ public class NagaHurtState extends ActorHurtState<Naga, Actor> implements EnemyS
     }
 
     @Override
-    public void nextMove() {
+    public void nextMove(Player player) {
 
     }
 

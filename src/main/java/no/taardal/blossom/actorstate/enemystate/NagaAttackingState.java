@@ -1,6 +1,7 @@
 package no.taardal.blossom.actorstate.enemystate;
 
 import no.taardal.blossom.actor.Naga;
+import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
@@ -12,12 +13,12 @@ public class NagaAttackingState implements EnemyState {
 
     private static final Animation ATTACK_ANIMATION = getAttackAnimation();
 
-    private Naga naga;
+    private Naga actor;
     private Rectangle attackBounds;
     private boolean enemiesAttacked;
 
-    public NagaAttackingState(Naga naga, World world) {
-        this.naga = naga;
+    public NagaAttackingState(Naga actor, World world) {
+        this.actor = actor;
         attackBounds = getAttackBounds();
     }
 
@@ -40,11 +41,11 @@ public class NagaAttackingState implements EnemyState {
     public void update(double timeSinceLastUpdate) {
         getAnimation().update();
         if (getAnimation().isFinished()) {
-            naga.popState();
+            actor.popState();
         } else if (!enemiesAttacked && getAnimation().getFrame() == 3) {
             /*
             if (attackBounds.intersects(enemy.getBounds())) {
-                enemy.onAttacked(naga);
+                enemy.onAttacked(actor);
             }
             */
             enemiesAttacked = true;
@@ -59,8 +60,12 @@ public class NagaAttackingState implements EnemyState {
 
 
     @Override
-    public void nextMove() {
-
+    public void nextMove(Player player) {
+        if (actor.getPosition().getX() < player.getPosition().getX()) {
+            actor.setDirection(Direction.EAST);
+        } else if (actor.getPosition().getX() > player.getPosition().getX()) {
+            actor.setDirection(Direction.WEST);
+        }
     }
 
     @Override
@@ -75,19 +80,19 @@ public class NagaAttackingState implements EnemyState {
         }
         Animation animation = new Animation(sprites);
         animation.setUpdatesPerFrame(5);
-        animation.setIndefinite(true);
+        animation.setIndefinite(false);
         return animation;
     }
 
     private Rectangle getAttackBounds() {
         int width = 20;
-        int height = (int) (naga.getBounds().getHeight() / 2) + 5;
-        int y = (int) (naga.getBounds().getY());
+        int height = (int) (actor.getBounds().getHeight() / 2) + 5;
+        int y = (int) (actor.getBounds().getY());
         int x;
-        if (naga.getDirection() == Direction.EAST) {
-            x = (int) (naga.getBounds().getX() + (naga.getBounds().getWidth() / 2));
+        if (actor.getDirection() == Direction.EAST) {
+            x = (int) (actor.getBounds().getX() + (actor.getBounds().getWidth() / 2));
         } else {
-            x = (int) naga.getBounds().getX() - 10;
+            x = (int) actor.getBounds().getX() - 10;
         }
         return new Rectangle(x, y, width, height);
     }

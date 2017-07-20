@@ -18,12 +18,14 @@ public abstract class Actor {
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
     World world;
+    Deque<ActorState> states;
     Vector2d position;
     Vector2d velocity;
     Direction direction;
-    Deque<ActorState> states;
     int health;
     int damage;
+    int attackRange;
+    int movementSpeed;
     boolean dead;
 
     private Actor() {
@@ -94,6 +96,22 @@ public abstract class Actor {
         this.damage = damage;
     }
 
+    public int getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttackRange(int attackRange) {
+        this.attackRange = attackRange;
+    }
+
+    public int getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public void setMovementSpeed(int movementSpeed) {
+        this.movementSpeed = movementSpeed;
+    }
+
     public boolean isDead() {
         return dead;
     }
@@ -113,6 +131,7 @@ public abstract class Actor {
     public abstract void onAttacked(Actor attacker);
 
     public void update(double secondsSinceLastUpdate) {
+        //LOGGER.debug("Updating [{}]", states.getFirst());
         states.getFirst().update(secondsSinceLastUpdate);
     }
 

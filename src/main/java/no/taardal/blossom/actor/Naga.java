@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 
-public class Naga extends Actor {
+public class Naga extends Enemy {
 
     public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
             .directory("naga")
@@ -31,6 +31,8 @@ public class Naga extends Actor {
         position = new Vector2d(250, 133);
         health = 50;
         damage = 20;
+        attackRange = 20;
+        movementSpeed = 20;
         pushState(new NagaIdleState(this, world));
     }
 

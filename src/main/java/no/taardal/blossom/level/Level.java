@@ -1,9 +1,9 @@
 package no.taardal.blossom.level;
 
-import no.taardal.blossom.actor.Actor;
+import no.taardal.blossom.actor.Enemy;
 import no.taardal.blossom.actor.Naga;
-import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.layer.LayerType;
@@ -24,7 +24,7 @@ public class Level {
     private World world;
     private RibbonManager ribbonManager;
     private Player player;
-    private List<Actor> enemies;
+    private List<Enemy> enemies;
 
     public Level(World world, RibbonManager ribbonManager) {
         this.world = world;
@@ -36,14 +36,20 @@ public class Level {
         player = new Player(world, enemies);
     }
 
-    public void update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
+    public void handleInput(Keyboard keyboard) {
         player.handleInput(keyboard);
+    }
+
+    public void update(double secondsSinceLastUpdate, Camera camera) {
+        for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
+            Enemy enemy = iterator.next();
+            enemy.nextMove(player);
+        }
         player.update(secondsSinceLastUpdate);
         camera.update(player.getX(), player.getY());
         ribbonManager.update(camera);
-
-        for (Iterator<Actor> iterator = enemies.iterator(); iterator.hasNext(); ) {
-            Actor enemy = iterator.next();
+        for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
+            Enemy enemy = iterator.next();
             if (enemy.isDead()) {
                 iterator.remove();
             } else {
@@ -57,7 +63,7 @@ public class Level {
         drawTiles(camera);
         player.draw(camera);
 
-        for (Iterator<Actor> iterator = enemies.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
             iterator.next().draw(camera);
         }
     }

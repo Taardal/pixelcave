@@ -13,26 +13,25 @@ public abstract class ActorWalkingState<T extends Actor> implements ActorState {
 
     protected T actor;
     protected World world;
+    protected Vector2d distanceWalked;
 
     public ActorWalkingState(T actor, World world) {
         this.actor = actor;
         this.world = world;
+        distanceWalked = Vector2d.zero();
     }
 
     @Override
     public void onEntry() {
-        if (actor.getDirection() == Direction.WEST) {
-            actor.setVelocity(new Vector2d(-getVelocityX(), actor.getVelocity().getY()));
-        } else if (actor.getDirection() == Direction.EAST) {
-            actor.setVelocity(new Vector2d(getVelocityX(), actor.getVelocity().getY()));
-        }
+        actor.setVelocity(getVelocity());
     }
 
     @Override
-    public void update(double timeSinceLastUpdate) {
+    public void update(double secondsSinceLastUpdate) {
         getAnimation().update();
-        Vector2d distance = actor.getVelocity().multiply(timeSinceLastUpdate);
-        actor.setPosition(actor.getPosition().add(distance));
+        distanceWalked = actor.getVelocity().multiply(secondsSinceLastUpdate);
+        actor.setPosition(actor.getPosition().add(distanceWalked));
+        updateBounds();
     }
 
     @Override
@@ -47,6 +46,12 @@ public abstract class ActorWalkingState<T extends Actor> implements ActorState {
 
     protected abstract void updateBounds();
 
-    protected abstract int getVelocityX();
+    protected Vector2d getVelocity() {
+        if (actor.getDirection() == Direction.WEST) {
+            return new Vector2d(-actor.getMovementSpeed(), actor.getVelocity().getY());
+        } else {
+            return new Vector2d(actor.getMovementSpeed(), actor.getVelocity().getY());
+        }
+    }
 
 }

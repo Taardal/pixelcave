@@ -1,9 +1,11 @@
 package no.taardal.blossom.actorstate.enemystate;
 
 import no.taardal.blossom.actor.Naga;
+import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.actorstate.ActorIdleState;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
+import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +33,19 @@ public class NagaIdleState extends ActorIdleState<Naga> implements EnemyState {
     }
 
     @Override
-    public void nextMove() {
+    public void nextMove(Player player) {
+        int radius = 20;
+        double length = Vector2d.getLength(actor.getPosition(), player.getPosition());
+        if (length <= radius) {
+            actor.pushState(new NagaAttackingState(actor, world));
+        } else {
+            actor.changeState(new NagaWalkingState(actor, world));
+        }
+    }
 
+    @Override
+    public String toString() {
+        return "NagaIdleState{}";
     }
 
     @Override

@@ -27,19 +27,21 @@ public class Player extends Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-    private List<Actor> enemies;
+    private List<Enemy> enemies;
 
     public Player(World world) {
         super(world);
-        position = new Vector2d(209, 133);
+        position = new Vector2d(0, 133);
         velocity = Vector2d.zero();
         direction = Direction.EAST;
         health = 100;
         damage = 50;
+        attackRange = 20;
+        movementSpeed = 100;
         pushState(new PlayerFallingState(this, world));
     }
 
-    public Player(World world, List<Actor> enemies) {
+    public Player(World world, List<Enemy> enemies) {
         this(world);
         this.enemies = enemies;
     }
@@ -54,7 +56,7 @@ public class Player extends Actor {
         return SPRITE_SHEET.getSpriteHeight();
     }
 
-    public List<Actor> getEnemies() {
+    public List<Enemy> getEnemies() {
         return enemies;
     }
 
