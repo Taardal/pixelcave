@@ -43,6 +43,7 @@ public class GameLoop implements Runnable {
             delta += timeSinceLastPass / NANOSECONDS_PER_UPDATE;
             lastTimeNano = currentTimeNano;
             if (delta >= 1) {
+                gameLoopListener.onHandleInput();
                 gameLoopListener.onUpdate(nanosecondsSinceLastUpdate / ONE_SECOND_IN_NANOSECONDS);
                 updates++;
                 delta--;

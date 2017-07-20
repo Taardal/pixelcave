@@ -11,8 +11,8 @@ public class Vector2d {
     }
 
     public static double getLength(Vector2d a, Vector2d b) {
-        double x = a.getX() - b.getX();
-        double y = a.getY() - b.getY();
+        double x = Math.abs(a.getX() - b.getX());
+        double y = Math.abs(a.getY() - b.getY());
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 

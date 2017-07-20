@@ -17,8 +17,14 @@ public class PlayGameState implements GameState {
     }
 
     @Override
-    public GameState update(double secondsSinceLastUpdate, Keyboard keyboard, Camera camera) {
-        level.update(secondsSinceLastUpdate, keyboard, camera);
+    public GameState handleInput(Keyboard keyboard) {
+        level.handleInput(keyboard);
+        return null;
+    }
+
+    @Override
+    public GameState update(double secondsSinceLastUpdate, Camera camera) {
+        level.update(secondsSinceLastUpdate, camera);
         return null;
     }
 

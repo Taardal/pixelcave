@@ -53,9 +53,18 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     }
 
     @Override
+    public void onHandleInput() {
+        GameState gameState = this.gameState.handleInput(keyboard);
+        if (gameState != null) {
+            LOGGER.debug("Changing game state to [{}]", gameState);
+            this.gameState = gameState;
+        }
+    }
+
+    @Override
     public void onUpdate(double secondsSinceLastUpdate) {
         keyboard.update();
-        GameState gameState = this.gameState.update(secondsSinceLastUpdate, keyboard, camera);
+        GameState gameState = this.gameState.update(secondsSinceLastUpdate, camera);
         if (gameState != null) {
             LOGGER.debug("Changing game state to [{}]", gameState);
             this.gameState = gameState;

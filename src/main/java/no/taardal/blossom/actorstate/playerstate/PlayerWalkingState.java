@@ -7,23 +7,17 @@ import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.Sprite;
-import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 
 import java.awt.*;
 
-public class PlayerRunningState extends ActorWalkingState<Player> implements PlayerState {
+public class PlayerWalkingState extends ActorWalkingState<Player> implements PlayerState {
 
     private static final Animation RUNNING_ANIMATION = getRunningAnimation();
     private static final Rectangle BOUNDS = new Rectangle(27, 27);
 
-    public PlayerRunningState(Player player, World world) {
+    public PlayerWalkingState(Player player, World world) {
         super(player, world);
-    }
-
-    @Override
-    public int getVelocityX() {
-        return 100;
     }
 
     @Override
@@ -37,20 +31,14 @@ public class PlayerRunningState extends ActorWalkingState<Player> implements Pla
     }
 
     @Override
-    public void update(double secondsSinceLastUpdate) {
-        super.update(secondsSinceLastUpdate);
-        updateBounds();
-    }
-
-    @Override
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 actor.setDirection(Direction.WEST);
-                actor.setVelocity(new Vector2d(-getVelocityX(), actor.getVelocity().getY()));
+                actor.setVelocity(getVelocity());
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
                 actor.setDirection(Direction.EAST);
-                actor.setVelocity(new Vector2d(getVelocityX(), actor.getVelocity().getY()));
+                actor.setVelocity(getVelocity());
             }
         } else {
             actor.changeState(new PlayerIdleState(actor, world));

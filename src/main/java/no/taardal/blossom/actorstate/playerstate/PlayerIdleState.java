@@ -36,7 +36,7 @@ public class PlayerIdleState extends ActorIdleState<Player> implements PlayerSta
     @Override
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-            actor.changeState(new PlayerRunningState(actor, world));
+            actor.changeState(new PlayerWalkingState(actor, world));
         } else if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
             actor.changeState(new PlayerJumpingState(actor, world));
         } else if (keyboard.isPressed(KeyBinding.CROUCH)) {
