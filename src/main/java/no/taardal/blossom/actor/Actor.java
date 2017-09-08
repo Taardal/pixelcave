@@ -4,6 +4,7 @@ import no.taardal.blossom.actorstate.ActorState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public abstract class Actor {
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
     World world;
+    SpriteSheet spriteSheet;
     Deque<ActorState> states;
     Vector2d position;
     Vector2d velocity;
@@ -35,10 +37,13 @@ public abstract class Actor {
         direction = Direction.EAST;
     }
 
-    public Actor(World world) {
+    public Actor(World world, SpriteSheet spriteSheet) {
         this();
         this.world = world;
+        this.spriteSheet = spriteSheet;
     }
+
+    public abstract void onAttacked(Actor attacker);
 
     public int getX() {
         return (int) position.getX();
@@ -49,67 +54,11 @@ public abstract class Actor {
     }
 
     public int getWidth() {
-        return getAnimation().getWidth();
+        return spriteSheet.getWidth();
     }
 
     public int getHeight() {
-        return getAnimation().getHeight();
-    }
-
-    public Vector2d getPosition() {
-        return position;
-    }
-
-    public void setPosition(Vector2d position) {
-        this.position = position;
-    }
-
-    public Vector2d getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Vector2d velocity) {
-        this.velocity = velocity;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public int getAttackRange() {
-        return attackRange;
-    }
-
-    public void setAttackRange(int attackRange) {
-        this.attackRange = attackRange;
-    }
-
-    public int getMovementSpeed() {
-        return movementSpeed;
-    }
-
-    public void setMovementSpeed(int movementSpeed) {
-        this.movementSpeed = movementSpeed;
+        return spriteSheet.getHeight();
     }
 
     public boolean isDead() {
@@ -121,18 +70,15 @@ public abstract class Actor {
     }
 
     public Animation getAnimation() {
-        return states.getFirst().getAnimation();
+        return getCurrentState().getAnimation();
     }
 
     public Rectangle getBounds() {
-        return states.getFirst().getBounds();
+        return getCurrentState().getBounds();
     }
 
-    public abstract void onAttacked(Actor attacker);
-
     public void update(double secondsSinceLastUpdate) {
-        //LOGGER.debug("Updating [{}]", states.getFirst());
-        states.getFirst().update(secondsSinceLastUpdate);
+        getCurrentState().update(secondsSinceLastUpdate);
     }
 
     public void draw(Camera camera) {
@@ -148,7 +94,7 @@ public abstract class Actor {
     }
 
     public void popState() {
-        states.getFirst().onExit();
+        getCurrentState().onExit();
         states.removeFirst();
     }
 
@@ -156,4 +102,9 @@ public abstract class Actor {
         popState();
         pushState(actorState);
     }
+
+    private ActorState getCurrentState() {
+        return states.getFirst();
+    }
+
 }

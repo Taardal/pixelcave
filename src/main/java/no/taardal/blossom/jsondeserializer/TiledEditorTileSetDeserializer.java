@@ -1,7 +1,7 @@
 package no.taardal.blossom.jsondeserializer;
 
 import com.google.gson.*;
-import no.taardal.blossom.service.ResourceService;
+import no.taardal.blossom.service.FileService;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.tile.TileSet;
 import org.slf4j.Logger;
@@ -15,10 +15,10 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TiledEditorTileSetDeserializer.class);
 
-    private ResourceService resourceService;
+    private FileService fileService;
 
-    public TiledEditorTileSetDeserializer(ResourceService resourceService) {
-        this.resourceService = resourceService;
+    public TiledEditorTileSetDeserializer(FileService fileService) {
+        this.fileService = fileService;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
 
     private List<Tile> getTiles(String imagePath, int tileWidth, int tileHeight) {
         List<Tile> tiles = new ArrayList<>();
-        BufferedImage bufferedImage = resourceService.getImage(imagePath);
+        BufferedImage bufferedImage = fileService.getImage(imagePath);
         int numberOfTilesY = bufferedImage.getHeight() / tileHeight;
         int numberOfTilesX = bufferedImage.getWidth() / tileWidth;
         for (int y = 0; y < numberOfTilesY; y++) {
@@ -79,7 +79,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
 
     private BufferedImage getTileBufferedImage(JsonElement jsonElement) {
         String imagePath = jsonElement.getAsJsonObject().get("image").getAsString().replaceFirst("../", "");
-        return resourceService.getImage(imagePath);
+        return fileService.getImage(imagePath);
     }
 
 }

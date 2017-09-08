@@ -13,9 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ResourceFileService implements ResourceService {
+public class LocalFileService implements FileService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFileService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileService.class);
 
     @Override
     public BufferedImage getImage(String path) {

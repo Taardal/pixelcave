@@ -1,12 +1,13 @@
 package no.taardal.blossom.actor;
 
 import no.taardal.blossom.actorstate.enemystate.EnemyState;
+import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.world.World;
 
 public abstract class Enemy extends Actor {
 
-    public Enemy(World world) {
-        super(world);
+    public Enemy(World world, SpriteSheet spriteSheet) {
+        super(world, spriteSheet);
     }
 
     public void nextMove(Player player) {

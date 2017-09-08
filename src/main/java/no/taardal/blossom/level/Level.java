@@ -1,40 +1,40 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.actor.Enemy;
-import no.taardal.blossom.actor.Naga;
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.layer.LayerType;
 import no.taardal.blossom.ribbon.RibbonManager;
+import no.taardal.blossom.service.ResourceService;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Level {
+public abstract class Level {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Level.class);
 
-    private World world;
-    private RibbonManager ribbonManager;
-    private Player player;
-    private List<Enemy> enemies;
+    World world;
+    RibbonManager ribbonManager;
+    Player player;
+    List<Enemy> enemies;
 
-    public Level(World world, RibbonManager ribbonManager) {
-        this.world = world;
-        this.ribbonManager = ribbonManager;
-
-        enemies = new ArrayList<>();
-        enemies.add(new Naga(world));
-
-        player = new Player(world, enemies);
+    Level(String name, ResourceService resourceService) {
+        world = resourceService.getWorld(name);
+        ribbonManager = resourceService.getRibbonManager(name);
+        enemies = getEnemies(resourceService);
+        player = getPlayer(resourceService);
     }
+
+    abstract List<Enemy> getEnemies(ResourceService resourceService);
+
+    abstract Player getPlayer(ResourceService resourceService);
 
     public void handleInput(Keyboard keyboard) {
         player.handleInput(keyboard);

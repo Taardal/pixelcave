@@ -1,12 +1,9 @@
 package no.taardal.blossom.actor;
 
 import no.taardal.blossom.actorstate.enemystate.NagaHurtState;
-import no.taardal.blossom.actorstate.enemystate.NagaIdleState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.sprite.SpriteSheet;
-import no.taardal.blossom.sprite.SpriteSheetBuilder;
-import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,35 +12,10 @@ import java.awt.*;
 
 public class Naga extends Enemy {
 
-    public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
-            .directory("naga")
-            .fileName("naga-female-sheet-violet.png")
-            .spriteWidth(60)
-            .spriteHeight(60)
-            .build();
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
-    public Naga(World world) {
-        super(world);
-        velocity = Vector2d.zero();
-        direction = Direction.WEST;
-        position = new Vector2d(250, 133);
-        health = 50;
-        damage = 20;
-        attackRange = 20;
-        movementSpeed = 20;
-        pushState(new NagaIdleState(this, world));
-    }
-
-    @Override
-    public int getWidth() {
-        return SPRITE_SHEET.getSpriteWidth();
-    }
-
-    @Override
-    public int getHeight() {
-        return SPRITE_SHEET.getSpriteHeight();
+    public Naga(World world, SpriteSheet spriteSheet) {
+        super(world, spriteSheet);
     }
 
     @Override

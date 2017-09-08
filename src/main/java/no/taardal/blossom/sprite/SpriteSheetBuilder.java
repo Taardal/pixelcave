@@ -1,8 +1,7 @@
 package no.taardal.blossom.sprite;
 
 import no.taardal.blossom.Builder;
-import no.taardal.blossom.service.ResourceFileService;
-import no.taardal.blossom.service.ResourceService;
+import no.taardal.blossom.service.FileService;
 
 import java.awt.image.BufferedImage;
 
@@ -10,34 +9,30 @@ public class SpriteSheetBuilder implements Builder<SpriteSheet> {
 
     private static final String SPRITE_SHEET_PATH = "spritesheets";
 
-    private ResourceService resourceService;
-    private String directory;
-    private String fileName;
+    private FileService fileService;
+    private String name;
+    private String type;
     private int spriteWidth;
     private int spriteHeight;
 
-    public SpriteSheetBuilder() {
-        resourceService = new ResourceFileService();
-        directory = "";
-        fileName = "";
-        spriteWidth = 0;
-        spriteHeight = 0;
+    public SpriteSheetBuilder(FileService fileService) {
+        this.fileService = fileService;
     }
 
     @Override
     public SpriteSheet build() {
-        String path = SPRITE_SHEET_PATH + "/" + directory + "/" + fileName;
-        BufferedImage bufferedImage = resourceService.getImage(path);
+        String path = SPRITE_SHEET_PATH + "/" + type + "/" + name;
+        BufferedImage bufferedImage = fileService.getImage(path);
         return new SpriteSheet(bufferedImage, spriteWidth, spriteHeight);
     }
 
-    public SpriteSheetBuilder directory(String directory) {
-        this.directory = directory;
+    public SpriteSheetBuilder name(String name) {
+        this.name = name;
         return this;
     }
 
-    public SpriteSheetBuilder fileName(String fileName) {
-        this.fileName = fileName;
+    public SpriteSheetBuilder category(String type) {
+        this.type = type;
         return this;
     }
 
