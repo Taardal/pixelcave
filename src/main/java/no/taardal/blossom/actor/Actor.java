@@ -37,20 +37,27 @@ public abstract class Actor {
         direction = Direction.EAST;
     }
 
+    public Actor(SpriteSheet spriteSheet) {
+        this();
+        this.spriteSheet = spriteSheet;
+    }
+
     public Actor(World world, SpriteSheet spriteSheet) {
         this();
         this.world = world;
         this.spriteSheet = spriteSheet;
     }
 
-    public abstract void onAttacked(Actor attacker);
-
-    public int getX() {
-        return (int) position.getX();
+    public World getWorld() {
+        return world;
     }
 
-    public int getY() {
-        return (int) position.getY();
+    public void setWorld(World world) {
+        this.world = world;
+    }
+
+    public SpriteSheet getSpriteSheet() {
+        return spriteSheet;
     }
 
     public int getWidth() {
@@ -61,6 +68,70 @@ public abstract class Actor {
         return spriteSheet.getHeight();
     }
 
+    public Vector2d getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector2d position) {
+        this.position = position;
+    }
+
+    public int getX() {
+        return (int) position.getX();
+    }
+
+    public int getY() {
+        return (int) position.getY();
+    }
+
+    public Vector2d getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(Vector2d velocity) {
+        this.velocity = velocity;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getAttackRange() {
+        return attackRange;
+    }
+
+    public void setAttackRange(int attackRange) {
+        this.attackRange = attackRange;
+    }
+
+    public int getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public void setMovementSpeed(int movementSpeed) {
+        this.movementSpeed = movementSpeed;
+    }
+
     public boolean isDead() {
         return dead;
     }
@@ -69,7 +140,7 @@ public abstract class Actor {
         this.dead = dead;
     }
 
-    public Animation getAnimation() {
+    public Animation getCurrentAnimation() {
         return getCurrentState().getAnimation();
     }
 
@@ -82,9 +153,9 @@ public abstract class Actor {
     }
 
     public void draw(Camera camera) {
-        getAnimation().draw(this, camera);
+        getCurrentAnimation().draw(this, camera);
         if (getBounds() != null) {
-            camera.drawRectangle(getX(), getY(), getAnimation().getWidth(), getAnimation().getHeight(), Color.YELLOW);
+            camera.drawRectangle(getX(), getY(), getCurrentAnimation().getWidth(), getCurrentAnimation().getHeight(), Color.YELLOW);
         }
     }
 
@@ -102,6 +173,8 @@ public abstract class Actor {
         popState();
         pushState(actorState);
     }
+
+    public abstract void onAttacked(Actor attacker);
 
     private ActorState getCurrentState() {
         return states.getFirst();

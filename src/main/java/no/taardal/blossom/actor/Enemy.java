@@ -6,6 +6,10 @@ import no.taardal.blossom.world.World;
 
 public abstract class Enemy extends Actor {
 
+    public Enemy(SpriteSheet spriteSheet) {
+        super(spriteSheet);
+    }
+
     public Enemy(World world, SpriteSheet spriteSheet) {
         super(world, spriteSheet);
     }

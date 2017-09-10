@@ -72,7 +72,7 @@ public class NagaWalkingState extends ActorWalkingState<Naga> implements EnemySt
     private static Animation getWalkingAnimation() {
         Sprite[] sprites = new Sprite[7];
         for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][1];
+            //sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][1];
         }
         return new Animation(sprites);
     }

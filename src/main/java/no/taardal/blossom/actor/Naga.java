@@ -1,6 +1,7 @@
 package no.taardal.blossom.actor;
 
 import no.taardal.blossom.actorstate.enemystate.NagaHurtState;
+import no.taardal.blossom.actorstate.enemystate.NagaIdleState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.sprite.SpriteSheet;
@@ -14,8 +15,18 @@ public class Naga extends Enemy {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
+    public enum Variation {
+        VIOLET,
+        MAGMA
+    }
+
+    public Naga(SpriteSheet spriteSheet) {
+        super(spriteSheet);
+    }
+
     public Naga(World world, SpriteSheet spriteSheet) {
         super(world, spriteSheet);
+        pushState(new NagaIdleState(this, world));
     }
 
     @Override
@@ -26,7 +37,7 @@ public class Naga extends Enemy {
     @Override
     public void draw(Camera camera) {
         if (direction == Direction.EAST) {
-            getAnimation().drawFlippedHorizontally(this, camera);
+            getCurrentAnimation().drawFlippedHorizontally(this, camera);
         } else {
             super.draw(camera);
         }

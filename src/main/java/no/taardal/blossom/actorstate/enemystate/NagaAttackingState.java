@@ -76,7 +76,7 @@ public class NagaAttackingState implements EnemyState {
     private static Animation getAttackAnimation() {
         Sprite[] sprites = new Sprite[10];
         for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][2];
+            //sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][2];
         }
         Animation animation = new Animation(sprites);
         animation.setUpdatesPerFrame(5);

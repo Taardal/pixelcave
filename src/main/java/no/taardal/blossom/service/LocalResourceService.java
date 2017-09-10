@@ -1,67 +1,69 @@
 package no.taardal.blossom.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import no.taardal.blossom.jsondeserializer.*;
-import no.taardal.blossom.layer.Layer;
-import no.taardal.blossom.ribbon.Ribbon;
-import no.taardal.blossom.ribbon.RibbonManager;
-import no.taardal.blossom.sprite.SpriteSheetBuilder;
-import no.taardal.blossom.tile.TileSet;
-import no.taardal.blossom.world.World;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class LocalResourceService implements ResourceService {
 
-    private static final String WORLDS_RESOURCE_PATH = "worlds";
-    private static final String RIBBONS_RESOURCE_PATH = "ribbons";
-    private static final String SPRITE_SHEET_RESOURCE_PATH = "spritesheets";
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalResourceService.class);
 
-    private FileService fileService;
-    private Gson gson;
-
-    public LocalResourceService() {
-        fileService = new LocalFileService();
-        gson = getGson();
+    @Override
+    public BufferedImage getImage(String path) {
+        return getBufferedImage(getResourceURL(path));
     }
 
     @Override
-    public World getWorld(String name) {
-        String path = WORLDS_RESOURCE_PATH + "/" + name + ".json";
-        return gson.fromJson(fileService.readFile(path), World.class);
+    public String readFile(String path) {
+        return readFile(Paths.get(getUri(path)));
     }
 
     @Override
-    public RibbonManager getRibbonManager(String name) {
-        return new RibbonManager(getRibbons(name));
-    }
-
-    @Override
-    public SpriteSheetBuilder getSpriteSheet() {
-        return new SpriteSheetBuilder(fileService);
-    }
-
-    private Gson getGson() {
-        return new GsonBuilder()
-                .registerTypeAdapter(World.class, new TiledEditorWorldDeserializer())
-                .registerTypeAdapter(TileSet[].class, new TiledEditorTileSetsDeserializer())
-                .registerTypeAdapter(TileSet.class, new TiledEditorTileSetDeserializer(fileService))
-                .registerTypeAdapter(Layer[].class, new TiledEditorLayersDeserializer())
-                .registerTypeAdapter(Layer.class, new TiledEditorLayerDeserializer())
-                .create();
-    }
-
-    private List<Ribbon> getRibbons(String name) {
-        List<Ribbon> ribbons = new ArrayList<>();
-        String directoryPath = RIBBONS_RESOURCE_PATH + "/" + name;
-        for (String fileName : fileService.getFileNames(directoryPath)) {
-            BufferedImage bufferedImage = fileService.getImage(directoryPath + "/" + fileName);
-            ribbons.add(new Ribbon(bufferedImage));
+    public String[] getFileNames(String path) {
+        String[] fileNames = new File(getUri(path)).list();
+        if (fileNames != null) {
+            return fileNames;
+        } else {
+            LOGGER.warn("Could not find any files on path [{}].", path);
+            return new String[]{};
         }
-        return ribbons;
+    }
+
+    private BufferedImage getBufferedImage(URL url) {
+        try {
+            return ImageIO.read(url);
+        } catch (IOException | IllegalArgumentException e) {
+            LOGGER.error("Could not read image from URL [{}].", url, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String readFile(Path path) {
+        try {
+            return new String(Files.readAllBytes(path));
+        } catch (IOException e) {
+            LOGGER.error("Could not read file from path [{}].", path, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private URI getUri(String path) {
+        try {
+            return getResourceURL(path).toURI();
+        } catch (URISyntaxException e) {
+            LOGGER.error("Could not get resource URI from path [{}].", path, e);
+            throw new RuntimeException(e);
+        }
     }
 
 }

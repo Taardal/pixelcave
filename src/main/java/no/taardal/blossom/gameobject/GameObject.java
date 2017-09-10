@@ -1,9 +1,12 @@
 package no.taardal.blossom.gameobject;
 
+import java.util.Map;
+
 public class GameObject {
 
     private String name;
     private String type;
+    private Map<String, Object> properties;
     private int id;
     private int width;
     private int height;
@@ -11,25 +14,6 @@ public class GameObject {
     private float y;
     private float rotation;
     private boolean visible;
-
-    public GameObject(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "GameObject{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", id=" + id +
-                ", width=" + width +
-                ", height=" + height +
-                ", x=" + x +
-                ", y=" + y +
-                ", rotation=" + rotation +
-                ", visible=" + visible +
-                '}';
-    }
 
     public String getName() {
         return name;
@@ -47,8 +31,20 @@ public class GameObject {
         this.type = type;
     }
 
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getWidth() {
@@ -98,4 +94,20 @@ public class GameObject {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
+
+    @Override
+    public String toString() {
+        return "GameObject{" +
+                "fileName='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", id=" + id +
+                ", width=" + width +
+                ", height=" + height +
+                ", x=" + x +
+                ", y=" + y +
+                ", rotation=" + rotation +
+                ", visible=" + visible +
+                '}';
+    }
+
 }

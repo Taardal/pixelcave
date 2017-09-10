@@ -34,7 +34,7 @@ public class NagaDeadState extends ActorDeadState<Naga> implements EnemyState {
     private static Animation getDeathAnimation() {
         Sprite[] sprites = new Sprite[11];
         for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][6];
+            //sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][6];
         }
         Animation animation = new Animation(sprites);
         animation.setUpdatesPerFrame(5);

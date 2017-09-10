@@ -1,38 +1,49 @@
 package no.taardal.blossom.sprite;
 
-import no.taardal.blossom.Builder;
-import no.taardal.blossom.service.FileService;
+import no.taardal.blossom.builder.Builder;
+import no.taardal.blossom.service.ResourceService;
 
 import java.awt.image.BufferedImage;
 
 public class SpriteSheetBuilder implements Builder<SpriteSheet> {
 
-    private static final String SPRITE_SHEET_PATH = "spritesheets";
+    private static final String RESOURCE_PATH = "spritesheets";
 
-    private FileService fileService;
-    private String name;
-    private String type;
+    private ResourceService resourceService;
+    private String fileName;
+    private String fileType;
+    private String directory;
+    private String relativePath;
     private int spriteWidth;
     private int spriteHeight;
 
-    public SpriteSheetBuilder(FileService fileService) {
-        this.fileService = fileService;
+    public SpriteSheetBuilder(ResourceService resourceService) {
+        this.resourceService = resourceService;
     }
 
     @Override
     public SpriteSheet build() {
-        String path = SPRITE_SHEET_PATH + "/" + type + "/" + name;
-        BufferedImage bufferedImage = fileService.getImage(path);
+        BufferedImage bufferedImage = resourceService.getImage(getPath());
         return new SpriteSheet(bufferedImage, spriteWidth, spriteHeight);
     }
 
-    public SpriteSheetBuilder name(String name) {
-        this.name = name;
+    public SpriteSheetBuilder fileName(String fileName) {
+        this.fileName = fileName;
         return this;
     }
 
-    public SpriteSheetBuilder category(String type) {
-        this.type = type;
+    public SpriteSheetBuilder fileType(String fileType) {
+        this.fileType = fileType;
+        return this;
+    }
+
+    public SpriteSheetBuilder directory(String directory) {
+        this.directory = directory;
+        return this;
+    }
+
+    public SpriteSheetBuilder relativePath(String relativePath) {
+        this.relativePath = relativePath;
         return this;
     }
 
@@ -44,6 +55,17 @@ public class SpriteSheetBuilder implements Builder<SpriteSheet> {
     public SpriteSheetBuilder spriteHeight(int spriteHeight) {
         this.spriteHeight = spriteHeight;
         return this;
+    }
+
+    private String getPath() {
+        if (relativePath != null && !relativePath.isEmpty()) {
+            return RESOURCE_PATH + "/" + relativePath;
+        } else {
+            if (fileType == null || fileType.isEmpty()) {
+                fileType = "png";
+            }
+            return RESOURCE_PATH + "/" + directory + "/" + fileName + "." + fileType;
+        }
     }
 
 }

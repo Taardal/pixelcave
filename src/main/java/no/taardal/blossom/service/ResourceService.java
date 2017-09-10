@@ -1,15 +1,16 @@
 package no.taardal.blossom.service;
 
-import no.taardal.blossom.ribbon.RibbonManager;
-import no.taardal.blossom.sprite.SpriteSheetBuilder;
-import no.taardal.blossom.world.World;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 
 public interface ResourceService {
 
-    World getWorld(String name);
+    default URL getResourceURL(String path) {
+        return getClass().getClassLoader().getResource(path);
+    }
 
-    RibbonManager getRibbonManager(String name);
-
-    SpriteSheetBuilder getSpriteSheet();
+    BufferedImage getImage(String path);
+    String readFile(String path);
+    String[] getFileNames(String path);
 
 }

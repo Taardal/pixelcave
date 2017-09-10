@@ -1,4 +1,4 @@
-package no.taardal.blossom;
+package no.taardal.blossom.builder;
 
 public interface Builder<T> {
 

@@ -3,16 +3,19 @@ package no.taardal.blossom.level;
 import no.taardal.blossom.actor.Enemy;
 import no.taardal.blossom.actor.Player;
 import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.gameobject.GameObject;
 import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.layer.GameObjectLayer;
 import no.taardal.blossom.layer.Layer;
-import no.taardal.blossom.layer.LayerType;
+import no.taardal.blossom.layer.TileLayer;
 import no.taardal.blossom.ribbon.RibbonManager;
-import no.taardal.blossom.service.ResourceService;
+import no.taardal.blossom.service.GameAssetService;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,24 +23,39 @@ public abstract class Level {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Level.class);
 
-    World world;
-    RibbonManager ribbonManager;
-    Player player;
-    List<Enemy> enemies;
+    private World world;
+    private RibbonManager ribbonManager;
+    private Player player;
+    private List<Enemy> enemies;
 
-    Level(String name, ResourceService resourceService) {
-        world = resourceService.getWorld(name);
-        ribbonManager = resourceService.getRibbonManager(name);
-        enemies = getEnemies(resourceService);
-        player = getPlayer(resourceService);
+    public Level(GameAssetService gameAssetService) {
+        world = getWorld(gameAssetService);
+        ribbonManager = getRibbonManager(gameAssetService);
+        enemies = getEnemies(gameAssetService);
     }
 
-    abstract List<Enemy> getEnemies(ResourceService resourceService);
+    protected abstract World getWorld(GameAssetService gameAssetService);
 
-    abstract Player getPlayer(ResourceService resourceService);
+    protected abstract RibbonManager getRibbonManager(GameAssetService gameAssetService);
+
+    protected List<Enemy> getEnemies(GameAssetService gameAssetService) {
+        List<Enemy> enemies = new ArrayList<>();
+        GameObjectLayer actorGameObjectLayer = (GameObjectLayer) world.getLayers().get("actor_layer");
+        for (int i = 0; i < actorGameObjectLayer.getGameObjects().size(); i++) {
+            GameObject actorGameObject = actorGameObjectLayer.getGameObjects().get(i);
+            if (actorGameObject.getType().equals("ENEMY")) {
+                Enemy enemy = getEnemy(actorGameObject, gameAssetService);
+                enemy.setWorld(world);
+                enemies.add(enemy);
+            }
+        }
+        return enemies;
+    }
+
+    protected abstract Enemy getEnemy(GameObject actorGameObject, GameAssetService spriteSheetBuilder);
 
     public void handleInput(Keyboard keyboard) {
-        player.handleInput(keyboard);
+        // player.handleInput(keyboard);
     }
 
     public void update(double secondsSinceLastUpdate, Camera camera) {
@@ -45,8 +63,9 @@ public abstract class Level {
             Enemy enemy = iterator.next();
             enemy.nextMove(player);
         }
-        player.update(secondsSinceLastUpdate);
-        camera.update(player.getX(), player.getY());
+        //player.update(secondsSinceLastUpdate);
+        //camera.update(player.getX(), player.getY());
+        camera.update(0, 0);
         ribbonManager.update(camera);
         for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
             Enemy enemy = iterator.next();
@@ -61,7 +80,7 @@ public abstract class Level {
     public void draw(Camera camera) {
         ribbonManager.draw(camera);
         drawTiles(camera);
-        player.draw(camera);
+        //player.draw(camera);
 
         for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
             iterator.next().draw(camera);
@@ -71,13 +90,13 @@ public abstract class Level {
     private void drawTiles(Camera camera) {
         for (Iterator<Layer> layerIterator = world.getLayers().values().iterator(); layerIterator.hasNext(); ) {
             Layer layer = layerIterator.next();
-            if (layer.isVisible() && layer.getLayerType() == LayerType.TILELAYER) {
-                drawTiles(layer, camera);
+            if (layer.isVisible() && layer.getType() == Layer.Type.TILE_LAYER) {
+                drawTiles((TileLayer) layer, camera);
             }
         }
     }
 
-    private void drawTiles(Layer layer, Camera camera) {
+    private void drawTiles(TileLayer tileLayer, Camera camera) {
         int topMostRowToDraw = (camera.getOffsetY() - world.getTileHeight()) / world.getTileHeight();
         int leftMostColumnToDraw = (camera.getOffsetX() - world.getTileWidth()) / world.getTileWidth();
         int rightMostColumnToDraw = (camera.getOffsetX() + (int) camera.getWidth() + world.getTileWidth()) / world.getTileWidth();
@@ -98,7 +117,7 @@ public abstract class Level {
                     break;
                 }
                 int x = column * world.getTileWidth();
-                int tileId = layer.getTileGrid()[column][row];
+                int tileId = tileLayer.getTileGrid()[column][row];
                 if (tileId != World.NO_TILE_ID) {
                     Tile tile = world.getTiles().get(tileId);
                     if (tile != null) {

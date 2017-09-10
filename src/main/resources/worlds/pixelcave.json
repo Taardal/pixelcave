@@ -6,7 +6,7 @@
          "name":"backup_layer",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":50,
          "x":0,
          "y":0
@@ -17,7 +17,7 @@
          "name":"background_environment_layer",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":50,
          "x":0,
          "y":0
@@ -43,11 +43,42 @@
          "width":50,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "name":"actor_layer",
+         "objects":[
+                {
+                 "height":60,
+                 "id":20,
+                 "name":"NAGA",
+                 "properties":
+                    {
+                     "gender":"FEMALE",
+                     "variation":"MAGMA"
+                    },
+                 "propertytypes":
+                    {
+                     "gender":"string",
+                     "variation":"string"
+                    },
+                 "rotation":0,
+                 "type":"ENEMY",
+                 "visible":true,
+                 "width":60,
+                 "x":48,
+                 "y":132
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":20,
+ "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.0.1",
+ "tiledversion":"1.0.2",
  "tileheight":16,
  "tilesets":[
         {

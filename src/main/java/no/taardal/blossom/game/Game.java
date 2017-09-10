@@ -1,20 +1,19 @@
 package no.taardal.blossom.game;
 
-import com.google.inject.Inject;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.gameloop.GameLoop;
+import no.taardal.blossom.gamestate.GameState;
+import no.taardal.blossom.gamestate.PlayGameState;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
-import no.taardal.blossom.gamestate.GameState;
-import no.taardal.blossom.gamestate.PlayGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.util.List;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
@@ -32,12 +31,13 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     private GameState gameState;
 
     @Inject
-    public Game(List<Level> levels) {
+    public Game(Level[] levels) {
         this.gameLoop = new GameLoop(this);
         this.keyboard = new Keyboard();
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
-        gameState = new PlayGameState(levels.get(0));
+
+        gameState = new PlayGameState(levels[0]);
     }
 
     public synchronized void start() {

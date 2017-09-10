@@ -2,6 +2,7 @@ package no.taardal.blossom.actorstate;
 
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.actor.Actor;
+import no.taardal.blossom.layer.TileLayer;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
@@ -65,7 +66,7 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
         int column = (int) nextPosition.getX() / world.getTileWidth();
         int actorBottomY = (int) nextPosition.getY() + actor.getHeight();
         int row = actorBottomY / world.getTileHeight();
-        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
+        int tileId = ((TileLayer) world.getLayers().get("main")).getTileGrid()[column][row];
         if (tileId != World.NO_TILE_ID) {
             Tile tile = world.getTiles().get(tileId);
             if (tile.isSlope()) {
@@ -106,7 +107,7 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
     public boolean isOnGround() {
         int column = actor.getX() / world.getTileWidth();
         int row = (actor.getY() + actor.getHeight()) / world.getTileHeight();
-        int tileId = world.getLayers().get("main").getTileGrid()[column][row];
+        int tileId = ((TileLayer) world.getLayers().get("main")).getTileGrid()[column][row];
         return tileId != World.NO_TILE_ID;
     }
 

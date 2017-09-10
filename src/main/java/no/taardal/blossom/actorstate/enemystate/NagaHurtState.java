@@ -55,7 +55,7 @@ public class NagaHurtState extends ActorHurtState<Naga, Actor> implements EnemyS
     private static Animation getHurtAnimation() {
         Sprite[] sprites = new Sprite[3];
         for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][4];
+           // sprites[i] = Naga.SPRITE_SHEET.getSprites()[i][4];
         }
         Animation animation = new Animation(sprites);
         animation.setUpdatesPerFrame(5);

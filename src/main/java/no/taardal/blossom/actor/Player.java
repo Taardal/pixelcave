@@ -7,7 +7,6 @@ import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.sprite.SpriteSheet;
-import no.taardal.blossom.sprite.SpriteSheetBuilder;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
@@ -18,19 +17,14 @@ import java.util.List;
 
 public class Player extends Actor {
 
-    public static final SpriteSheet SPRITE_SHEET = new SpriteSheetBuilder()
-            .directory("knight")
-            .fileName("spritesheet-knight-black.png")
-            .spriteWidth(40)
-            .spriteHeight(40)
-            .build();
+    public static final SpriteSheet SPRITE_SHEET = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
 
     private List<Enemy> enemies;
 
     public Player(World world) {
-        super(world);
+        super(world, null);
         position = new Vector2d(0, 133);
         velocity = Vector2d.zero();
         direction = Direction.EAST;
@@ -68,7 +62,7 @@ public class Player extends Actor {
     @Override
     public void draw(Camera camera) {
         if (direction == Direction.WEST) {
-            getAnimation().drawFlippedHorizontally(this, camera);
+            getCurrentAnimation().drawFlippedHorizontally(this, camera);
         } else {
             super.draw(camera);
         }
