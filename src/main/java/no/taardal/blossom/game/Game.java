@@ -2,12 +2,12 @@ package no.taardal.blossom.game;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.gameloop.GameLoop;
-import no.taardal.blossom.gamestate.GameState;
-import no.taardal.blossom.gamestate.PlayGameState;
 import no.taardal.blossom.keyboard.Keyboard;
 import no.taardal.blossom.level.Level;
 import no.taardal.blossom.listener.ExitListener;
 import no.taardal.blossom.listener.GameLoopListener;
+import no.taardal.blossom.state.game.GameState;
+import no.taardal.blossom.state.game.PlayGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

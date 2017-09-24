@@ -25,23 +25,6 @@ public class World {
     private int tileHeight;
     private int version;
 
-    @Override
-    public String toString() {
-        return "World{" +
-                "layers=" + layers +
-                ", tileSets=" + tileSets +
-                ", tiles=" + tiles +
-                ", orientation=" + orientation +
-                ", renderOrder=" + renderOrder +
-                ", width=" + width +
-                ", height=" + height +
-                ", nextObjectId=" + nextObjectId +
-                ", tileWidth=" + tileWidth +
-                ", tileHeight=" + tileHeight +
-                ", version=" + version +
-                '}';
-    }
-
     public Map<String, Layer> getLayers() {
         return layers;
     }
@@ -128,5 +111,22 @@ public class World {
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "World{" +
+                "layers=" + layers +
+                ", tileSets=" + tileSets +
+                ", tiles=" + tiles +
+                ", orientation=" + orientation +
+                ", renderOrder=" + renderOrder +
+                ", width=" + width +
+                ", height=" + height +
+                ", nextObjectId=" + nextObjectId +
+                ", tileWidth=" + tileWidth +
+                ", tileHeight=" + tileHeight +
+                ", version=" + version +
+                '}';
     }
 }

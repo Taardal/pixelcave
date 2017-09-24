@@ -1,32 +1,31 @@
 package no.taardal.blossom.actor;
 
-import no.taardal.blossom.actorstate.enemystate.NagaHurtState;
-import no.taardal.blossom.actorstate.enemystate.NagaIdleState;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
+import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
-import no.taardal.blossom.world.World;
+import no.taardal.blossom.state.actor.naga.NagaHurtState;
+import no.taardal.blossom.state.actor.naga.NagaIdleState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Naga extends Enemy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Player.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Knight.class);
 
-    public enum Variation {
+    public enum Theme {
         VIOLET,
         MAGMA
     }
 
     public Naga(SpriteSheet spriteSheet) {
         super(spriteSheet);
-    }
-
-    public Naga(World world, SpriteSheet spriteSheet) {
-        super(world, spriteSheet);
-        pushState(new NagaIdleState(this, world));
+        pushState(new NagaIdleState(this));
     }
 
     @Override
@@ -42,20 +41,71 @@ public class Naga extends Enemy {
             super.draw(camera);
         }
         if (getBounds() != null) {
-            camera.drawRectangle(getBounds(), Color.RED);
+            camera.drawBounds(getBounds(), Color.RED);
         }
     }
 
     @Override
-    public String toString() {
-        return "Naga{" +
-                "position=" + position +
-                ", velocity=" + velocity +
-                ", direction=" + direction +
-                ", states=" + states +
-                ", health=" + health +
-                ", damage=" + damage +
-                ", dead=" + dead +
-                '}';
+    protected Map<String, Animation> createAnimations() {
+        Map<String, Animation> animations = new HashMap<>();
+        animations.put("IDLE", getIdleAnimation());
+        animations.put("RUNNING", getRunningAnimation());
+        animations.put("ATTACKING", getAttackingAnimation());
+        animations.put("HURT", getHurtAnimation());
+        animations.put("DEATH", getDeathAnimation());
+        return animations;
     }
+
+    private Animation getIdleAnimation() {
+        Sprite[] sprites = new Sprite[6];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = spriteSheet.getSprites()[i][0];
+        }
+        Animation animation = new Animation(sprites);
+        animation.setUpdatesPerFrame(10);
+        return animation;
+    }
+
+    private Animation getRunningAnimation() {
+        Sprite[] sprites = new Sprite[7];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = spriteSheet.getSprites()[i][1];
+        }
+        return new Animation(sprites);
+    }
+
+    private Animation getAttackingAnimation() {
+        Sprite[] sprites = new Sprite[10];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = spriteSheet.getSprites()[i][2];
+        }
+        Animation animation = new Animation(sprites);
+        animation.setUpdatesPerFrame(5);
+        animation.setIndefinite(false);
+        return animation;
+    }
+
+    private Animation getHurtAnimation() {
+        Sprite[] sprites = new Sprite[3];
+        for (int i = 0; i < sprites.length; i++) {
+             sprites[i] = spriteSheet.getSprites()[i][4];
+        }
+        Animation animation = new Animation(sprites);
+        animation.setUpdatesPerFrame(5);
+        animation.setIndefinite(false);
+        return animation;
+
+    }
+
+    private Animation getDeathAnimation() {
+        Sprite[] sprites = new Sprite[11];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = spriteSheet.getSprites()[i][6];
+        }
+        Animation animation = new Animation(sprites);
+        animation.setUpdatesPerFrame(5);
+        animation.setIndefinite(false);
+        return animation;
+    }
+
 }

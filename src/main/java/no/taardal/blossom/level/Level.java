@@ -1,7 +1,9 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.actor.Enemy;
+import no.taardal.blossom.actor.Knight;
 import no.taardal.blossom.actor.Player;
+import no.taardal.blossom.builder.KnightBuilder;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.gameobject.GameObject;
 import no.taardal.blossom.keyboard.Keyboard;
@@ -25,37 +27,22 @@ public abstract class Level {
 
     private World world;
     private RibbonManager ribbonManager;
-    private Player player;
     private List<Enemy> enemies;
+    private Player player;
 
     public Level(GameAssetService gameAssetService) {
         world = getWorld(gameAssetService);
         ribbonManager = getRibbonManager(gameAssetService);
         enemies = getEnemies(gameAssetService);
+        player = new KnightBuilder(gameAssetService)
+                .theme(Knight.Theme.BLUE)
+                .position(0, 0)
+                .world(world)
+                .build();
     }
-
-    protected abstract World getWorld(GameAssetService gameAssetService);
-
-    protected abstract RibbonManager getRibbonManager(GameAssetService gameAssetService);
-
-    protected List<Enemy> getEnemies(GameAssetService gameAssetService) {
-        List<Enemy> enemies = new ArrayList<>();
-        GameObjectLayer actorGameObjectLayer = (GameObjectLayer) world.getLayers().get("actor_layer");
-        for (int i = 0; i < actorGameObjectLayer.getGameObjects().size(); i++) {
-            GameObject actorGameObject = actorGameObjectLayer.getGameObjects().get(i);
-            if (actorGameObject.getType().equals("ENEMY")) {
-                Enemy enemy = getEnemy(actorGameObject, gameAssetService);
-                enemy.setWorld(world);
-                enemies.add(enemy);
-            }
-        }
-        return enemies;
-    }
-
-    protected abstract Enemy getEnemy(GameObject actorGameObject, GameAssetService spriteSheetBuilder);
 
     public void handleInput(Keyboard keyboard) {
-        // player.handleInput(keyboard);
+        player.handleInput(keyboard);
     }
 
     public void update(double secondsSinceLastUpdate, Camera camera) {
@@ -63,8 +50,8 @@ public abstract class Level {
             Enemy enemy = iterator.next();
             enemy.nextMove(player);
         }
-        //player.update(secondsSinceLastUpdate);
-        //camera.update(player.getX(), player.getY());
+        player.update(secondsSinceLastUpdate);
+        camera.update((int) player.getPosition().getX(), (int) player.getPosition().getY());
         camera.update(0, 0);
         ribbonManager.update(camera);
         for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
@@ -80,11 +67,31 @@ public abstract class Level {
     public void draw(Camera camera) {
         ribbonManager.draw(camera);
         drawTiles(camera);
-        //player.draw(camera);
+        player.draw(camera);
 
         for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
             iterator.next().draw(camera);
         }
+    }
+
+    protected abstract World getWorld(GameAssetService gameAssetService);
+
+    protected abstract RibbonManager getRibbonManager(GameAssetService gameAssetService);
+
+    protected abstract Enemy getEnemy(GameObject actorGameObject, GameAssetService gameAssetService);
+
+    private List<Enemy> getEnemies(GameAssetService gameAssetService) {
+        List<Enemy> enemies = new ArrayList<>();
+        GameObjectLayer actorGameObjectLayer = (GameObjectLayer) world.getLayers().get("actor_layer");
+        for (int i = 0; i < actorGameObjectLayer.getGameObjects().size(); i++) {
+            GameObject actorGameObject = actorGameObjectLayer.getGameObjects().get(i);
+            if (actorGameObject.getType().equals("ENEMY")) {
+                Enemy enemy = getEnemy(actorGameObject, gameAssetService);
+                enemy.setWorld(world);
+                enemies.add(enemy);
+            }
+        }
+        return enemies;
     }
 
     private void drawTiles(Camera camera) {

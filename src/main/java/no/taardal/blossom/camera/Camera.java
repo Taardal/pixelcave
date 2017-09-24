@@ -1,6 +1,7 @@
 package no.taardal.blossom.camera;
 
 
+import no.taardal.blossom.bounds.Bounds;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.game.Game;
 import org.slf4j.Logger;
@@ -142,4 +143,9 @@ public class Camera extends Rectangle {
     public void drawRectangle(Rectangle2D rectangle, Color color) {
         drawRectangle((int) rectangle.getX(), (int) rectangle.getY(), (int) rectangle.getWidth(), (int) rectangle.getHeight(), color);
     }
+
+    public void drawBounds(Bounds rectangle, Color color) {
+        drawRectangle(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), color);
+    }
+
 }

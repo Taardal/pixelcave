@@ -1,26 +1,30 @@
 package no.taardal.blossom.actor;
 
-import no.taardal.blossom.actorstate.ActorState;
+import no.taardal.blossom.bounds.Bounds;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.sprite.Animation;
 import no.taardal.blossom.sprite.SpriteSheet;
+import no.taardal.blossom.state.actor.ActorState;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.*;
+import java.util.List;
 
 public abstract class Actor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
-    World world;
     SpriteSheet spriteSheet;
+    World world;
     Deque<ActorState> states;
+    Map<String, Animation> animations;
+    List<Enemy> enemies;
+    Bounds bounds;
     Vector2d position;
     Vector2d velocity;
     Direction direction;
@@ -32,20 +36,32 @@ public abstract class Actor {
 
     private Actor() {
         states = new ArrayDeque<>();
+        animations = new HashMap<>();
+        enemies = new ArrayList<>();
+        bounds = new Bounds();
         position = Vector2d.zero();
         velocity = Vector2d.zero();
         direction = Direction.EAST;
     }
 
+    protected abstract Map<String, Animation> createAnimations();
+
     public Actor(SpriteSheet spriteSheet) {
         this();
         this.spriteSheet = spriteSheet;
+        animations = createAnimations();
     }
 
-    public Actor(World world, SpriteSheet spriteSheet) {
-        this();
-        this.world = world;
-        this.spriteSheet = spriteSheet;
+    public Map<String, Animation> getAnimations() {
+        return animations;
+    }
+
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    public void setEnemies(List<Enemy> enemies) {
+        this.enemies = enemies;
     }
 
     public World getWorld() {
@@ -61,11 +77,11 @@ public abstract class Actor {
     }
 
     public int getWidth() {
-        return spriteSheet.getWidth();
+        return spriteSheet.getSpriteWidth();
     }
 
     public int getHeight() {
-        return spriteSheet.getHeight();
+        return spriteSheet.getSpriteHeight();
     }
 
     public Vector2d getPosition() {
@@ -144,8 +160,8 @@ public abstract class Actor {
         return getCurrentState().getAnimation();
     }
 
-    public Rectangle getBounds() {
-        return getCurrentState().getBounds();
+    public Bounds getBounds() {
+        return bounds;
     }
 
     public void update(double secondsSinceLastUpdate) {

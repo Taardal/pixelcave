@@ -12,7 +12,7 @@ public class NagaBuilder implements Builder<Naga> {
     private GameAssetService gameAssetService;
     private World world;
     private String gender;
-    private String variation;
+    private String theme;
     private Vector2d position;
 
     public NagaBuilder(GameAssetService gameAssetService) {
@@ -41,13 +41,13 @@ public class NagaBuilder implements Builder<Naga> {
         return this;
     }
 
-    public NagaBuilder variation(String variation) {
-        this.variation = variation;
+    public NagaBuilder theme(String theme) {
+        this.theme = theme;
         return this;
     }
 
-    public NagaBuilder variation(Naga.Variation variation) {
-        this.variation = variation.toString().toLowerCase();
+    public NagaBuilder theme(Naga.Theme theme) {
+        this.theme = theme.toString().toLowerCase();
         return this;
     }
 
@@ -62,7 +62,7 @@ public class NagaBuilder implements Builder<Naga> {
     }
 
     private SpriteSheet getSpriteSheet() {
-        String path = "naga/naga-" + gender + "-sheet1-" + variation + ".png";
+        String path = "naga/naga-" + gender + "-sheet-" + theme + ".png";
         int spriteWidth = 60;
         int spriteHeight = 60;
         return gameAssetService.getSpriteSheet(path, spriteWidth, spriteHeight);

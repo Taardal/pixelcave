@@ -36,10 +36,10 @@ public class PixelCaveLevel extends Level {
 
     private Enemy getNaga(GameObject actorGameObject, GameAssetService gameAssetService) {
         String gender = (String) actorGameObject.getProperties().get("gender");
-        String variation = (String) actorGameObject.getProperties().get("variation");
+        String theme = (String) actorGameObject.getProperties().get("variation");
         return new NagaBuilder(gameAssetService)
                 .gender(Gender.valueOf(gender))
-                .variation(Naga.Variation.valueOf(variation))
+                .theme(Naga.Theme.valueOf(theme))
                 .position(actorGameObject.getX(), actorGameObject.getY())
                 .build();
     }
