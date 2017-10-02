@@ -51,19 +51,19 @@
                 {
                  "height":60,
                  "id":20,
-                 "name":"NAGA",
+                 "name":"naga",
                  "properties":
                     {
-                     "gender":"FEMALE",
-                     "variation":"MAGMA"
+                     "gender":"female",
+                     "theme":"magma"
                     },
                  "propertytypes":
                     {
                      "gender":"string",
-                     "variation":"string"
+                     "theme":"string"
                     },
                  "rotation":0,
-                 "type":"ENEMY",
+                 "type":"enemy",
                  "visible":true,
                  "width":60,
                  "x":48,

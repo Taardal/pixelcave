@@ -18,8 +18,8 @@ import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     public static final String GAME_TITLE = "PixelCave";
-    public static final int GAME_WIDTH = 320;
-    public static final int GAME_HEIGHT = 240;
+    public static final int GAME_WIDTH = 480;
+    public static final int GAME_HEIGHT = GAME_WIDTH / 16 * 9;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
     private static final int SCALE = 3;
@@ -32,8 +32,8 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     @Inject
     public Game(Level[] levels) {
-        this.gameLoop = new GameLoop(this);
-        this.keyboard = new Keyboard();
+        gameLoop = new GameLoop(this);
+        keyboard = new Keyboard();
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
 

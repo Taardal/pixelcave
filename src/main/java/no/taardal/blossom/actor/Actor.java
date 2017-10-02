@@ -3,16 +3,15 @@ package no.taardal.blossom.actor;
 import no.taardal.blossom.bounds.Bounds;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.animation.Animation;
 import no.taardal.blossom.sprite.SpriteSheet;
-import no.taardal.blossom.state.actor.ActorState;
+import no.taardal.blossom.statemachine.StateMachine;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Actor {
@@ -21,8 +20,8 @@ public abstract class Actor {
 
     SpriteSheet spriteSheet;
     World world;
-    Deque<ActorState> states;
-    Map<String, Animation> animations;
+    StateMachine movementStateMachine;
+    StateMachine combatStateMachine;
     List<Enemy> enemies;
     Bounds bounds;
     Vector2d position;
@@ -35,8 +34,8 @@ public abstract class Actor {
     boolean dead;
 
     private Actor() {
-        states = new ArrayDeque<>();
-        animations = new HashMap<>();
+        movementStateMachine = new StateMachine();
+        combatStateMachine = new StateMachine();
         enemies = new ArrayList<>();
         bounds = new Bounds();
         position = Vector2d.zero();
@@ -44,16 +43,9 @@ public abstract class Actor {
         direction = Direction.EAST;
     }
 
-    protected abstract Map<String, Animation> createAnimations();
-
     public Actor(SpriteSheet spriteSheet) {
         this();
         this.spriteSheet = spriteSheet;
-        animations = createAnimations();
-    }
-
-    public Map<String, Animation> getAnimations() {
-        return animations;
     }
 
     public List<Enemy> getEnemies() {
@@ -156,44 +148,27 @@ public abstract class Actor {
         this.dead = dead;
     }
 
-    public Animation getCurrentAnimation() {
-        return getCurrentState().getAnimation();
-    }
-
     public Bounds getBounds() {
         return bounds;
     }
 
     public void update(double secondsSinceLastUpdate) {
-        getCurrentState().update(secondsSinceLastUpdate);
+        movementStateMachine.update(secondsSinceLastUpdate);
+        combatStateMachine.update(secondsSinceLastUpdate);
     }
 
     public void draw(Camera camera) {
         getCurrentAnimation().draw(this, camera);
-        if (getBounds() != null) {
-            camera.drawRectangle(getX(), getY(), getCurrentAnimation().getWidth(), getCurrentAnimation().getHeight(), Color.YELLOW);
+    }
+
+    public Animation getCurrentAnimation() {
+        if (!combatStateMachine.isEmpty()) {
+            return combatStateMachine.getCurrentState().getAnimation();
+        } else {
+            return movementStateMachine.getCurrentState().getAnimation();
         }
     }
 
-    public void pushState(ActorState actorState) {
-        actorState.onEntry();
-        states.addFirst(actorState);
-    }
-
-    public void popState() {
-        getCurrentState().onExit();
-        states.removeFirst();
-    }
-
-    public void changeState(ActorState actorState) {
-        popState();
-        pushState(actorState);
-    }
-
     public abstract void onAttacked(Actor attacker);
-
-    private ActorState getCurrentState() {
-        return states.getFirst();
-    }
 
 }

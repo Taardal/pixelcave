@@ -1,11 +1,29 @@
-package no.taardal.blossom.sprite;
+package no.taardal.blossom.animation;
 
 import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.camera.Camera;
+import no.taardal.blossom.sprite.Sprite;
 
 public class Animation {
 
     private static final int DEFAULT_UPDATES_PER_FRAME = 5;
+
+    public enum Type {
+        IDLE,
+        FALL,
+        LAND,
+        JUMP,
+        RUN,
+        TUMBLE,
+        ATTACK,
+        ATTACK_MID_AIR,
+        ATTACK_WHILE_CROUCHED,
+        DEFEND,
+        DEFEND_WHILE_CROUCHED,
+        CROUCH,
+        HURT,
+        DEAD
+    }
 
     private Sprite[] sprites;
     private Sprite sprite;

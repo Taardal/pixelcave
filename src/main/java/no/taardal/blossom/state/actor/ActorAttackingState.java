@@ -2,22 +2,17 @@ package no.taardal.blossom.state.actor;
 
 import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.bounds.Bounds;
-import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.statemachine.StateMachine;
 
-public abstract class ActorAttackingState<T extends Actor> implements ActorState {
+public abstract class ActorAttackingState<T extends Actor> extends ActorState<T> {
 
-    protected T actor;
     protected Bounds attackBounds;
     protected boolean enemiesAttacked;
 
-    public ActorAttackingState(T actor) {
-        this.actor = actor;
+    public ActorAttackingState(T actor, StateMachine stateMachine) {
+        super(actor, stateMachine);
         attackBounds = getAttackBounds();
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return actor.getAnimations().get("ATTACKING");
     }
 
     @Override
@@ -26,14 +21,13 @@ public abstract class ActorAttackingState<T extends Actor> implements ActorState
     }
 
     @Override
-    public void update(double secondsSinceLastUpdate) {
+    public void nextMove(Keyboard keyboard) {
 
     }
 
     @Override
-    public void onExit() {
-        getAnimation().reset();
-        enemiesAttacked = false;
+    protected void updateBounds() {
+
     }
 
     protected abstract Bounds getAttackBounds();

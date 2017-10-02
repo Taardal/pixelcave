@@ -3,32 +3,37 @@ package no.taardal.blossom.state.actor;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.layer.TileLayer;
-import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.animation.Animation;
+import no.taardal.blossom.statemachine.StateMachine;
 import no.taardal.blossom.tile.Tile;
 import no.taardal.blossom.vector.Vector2d;
 import no.taardal.blossom.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ActorFallingState<T extends Actor> implements ActorState {
+public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorFallingState.class);
     private static final int GRAVITY = 500;
     private static final int TERMINAL_VELOCITY = 300;
 
-    protected T actor;
     protected boolean falling;
 
-    public ActorFallingState(T actor) {
-        this.actor = actor;
+    private Animation fallingAnimation;
+    private Animation landingAnimation;
+
+    public ActorFallingState(T actor, StateMachine stateMachine) {
+        super(actor, stateMachine);
+        fallingAnimation = getFallingActorAnimation();
+        landingAnimation = getLandingActorAnimation();
     }
 
     @Override
     public Animation getAnimation() {
         if (falling) {
-            return actor.getAnimations().get("FALLING");
+            return fallingAnimation;
         } else {
-            return actor.getAnimations().get("LANDING");
+            return landingAnimation;
         }
     }
 
@@ -39,24 +44,30 @@ public abstract class ActorFallingState<T extends Actor> implements ActorState {
 
     @Override
     public void update(double secondsSinceLastUpdate) {
-        getAnimation().update();
         if (!falling && actor.getVelocity().getY() >= 0) {
             onLanded();
         } else {
             fall(secondsSinceLastUpdate);
         }
-        updateBounds();
+        super.update(secondsSinceLastUpdate);
     }
 
     @Override
     public void onExit() {
-        actor.getAnimations().get("FALLING").reset();
-        actor.getAnimations().get("LANDING").reset();
+        fallingAnimation.reset();
+        landingAnimation.reset();
     }
 
-    protected abstract void onLanded();
+    @Override
+    protected Animation getActorAnimation() {
+        return null;
+    }
 
-    protected abstract void updateBounds();
+    protected abstract Animation getFallingActorAnimation();
+
+    protected abstract Animation getLandingActorAnimation();
+
+    protected abstract void onLanded();
 
     private void fall(double secondsSinceLastUpdate) {
         actor.setPosition(getNextPosition(secondsSinceLastUpdate));

@@ -1,15 +1,19 @@
 package no.taardal.blossom.sprite;
 
+import no.taardal.blossom.animation.Animation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SpriteSheet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpriteSheet.class);
 
     private Sprite[][] sprites;
+    private Map<Animation.Type, Animation> animations;
     private int width;
     private int height;
     private int spriteWidth;
@@ -19,12 +23,17 @@ public class SpriteSheet {
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
         sprites = getSpriteImages(bufferedImage);
+        animations = createAnimations();
         width = bufferedImage.getWidth();
         height = bufferedImage.getHeight();
     }
 
     public Sprite[][] getSprites() {
         return sprites;
+    }
+
+    public Map<Animation.Type, Animation> getAnimations() {
+        return animations;
     }
 
     public int getWidth() {
@@ -41,6 +50,10 @@ public class SpriteSheet {
 
     public int getSpriteHeight() {
         return spriteHeight;
+    }
+
+    protected Map<Animation.Type, Animation> createAnimations() {
+        return new HashMap<>();
     }
 
     private Sprite[][] getSpriteImages(BufferedImage bufferedImage) {

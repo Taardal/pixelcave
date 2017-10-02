@@ -7,7 +7,6 @@ import no.taardal.blossom.builder.KnightBuilder;
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.gameobject.GameObject;
 import no.taardal.blossom.keyboard.Keyboard;
-import no.taardal.blossom.layer.GameObjectLayer;
 import no.taardal.blossom.layer.Layer;
 import no.taardal.blossom.layer.TileLayer;
 import no.taardal.blossom.ribbon.RibbonManager;
@@ -34,6 +33,7 @@ public abstract class Level {
         world = getWorld(gameAssetService);
         ribbonManager = getRibbonManager(gameAssetService);
         enemies = getEnemies(gameAssetService);
+
         player = new KnightBuilder(gameAssetService)
                 .theme(Knight.Theme.BLUE)
                 .position(0, 0)
@@ -46,9 +46,8 @@ public abstract class Level {
     }
 
     public void update(double secondsSinceLastUpdate, Camera camera) {
-        for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
-            Enemy enemy = iterator.next();
-            enemy.nextMove(player);
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).nextMove(player);
         }
         player.update(secondsSinceLastUpdate);
         camera.update((int) player.getPosition().getX(), (int) player.getPosition().getY());
@@ -69,8 +68,8 @@ public abstract class Level {
         drawTiles(camera);
         player.draw(camera);
 
-        for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {
-            iterator.next().draw(camera);
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).draw(camera);
         }
     }
 
@@ -81,17 +80,20 @@ public abstract class Level {
     protected abstract Enemy getEnemy(GameObject actorGameObject, GameAssetService gameAssetService);
 
     private List<Enemy> getEnemies(GameAssetService gameAssetService) {
+        return new ArrayList<>();
+        /*
         List<Enemy> enemies = new ArrayList<>();
         GameObjectLayer actorGameObjectLayer = (GameObjectLayer) world.getLayers().get("actor_layer");
         for (int i = 0; i < actorGameObjectLayer.getGameObjects().size(); i++) {
             GameObject actorGameObject = actorGameObjectLayer.getGameObjects().get(i);
-            if (actorGameObject.getType().equals("ENEMY")) {
+            if (actorGameObject.getType().equals("enemy")) {
                 Enemy enemy = getEnemy(actorGameObject, gameAssetService);
                 enemy.setWorld(world);
                 enemies.add(enemy);
             }
         }
         return enemies;
+        */
     }
 
     private void drawTiles(Camera camera) {

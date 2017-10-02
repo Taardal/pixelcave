@@ -2,26 +2,20 @@ package no.taardal.blossom.state.actor;
 
 import no.taardal.blossom.actor.Actor;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.statemachine.StateMachine;
 import no.taardal.blossom.vector.Vector2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ActorRunningState<T extends Actor> implements ActorState {
+public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorRunningState.class);
 
-    protected T actor;
     protected Vector2d distanceWalked;
 
-    public ActorRunningState(T actor) {
-        this.actor = actor;
+    public ActorRunningState(T actor, StateMachine stateMachine) {
+        super(actor, stateMachine);
         distanceWalked = Vector2d.zero();
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return actor.getAnimations().get("RUNNING");
     }
 
     @Override
@@ -31,18 +25,10 @@ public abstract class ActorRunningState<T extends Actor> implements ActorState {
 
     @Override
     public void update(double secondsSinceLastUpdate) {
-        getAnimation().update();
         distanceWalked = actor.getVelocity().multiply(secondsSinceLastUpdate);
         actor.setPosition(actor.getPosition().add(distanceWalked));
-        updateBounds();
+        super.update(secondsSinceLastUpdate);
     }
-
-    @Override
-    public void onExit() {
-        getAnimation().reset();
-    }
-
-    protected abstract void updateBounds();
 
     protected Vector2d getVelocity() {
         if (actor.getDirection() == Direction.WEST) {

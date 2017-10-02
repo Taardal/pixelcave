@@ -2,7 +2,6 @@ package no.taardal.blossom.service;
 
 import com.google.gson.Gson;
 import no.taardal.blossom.ribbon.Ribbon;
-import no.taardal.blossom.ribbon.RibbonManager;
 import no.taardal.blossom.sprite.SpriteSheet;
 import no.taardal.blossom.world.World;
 
@@ -33,19 +32,19 @@ public class LocalGameAssetService implements GameAssetService {
     }
 
     @Override
-    public RibbonManager getRibbonManager(String relativePath) {
+    public List<Ribbon> getRibbons(String relativePath) {
         List<Ribbon> ribbons = new ArrayList<>();
         String directoryPath = RIBBONS_RESOURCE_PATH + "/" + relativePath;
         for (String fileName : resourceService.getFileNames(directoryPath)) {
             BufferedImage bufferedImage = resourceService.getImage(directoryPath + "/" + fileName);
             ribbons.add(new Ribbon(bufferedImage));
         }
-        return new RibbonManager(ribbons);
+        return ribbons;
     }
 
     @Override
-    public SpriteSheet getSpriteSheet(String fileRelativePath, int spriteWidth, int spriteHeight) {
-        String path = SPRITE_SHEET_RESOURCE_PATH + "/" + fileRelativePath;
+    public SpriteSheet getSpriteSheet(String relativePath, int spriteWidth, int spriteHeight) {
+        String path = SPRITE_SHEET_RESOURCE_PATH + "/" + relativePath;
         BufferedImage bufferedImage = resourceService.getImage(path);
         return new SpriteSheet(bufferedImage, spriteWidth, spriteHeight);
     }

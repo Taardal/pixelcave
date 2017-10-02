@@ -1,20 +1,13 @@
 package no.taardal.blossom.state.actor;
 
 import no.taardal.blossom.actor.Actor;
-import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.statemachine.StateMachine;
 import no.taardal.blossom.vector.Vector2d;
 
-public abstract class ActorIdleState<T extends Actor> implements ActorState {
+public abstract class ActorIdleState<T extends Actor> extends ActorState<T> {
 
-    protected T actor;
-
-    public ActorIdleState(T actor) {
-        this.actor = actor;
-    }
-
-    @Override
-    public Animation getAnimation() {
-        return actor.getAnimations().get("IDLE");
+    public ActorIdleState(T actor, StateMachine stateMachine) {
+        super(actor, stateMachine);
     }
 
     @Override
@@ -27,17 +20,5 @@ public abstract class ActorIdleState<T extends Actor> implements ActorState {
     public void update(double secondsSinceLastUpdate) {
         getAnimation().update();
     }
-
-    @Override
-    public void onExit() {
-        getAnimation().reset();
-    }
-
-    @Override
-    public String toString() {
-        return "ActorIdleState{}";
-    }
-
-    protected abstract void updateBounds();
 
 }

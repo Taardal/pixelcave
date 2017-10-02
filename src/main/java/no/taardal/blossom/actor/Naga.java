@@ -2,15 +2,12 @@ package no.taardal.blossom.actor;
 
 import no.taardal.blossom.camera.Camera;
 import no.taardal.blossom.direction.Direction;
-import no.taardal.blossom.sprite.Animation;
+import no.taardal.blossom.animation.Animation;
 import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.sprite.SpriteSheet;
-import no.taardal.blossom.state.actor.naga.NagaHurtState;
-import no.taardal.blossom.state.actor.naga.NagaIdleState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,12 +22,12 @@ public class Naga extends Enemy {
 
     public Naga(SpriteSheet spriteSheet) {
         super(spriteSheet);
-        pushState(new NagaIdleState(this));
+        //movementStateMachine.pushState(new NagaIdleState(this, movementStateMachine));
     }
 
     @Override
     public void onAttacked(Actor attacker) {
-        pushState(new NagaHurtState(this, attacker));
+
     }
 
     @Override
@@ -40,12 +37,8 @@ public class Naga extends Enemy {
         } else {
             super.draw(camera);
         }
-        if (getBounds() != null) {
-            camera.drawBounds(getBounds(), Color.RED);
-        }
     }
 
-    @Override
     protected Map<String, Animation> createAnimations() {
         Map<String, Animation> animations = new HashMap<>();
         animations.put("IDLE", getIdleAnimation());

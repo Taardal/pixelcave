@@ -1,10 +1,8 @@
 package no.taardal.blossom.level;
 
 import no.taardal.blossom.actor.Enemy;
-import no.taardal.blossom.actor.Naga;
 import no.taardal.blossom.builder.NagaBuilder;
 import no.taardal.blossom.gameobject.GameObject;
-import no.taardal.blossom.gender.Gender;
 import no.taardal.blossom.ribbon.RibbonManager;
 import no.taardal.blossom.service.GameAssetService;
 import no.taardal.blossom.world.World;
@@ -22,12 +20,12 @@ public class PixelCaveLevel extends Level {
 
     @Override
     protected RibbonManager getRibbonManager(GameAssetService gameAssetService) {
-        return gameAssetService.getRibbonManager("pixelcave");
+        return new RibbonManager(gameAssetService.getRibbons("pixelcave"));
     }
 
     @Override
     protected Enemy getEnemy(GameObject actorGameObject, GameAssetService gameAssetService) {
-        if (actorGameObject.getName().equals("NAGA")) {
+        if (actorGameObject.getName().equals("naga")) {
             return getNaga(actorGameObject, gameAssetService);
         } else {
             return null;
@@ -35,11 +33,9 @@ public class PixelCaveLevel extends Level {
     }
 
     private Enemy getNaga(GameObject actorGameObject, GameAssetService gameAssetService) {
-        String gender = (String) actorGameObject.getProperties().get("gender");
-        String theme = (String) actorGameObject.getProperties().get("variation");
         return new NagaBuilder(gameAssetService)
-                .gender(Gender.valueOf(gender))
-                .theme(Naga.Theme.valueOf(theme))
+                .gender((String) actorGameObject.getProperties().get("gender"))
+                .theme((String) actorGameObject.getProperties().get("theme"))
                 .position(actorGameObject.getX(), actorGameObject.getY())
                 .build();
     }

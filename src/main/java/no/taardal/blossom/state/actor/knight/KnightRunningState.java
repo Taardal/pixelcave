@@ -4,17 +4,19 @@ import no.taardal.blossom.actor.Knight;
 import no.taardal.blossom.direction.Direction;
 import no.taardal.blossom.keyboard.KeyBinding;
 import no.taardal.blossom.keyboard.Keyboard;
+import no.taardal.blossom.animation.Animation;
+import no.taardal.blossom.sprite.Sprite;
 import no.taardal.blossom.state.actor.ActorRunningState;
-import no.taardal.blossom.state.actor.PlayerState;
+import no.taardal.blossom.statemachine.StateMachine;
 
-public class KnightRunningState extends ActorRunningState<Knight> implements PlayerState {
+public class KnightRunningState extends ActorRunningState<Knight> {
 
-    public KnightRunningState(Knight actor) {
-        super(actor);
+    public KnightRunningState(Knight actor, StateMachine stateMachine) {
+        super(actor, stateMachine);
     }
 
     @Override
-    public void handleInput(Keyboard keyboard) {
+    public void nextMove(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 actor.setDirection(Direction.WEST);
@@ -24,10 +26,10 @@ public class KnightRunningState extends ActorRunningState<Knight> implements Pla
                 actor.setVelocity(getVelocity());
             }
         } else {
-            actor.changeState(new KnightIdleState(actor));
+            stateMachine.changeState(new KnightIdleState(actor, stateMachine));
         }
         if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
-            actor.changeState(new KnightJumpingState(actor));
+            stateMachine.changeState(new KnightJumpingState(actor, stateMachine));
         }
         if (keyboard.isPressed(KeyBinding.CROUCH)) {
         }
@@ -35,9 +37,15 @@ public class KnightRunningState extends ActorRunningState<Knight> implements Pla
         }
         if (keyboard.isPressed(KeyBinding.DEFEND)) {
         }
-        if (keyboard.isPressed(KeyBinding.ATTACK)) {
-            actor.pushState(new KnightAttackingState(actor));
+    }
+
+    @Override
+    protected Animation getActorAnimation() {
+        Sprite[] sprites = new Sprite[10];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = actor.getSpriteSheet().getSprites()[i][8];
         }
+        return new Animation(sprites);
     }
 
     @Override
