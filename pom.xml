@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>no.taardal</groupId>
-    <artifactId>blossom</artifactId>
+    <artifactId>pixelcave</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <developers>
@@ -54,7 +54,7 @@
     </dependencies>
 
     <build>
-        <finalName>blossom</finalName>
+        <finalName>pixelcave</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
