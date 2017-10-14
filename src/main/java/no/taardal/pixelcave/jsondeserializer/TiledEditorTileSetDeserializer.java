@@ -16,18 +16,23 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
     private static final Logger LOGGER = LoggerFactory.getLogger(TiledEditorTileSetDeserializer.class);
 
     private ResourceService resourceService;
+    private JsonParser jsonParser;
 
     public TiledEditorTileSetDeserializer(ResourceService resourceService) {
         this.resourceService = resourceService;
+        jsonParser = new JsonParser();
     }
 
     @Override
     public TileSet deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) {
         try {
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonObject referenceJsonObject = jsonElement.getAsJsonObject();
             TileSet tileSet = new TileSet();
+            tileSet.setFirstGlobalId(referenceJsonObject.get("firstgid").getAsInt());
+            String source = referenceJsonObject.get("source").getAsString().replaceFirst("../", "");
+            String tileSetJson = resourceService.readFile(source);
+            JsonObject jsonObject = jsonParser.parse(tileSetJson).getAsJsonObject();
             tileSet.setName(jsonObject.get("name").getAsString());
-            tileSet.setFirstGlobalId(jsonObject.get("firstgid").getAsInt());
             tileSet.setNumberOfTiles(jsonObject.get("tilecount").getAsInt());
             tileSet.setNumberOfColumns(jsonObject.get("columns").getAsInt());
             tileSet.setTileWidth(jsonObject.get("tilewidth").getAsInt());
@@ -36,7 +41,10 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
             tileSet.setSpacing(jsonObject.get("spacing").getAsInt());
             JsonElement imageJsonElement = jsonObject.get("image");
             if (imageJsonElement != null && !imageJsonElement.isJsonNull()) {
-                String imagePath = imageJsonElement.getAsString().replaceFirst("../", "");
+
+                String substring = source.substring(0, source.lastIndexOf("/"));
+
+                String imagePath = substring + "/" + imageJsonElement.getAsString();
                 tileSet.setImagePath(imagePath);
                 tileSet.setImageWidth(jsonObject.get("imagewidth").getAsInt());
                 tileSet.setImageHeight(jsonObject.get("imageheight").getAsInt());

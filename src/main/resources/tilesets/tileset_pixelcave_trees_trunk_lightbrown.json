@@ -1,0 +1,12 @@
+{ "columns":60,
+ "image":"tileset_pixelcave_trees_trunk_lightbrown.png",
+ "imageheight":320,
+ "imagewidth":960,
+ "margin":0,
+ "name":"tileset_pixelcave_trees_trunk_lightbrown",
+ "spacing":0,
+ "tilecount":1200,
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset"
+}

@@ -15,12 +15,12 @@ public class PixelCaveLevel extends Level {
 
     @Override
     protected World getWorld(GameAssetService gameAssetService) {
-        return gameAssetService.getWorld("pixelcave.json");
+        return gameAssetService.getWorld("world_pixelcave.json");
     }
 
     @Override
     protected RibbonManager getRibbonManager(GameAssetService gameAssetService) {
-        return new RibbonManager(gameAssetService.getRibbons("pixelcave"));
+        return new RibbonManager(gameAssetService.getRibbons(""));
     }
 
     @Override
