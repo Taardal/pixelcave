@@ -4,7 +4,7 @@ import no.taardal.pixelcave.actor.Actor;
 import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.tile.Tile;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +15,11 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActorRunningState.class);
 
-    protected Vector2d distanceWalked;
+    protected Vector2f distanceWalked;
 
     public ActorRunningState(T actor, StateMachine stateMachine) {
         super(actor, stateMachine);
-        distanceWalked = Vector2d.zero();
+        distanceWalked = Vector2f.zero();
     }
 
     @Override
@@ -28,7 +28,7 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
     }
 
     @Override
-    public void update(double secondsSinceLastUpdate) {
+    public void update(float secondsSinceLastUpdate) {
         super.update(secondsSinceLastUpdate);
 
         TileLayer tileLayer = (TileLayer) actor.getWorld().getLayers().get("main");
@@ -39,7 +39,7 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
         distanceWalked = actor.getVelocity().multiply(secondsSinceLastUpdate);
 
         double delta;
-        Vector2d nextPosition;
+        Vector2f nextPosition;
         if (actor.isFacingRight()) {
             nextPosition = actor.getPosition().add(distanceWalked);
             delta = nextPosition.getX() - actor.getPosition().getX();
@@ -60,13 +60,13 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
         int row = collisionY / tileHeight;
 
         if (isCollision(collisionX, collisionY)) {
-            int x;
+            float x;
             if (actor.isFacingLeft()) {
                 x = (column * tileWidth) + tileWidth - (actor.getBounds().getX() - actor.getX());
             } else {
                 x = (column * tileWidth) - actor.getBounds().getWidth() - (actor.getBounds().getX() - actor.getX());
             }
-            nextPosition = new Vector2d(x, nextPosition.getY());
+            nextPosition = new Vector2f(x, nextPosition.getY());
         }
 
         actor.setPosition(nextPosition);
@@ -97,8 +97,8 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
         return null;
     }
 
-    protected Vector2d getVelocity() {
-        return new Vector2d(actor.getMovementSpeed(), actor.getVelocity().getY());
+    protected Vector2f getVelocity() {
+        return new Vector2f(actor.getMovementSpeed(), actor.getVelocity().getY());
     }
 
 }

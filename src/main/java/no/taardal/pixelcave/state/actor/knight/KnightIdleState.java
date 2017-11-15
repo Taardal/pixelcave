@@ -50,11 +50,11 @@ public class KnightIdleState extends ActorIdleState<Knight> {
         actor.getBounds().setPosition(getBoundsX(), getBoundsY());
     }
 
-    private int getBoundsY() {
+    private float getBoundsY() {
         return (actor.getY() + actor.getHeight()) - actor.getBounds().getHeight();
     }
 
-    private int getBoundsX() {
+    private float getBoundsX() {
         int marginX = 5;
         if (actor.getDirection() == Direction.RIGHT) {
             return actor.getX() + marginX;

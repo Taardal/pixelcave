@@ -8,7 +8,7 @@ import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.sprite.Sprite;
 import no.taardal.pixelcave.state.actor.ActorFallingState;
 import no.taardal.pixelcave.statemachine.StateMachine;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 
 public class KnightFallingState extends ActorFallingState<Knight> {
 
@@ -25,7 +25,7 @@ public class KnightFallingState extends ActorFallingState<Knight> {
                 moveRight();
             }
         } else {
-            actor.setVelocity(new Vector2d(0, actor.getVelocity().getY()));
+            actor.setVelocity(new Vector2f(0, actor.getVelocity().getY()));
         }
         if (keyboard.isPressed(KeyBinding.ATTACK) && actor.getVelocity().getY() >= 0) {
 
@@ -69,11 +69,11 @@ public class KnightFallingState extends ActorFallingState<Knight> {
         actor.getBounds().setPosition(getBoundsX(), getBoundsY());
     }
 
-    private int getBoundsY() {
+    private float getBoundsY() {
         return (actor.getY() + actor.getHeight()) - actor.getBounds().getHeight();
     }
 
-    private int getBoundsX() {
+    private float getBoundsX() {
         int marginX = 5;
         if (actor.getDirection() == Direction.RIGHT) {
             return actor.getX() + marginX;
@@ -86,14 +86,14 @@ public class KnightFallingState extends ActorFallingState<Knight> {
         if (actor.getDirection() != Direction.RIGHT) {
             actor.setDirection(Direction.RIGHT);
         }
-        actor.setVelocity(new Vector2d(actor.getMovementSpeed(), actor.getVelocity().getY()));
+        actor.setVelocity(new Vector2f(actor.getMovementSpeed(), actor.getVelocity().getY()));
     }
 
     private void moveLeft() {
         if (actor.getDirection() != Direction.LEFT) {
             actor.setDirection(Direction.LEFT);
         }
-        actor.setVelocity(new Vector2d(-actor.getMovementSpeed(), actor.getVelocity().getY()));
+        actor.setVelocity(new Vector2f(-actor.getMovementSpeed(), actor.getVelocity().getY()));
     }
 
 }

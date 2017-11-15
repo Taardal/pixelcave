@@ -2,16 +2,16 @@ package no.taardal.pixelcave.actor;
 
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.keyboard.Keyboard;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 
 public interface Player {
 
     void handleInput(Keyboard keyboard);
 
-    void update(double secondsSinceLastUpdate);
+    void update(float secondsSinceLastUpdate);
 
     void draw(Camera camera);
 
-    Vector2d getPosition();
+    Vector2f getPosition();
 
 }

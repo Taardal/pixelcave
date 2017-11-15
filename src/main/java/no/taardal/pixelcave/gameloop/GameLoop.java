@@ -9,15 +9,15 @@ public class GameLoop implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(GameLoop.class);
     private static final int ONE_SECOND_IN_MILLISECONDS = 1000;
     private static final int ONE_SECOND_IN_NANOSECONDS = 1000000000;
-    private static final double UPDATES_PER_SECOND_TARGET = 60;
-    private static final double NANOSECONDS_PER_UPDATE = ONE_SECOND_IN_NANOSECONDS / UPDATES_PER_SECOND_TARGET;
+    private static final float UPDATES_PER_SECOND_TARGET = 60;
+    private static final float NANOSECONDS_PER_UPDATE = ONE_SECOND_IN_NANOSECONDS / UPDATES_PER_SECOND_TARGET;
 
     private GameLoopListener gameLoopListener;
     private boolean running;
     private int frames;
     private int updates;
     private float delta;
-    private double nanosecondsSinceLastUpdate;
+    private float nanosecondsSinceLastUpdate;
 
     public GameLoop(GameLoopListener gameLoopListener) {
         this.gameLoopListener = gameLoopListener;

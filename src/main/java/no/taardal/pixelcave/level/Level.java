@@ -45,12 +45,12 @@ public abstract class Level {
         player.handleInput(keyboard);
     }
 
-    public void update(double secondsSinceLastUpdate, Camera camera) {
+    public void update(float secondsSinceLastUpdate, Camera camera) {
         for (int i = 0; i < enemies.size(); i++) {
             enemies.get(i).nextMove(player);
         }
         player.update(secondsSinceLastUpdate);
-        camera.update((int) player.getPosition().getX(), (int) player.getPosition().getY());
+        camera.update(player.getPosition());
         camera.update(0, 0);
         ribbonManager.update(camera);
         for (Iterator<Enemy> iterator = enemies.iterator(); iterator.hasNext(); ) {

@@ -4,7 +4,7 @@ import no.taardal.pixelcave.actor.Naga;
 import no.taardal.pixelcave.gender.Gender;
 import no.taardal.pixelcave.service.GameAssetService;
 import no.taardal.pixelcave.sprite.SpriteSheet;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 
 public class NagaBuilder implements Builder<Naga> {
@@ -13,7 +13,7 @@ public class NagaBuilder implements Builder<Naga> {
     private World world;
     private String gender;
     private String theme;
-    private Vector2d position;
+    private Vector2f position;
 
     public NagaBuilder(GameAssetService gameAssetService) {
         this.gameAssetService = gameAssetService;
@@ -51,13 +51,13 @@ public class NagaBuilder implements Builder<Naga> {
         return this;
     }
 
-    public NagaBuilder position(Vector2d position) {
+    public NagaBuilder position(Vector2f position) {
         this.position = position;
         return this;
     }
 
-    public NagaBuilder position(double x, double y) {
-        this.position = new Vector2d(x, y);
+    public NagaBuilder position(float x, float y) {
+        this.position = new Vector2f(x, y);
         return this;
     }
 

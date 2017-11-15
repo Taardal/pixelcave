@@ -4,7 +4,7 @@ import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.sprite.Sprite;
 import no.taardal.pixelcave.statemachine.StateMachine;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class KnightJumpingState extends KnightFallingState {
     @Override
     public void onEntry() {
         super.onEntry();
-        actor.setVelocity(new Vector2d(actor.getVelocity().getX(), VELOCITY_Y));
+        actor.setVelocity(new Vector2f(actor.getVelocity().getX(), VELOCITY_Y));
     }
 
     @Override

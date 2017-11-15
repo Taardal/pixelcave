@@ -110,10 +110,10 @@ public class Animation {
     }
 
     public void draw(Actor actor, Camera camera) {
-        sprite.draw(actor.getX(), actor.getY(), camera);
+        sprite.draw((int) actor.getX(), (int) actor.getY(), camera);
     }
 
     public void drawFlippedHorizontally(Actor actor, Camera camera) {
-        sprite.drawFlippedHorizontally(actor.getX(), actor.getY(), camera);
+        sprite.drawFlippedHorizontally((int) actor.getX(), (int) actor.getY(), camera);
     }
 }

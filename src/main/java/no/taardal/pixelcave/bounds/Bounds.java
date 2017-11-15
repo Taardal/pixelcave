@@ -42,9 +42,9 @@ public class Bounds {
         this.rectangle.y = y;
     }
 
-    public void setPosition(int x, int y) {
-        setX(x);
-        setY(y);
+    public void setPosition(float x, float y) {
+        setX((int) x);
+        setY((int) y);
     }
 
     public boolean intersects(Bounds bounds) {

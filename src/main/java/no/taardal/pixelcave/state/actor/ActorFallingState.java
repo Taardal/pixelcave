@@ -6,7 +6,7 @@ import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.tile.Tile;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
     }
 
     @Override
-    public void update(double secondsSinceLastUpdate) {
+    public void update(float secondsSinceLastUpdate) {
         if (!falling && actor.getVelocity().getY() >= 0) {
             onLanded();
         } else {
@@ -69,14 +69,14 @@ public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
 
     protected abstract void onLanded();
 
-    private void fall(double secondsSinceLastUpdate) {
+    private void fall(float secondsSinceLastUpdate) {
         actor.setPosition(getNextPosition(secondsSinceLastUpdate));
         actor.setVelocity(getNextVelocity(secondsSinceLastUpdate));
     }
 
-    private Vector2d getNextPosition(double secondsSinceLastUpdate) {
-        Vector2d distance = actor.getVelocity().multiply(secondsSinceLastUpdate);
-        Vector2d nextPosition = actor.getPosition().add(distance);
+    private Vector2f getNextPosition(float secondsSinceLastUpdate) {
+        Vector2f distance = actor.getVelocity().multiply(secondsSinceLastUpdate);
+        Vector2f nextPosition = actor.getPosition().add(distance);
         int column = (int) nextPosition.getX() / actor.getWorld().getTileWidth();
         int actorBottomY = (int) nextPosition.getY() + actor.getHeight();
         int row = actorBottomY / actor.getWorld().getTileHeight();
@@ -87,12 +87,12 @@ public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
                 int slopeY = getSlopeY(column, row, tile);
                 if (actorBottomY > slopeY) {
                     int y = slopeY - actor.getHeight();
-                    nextPosition = new Vector2d(nextPosition.getX(), y);
+                    nextPosition = new Vector2f(nextPosition.getX(), y);
                     falling = false;
                 }
             } else {
                 int y = (row * actor.getWorld().getTileHeight()) - actor.getHeight();
-                nextPosition = new Vector2d(nextPosition.getX(), y);
+                nextPosition = new Vector2f(nextPosition.getX(), y);
                 falling = false;
             }
         }
@@ -104,7 +104,7 @@ public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
     }
 
     private int getSlopeY(int column, int row, Tile tile) {
-        int slopeCollisionX = actor.getX() + (actor.getWidth() / 2);
+        int slopeCollisionX = (int) actor.getX() + (actor.getWidth() / 2);
         int tileX = column * actor.getWorld().getTileWidth();
         int tileY = row * actor.getWorld().getTileHeight();
         if (tile.getDirection() == Direction.RIGHT) {
@@ -114,19 +114,12 @@ public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
         }
     }
 
-    private Vector2d getNextVelocity(double secondsSinceLastUpdate) {
-        double velocityY = actor.getVelocity().getY() + (GRAVITY * secondsSinceLastUpdate);
+    private Vector2f getNextVelocity(float secondsSinceLastUpdate) {
+        float velocityY = actor.getVelocity().getY() + (GRAVITY * secondsSinceLastUpdate);
         if (velocityY > TERMINAL_VELOCITY) {
             velocityY = TERMINAL_VELOCITY;
         }
-        return new Vector2d(actor.getVelocity().getX(), velocityY);
-    }
-
-    public boolean isOnGround() {
-        int column = actor.getX() / actor.getWorld().getTileWidth();
-        int row = (actor.getY() + actor.getHeight()) / actor.getWorld().getTileHeight();
-        int tileId = getMainTileLayer().getTileGrid()[column][row];
-        return tileId != World.NO_TILE_ID;
+        return new Vector2f(actor.getVelocity().getX(), velocityY);
     }
 
 }

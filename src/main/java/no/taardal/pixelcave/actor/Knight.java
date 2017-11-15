@@ -8,7 +8,7 @@ import no.taardal.pixelcave.sprite.SpriteSheet;
 import no.taardal.pixelcave.state.actor.knight.KnightAttackingMidAirState;
 import no.taardal.pixelcave.state.actor.knight.KnightAttackingState;
 import no.taardal.pixelcave.state.actor.knight.KnightFallingState;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +35,8 @@ public class Knight extends Actor implements Player {
 
     public Knight(SpriteSheet spriteSheet) {
         super(spriteSheet);
-        position = new Vector2d(50, 133);
-        velocity = Vector2d.zero();
+        position = new Vector2f(50, 133);
+        velocity = Vector2f.zero();
         direction = Direction.RIGHT;
 
         health = 100;

@@ -3,7 +3,7 @@ package no.taardal.pixelcave.builder;
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.service.GameAssetService;
 import no.taardal.pixelcave.sprite.SpriteSheet;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 
 public class KnightBuilder implements Builder<Knight> {
@@ -11,7 +11,7 @@ public class KnightBuilder implements Builder<Knight> {
     private GameAssetService gameAssetService;
     private World world;
     private String theme;
-    private Vector2d position;
+    private Vector2f position;
 
     public KnightBuilder(GameAssetService gameAssetService) {
         this.gameAssetService = gameAssetService;
@@ -40,13 +40,13 @@ public class KnightBuilder implements Builder<Knight> {
         return this;
     }
 
-    public KnightBuilder position(Vector2d position) {
+    public KnightBuilder position(Vector2f position) {
         this.position = position;
         return this;
     }
 
-    public KnightBuilder position(double x, double y) {
-        this.position = new Vector2d(x, y);
+    public KnightBuilder position(float x, float y) {
+        this.position = new Vector2f(x, y);
         return this;
     }
 

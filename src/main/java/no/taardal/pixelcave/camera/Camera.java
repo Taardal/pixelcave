@@ -4,6 +4,7 @@ package no.taardal.pixelcave.camera;
 import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.game.Game;
+import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,7 @@ public class Camera extends Rectangle {
         return direction;
     }
 
-    public void update(int x, int y) {
+    public void update(float x, float y) {
         previousOffsetX = offsetX;
         previousOffsetY = offsetY;
 
@@ -80,6 +81,10 @@ public class Camera extends Rectangle {
         if (offsetY < 0) {
             offsetY = 0;
         }
+    }
+
+    public void update(Vector2f playerPosition) {
+        update(playerPosition.getX(), playerPosition.getY());
     }
 
     public void clear() {
@@ -129,6 +134,10 @@ public class Camera extends Rectangle {
         graphics2D.fillOval(x, y, diameter, diameter);
     }
 
+    public void drawRectangle(float x, float y, int width, int height, Color color) {
+        drawRectangle((int) x, (int) y, width, height, color);
+    }
+
     public void drawRectangle(int x, int y, int width, int height, Color color) {
         x -= offsetX;
         y -= offsetY;
@@ -147,5 +156,4 @@ public class Camera extends Rectangle {
     public void drawBounds(Bounds rectangle, Color color) {
         drawRectangle(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), color);
     }
-
 }

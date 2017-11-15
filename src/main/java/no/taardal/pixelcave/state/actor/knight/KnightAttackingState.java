@@ -19,7 +19,7 @@ public class KnightAttackingState extends ActorAttackingState<Knight> {
     }
 
     @Override
-    public void update(double secondsSinceLastUpdate) {
+    public void update(float secondsSinceLastUpdate) {
         if (getAnimation().isFinished()) {
             stateMachine.popState();
         } else if (!enemiesAttacked && getAnimation().getFrame() == 4) {

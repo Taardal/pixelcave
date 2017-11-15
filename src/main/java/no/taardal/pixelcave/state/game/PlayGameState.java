@@ -23,7 +23,7 @@ public class PlayGameState implements GameState {
     }
 
     @Override
-    public GameState update(double secondsSinceLastUpdate, Camera camera) {
+    public GameState update(float secondsSinceLastUpdate, Camera camera) {
         level.update(secondsSinceLastUpdate, camera);
         return null;
     }

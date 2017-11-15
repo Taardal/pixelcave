@@ -25,7 +25,7 @@ public abstract class ActorState<T extends Actor> {
 
     public abstract void nextMove(Keyboard keyboard);
 
-    public void update(double secondsSinceLastUpdate) {
+    public void update(float secondsSinceLastUpdate) {
         getAnimation().update();
         updateBounds();
     }

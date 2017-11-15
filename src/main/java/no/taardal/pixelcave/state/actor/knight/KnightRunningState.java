@@ -72,11 +72,11 @@ public class KnightRunningState extends ActorRunningState<Knight> {
         actor.getBounds().setPosition(getBoundsX(), getBoundsY());
     }
 
-    private int getBoundsY() {
+    private float getBoundsY() {
         return (actor.getY() + actor.getHeight()) - actor.getBounds().getHeight();
     }
 
-    private int getBoundsX() {
+    private float getBoundsX() {
         int marginX = 8;
         if (actor.isFacingRight()) {
             return actor.getX() + marginX;

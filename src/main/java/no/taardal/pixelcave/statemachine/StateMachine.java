@@ -24,7 +24,7 @@ public class StateMachine {
         }
     }
 
-    public void update(double secondsSinceLastUpdate) {
+    public void update(float secondsSinceLastUpdate) {
         if (!isEmpty()) {
             actorStateDeque.getFirst().update(secondsSinceLastUpdate);
         }

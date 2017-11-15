@@ -6,7 +6,7 @@ import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.sprite.SpriteSheet;
 import no.taardal.pixelcave.statemachine.StateMachine;
-import no.taardal.pixelcave.vector.Vector2d;
+import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +24,8 @@ public abstract class Actor {
     StateMachine combatStateMachine;
     List<Enemy> enemies;
     Bounds bounds;
-    Vector2d position;
-    Vector2d velocity;
+    Vector2f position;
+    Vector2f velocity;
     Direction direction;
     Direction previousDirection;
     int health;
@@ -39,8 +39,8 @@ public abstract class Actor {
         combatStateMachine = new StateMachine();
         enemies = new ArrayList<>();
         bounds = new Bounds();
-        position = Vector2d.zero();
-        velocity = Vector2d.zero();
+        position = Vector2f.zero();
+        velocity = Vector2f.zero();
         direction = Direction.RIGHT;
         previousDirection = direction;
     }
@@ -78,27 +78,27 @@ public abstract class Actor {
         return spriteSheet.getSpriteHeight();
     }
 
-    public Vector2d getPosition() {
+    public Vector2f getPosition() {
         return position;
     }
 
-    public void setPosition(Vector2d position) {
+    public void setPosition(Vector2f position) {
         this.position = position;
     }
 
-    public int getX() {
-        return (int) position.getX();
+    public float getX() {
+        return position.getX();
     }
 
-    public int getY() {
-        return (int) position.getY();
+    public float getY() {
+        return position.getY();
     }
 
-    public Vector2d getVelocity() {
+    public Vector2f getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Vector2d velocity) {
+    public void setVelocity(Vector2f velocity) {
         this.velocity = velocity;
     }
 
@@ -154,7 +154,7 @@ public abstract class Actor {
         return bounds;
     }
 
-    public void update(double secondsSinceLastUpdate) {
+    public void update(float secondsSinceLastUpdate) {
         movementStateMachine.update(secondsSinceLastUpdate);
         combatStateMachine.update(secondsSinceLastUpdate);
     }

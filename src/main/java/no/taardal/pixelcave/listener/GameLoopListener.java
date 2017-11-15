@@ -4,7 +4,7 @@ public interface GameLoopListener {
 
     void onHandleInput();
 
-    void onUpdate(double secondsSinceLastUpdate);
+    void onUpdate(float secondsSinceLastUpdate);
 
     void onDraw();
 

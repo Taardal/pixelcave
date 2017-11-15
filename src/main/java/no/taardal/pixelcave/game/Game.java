@@ -62,7 +62,7 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
     }
 
     @Override
-    public void onUpdate(double secondsSinceLastUpdate) {
+    public void onUpdate(float secondsSinceLastUpdate) {
         keyboard.update();
         GameState gameState = this.gameState.update(secondsSinceLastUpdate, camera);
         if (gameState != null) {
