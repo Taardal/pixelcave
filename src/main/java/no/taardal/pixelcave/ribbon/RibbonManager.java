@@ -42,10 +42,10 @@ public class RibbonManager {
     }
 
     private Direction getDirection(Camera camera) {
-        if (camera.getDirection() == Direction.WEST) {
-            return Direction.EAST;
-        } else if (camera.getDirection() == Direction.EAST) {
-            return Direction.WEST;
+        if (camera.getDirection() == Direction.LEFT) {
+            return Direction.RIGHT;
+        } else if (camera.getDirection() == Direction.RIGHT) {
+            return Direction.LEFT;
         } else {
             return Direction.NO_DIRECTION;
         }

@@ -75,7 +75,7 @@ public class KnightFallingState extends ActorFallingState<Knight> {
 
     private int getBoundsX() {
         int marginX = 5;
-        if (actor.getDirection() == Direction.EAST) {
+        if (actor.getDirection() == Direction.RIGHT) {
             return actor.getX() + marginX;
         } else {
             return actor.getX() + actor.getWidth() - actor.getBounds().getWidth() - marginX;
@@ -83,15 +83,15 @@ public class KnightFallingState extends ActorFallingState<Knight> {
     }
 
     private void moveRight() {
-        if (actor.getDirection() != Direction.EAST) {
-            actor.setDirection(Direction.EAST);
+        if (actor.getDirection() != Direction.RIGHT) {
+            actor.setDirection(Direction.RIGHT);
         }
         actor.setVelocity(new Vector2d(actor.getMovementSpeed(), actor.getVelocity().getY()));
     }
 
     private void moveLeft() {
-        if (actor.getDirection() != Direction.WEST) {
-            actor.setDirection(Direction.WEST);
+        if (actor.getDirection() != Direction.LEFT) {
+            actor.setDirection(Direction.LEFT);
         }
         actor.setVelocity(new Vector2d(-actor.getMovementSpeed(), actor.getVelocity().getY()));
     }

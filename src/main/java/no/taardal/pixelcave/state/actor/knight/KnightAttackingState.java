@@ -51,7 +51,7 @@ public class KnightAttackingState extends ActorAttackingState<Knight> {
     }
 
     private int getAttackBoundsX() {
-        if (actor.getDirection() == Direction.EAST) {
+        if (actor.getDirection() == Direction.RIGHT) {
             return actor.getBounds().getX() + (actor.getBounds().getWidth() / 2);
         } else {
             return actor.getBounds().getX() + (actor.getBounds().getWidth() / 2) - actor.getAttackRange();

@@ -67,10 +67,10 @@ public class Tile {
         }
         if (leftFloorY != rightFloorY) {
             if (leftFloorY < rightFloorY) {
-                direction = Direction.WEST;
+                direction = Direction.LEFT;
             }
             if (leftFloorY > rightFloorY) {
-                direction = Direction.EAST;
+                direction = Direction.RIGHT;
             }
             return true;
         } else {

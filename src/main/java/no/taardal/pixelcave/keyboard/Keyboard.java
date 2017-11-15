@@ -21,7 +21,7 @@ public class Keyboard implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
-        LOGGER.debug(keyEvent.paramString());
+        //LOGGER.debug(keyEvent.paramString());
         if (keyEvent.getKeyCode() < MAX_KEY_CODE) {
             keyStates[keyEvent.getKeyCode()] = true;
         }

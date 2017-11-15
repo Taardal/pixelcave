@@ -56,7 +56,7 @@ public class KnightIdleState extends ActorIdleState<Knight> {
 
     private int getBoundsX() {
         int marginX = 5;
-        if (actor.getDirection() == Direction.EAST) {
+        if (actor.getDirection() == Direction.RIGHT) {
             return actor.getX() + marginX;
         } else {
             return actor.getX() + actor.getWidth() - actor.getBounds().getWidth() - marginX;

@@ -66,9 +66,9 @@ public class Camera extends Rectangle {
         offsetY += deltaY;
 
         if (deltaX > 1) {
-            direction = Direction.EAST;
+            direction = Direction.RIGHT;
         } else if (deltaX < 0) {
-            direction = Direction.WEST;
+            direction = Direction.LEFT;
         } else {
             direction = Direction.NO_DIRECTION;
         }

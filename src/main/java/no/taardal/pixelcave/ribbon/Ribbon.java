@@ -31,17 +31,17 @@ public class Ribbon {
     }
 
     public void update(Direction direction) {
-        if (direction == Direction.EAST) {
+        if (direction == Direction.RIGHT) {
             bufferedImageX = (bufferedImageX + speedX) % bufferedImage.getWidth();
-        } else if (direction == Direction.WEST) {
+        } else if (direction == Direction.LEFT) {
             bufferedImageX = (bufferedImageX - speedX) % bufferedImage.getWidth();
         }
-        if (direction == Direction.NORTH) {
+        if (direction == Direction.UP) {
             bufferedImageY -= speedY;
             if (bufferedImageY < 0) {
                 bufferedImageY = 0;
             }
-        } else if (direction == Direction.SOUTH) {
+        } else if (direction == Direction.DOWN) {
             bufferedImageY += speedY;
             if (bufferedImageY + Game.GAME_HEIGHT > bufferedImage.getHeight()) {
                 bufferedImageY = bufferedImage.getHeight() - Game.GAME_HEIGHT;

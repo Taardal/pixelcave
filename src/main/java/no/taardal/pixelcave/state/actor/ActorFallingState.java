@@ -107,7 +107,7 @@ public abstract class ActorFallingState<T extends Actor> extends ActorState<T> {
         int slopeCollisionX = actor.getX() + (actor.getWidth() / 2);
         int tileX = column * actor.getWorld().getTileWidth();
         int tileY = row * actor.getWorld().getTileHeight();
-        if (tile.getDirection() == Direction.EAST) {
+        if (tile.getDirection() == Direction.RIGHT) {
             return (tileY + actor.getWorld().getTileHeight()) - (slopeCollisionX - tileX);
         } else {
             return (tileY + actor.getWorld().getTileHeight()) - ((tileX + actor.getWorld().getTileWidth()) - slopeCollisionX);

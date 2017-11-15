@@ -12,6 +12,8 @@ import no.taardal.pixelcave.vector.Vector2d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class Knight extends Actor implements Player {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Knight.class);
@@ -33,9 +35,9 @@ public class Knight extends Actor implements Player {
 
     public Knight(SpriteSheet spriteSheet) {
         super(spriteSheet);
-        position = new Vector2d(0, 133);
+        position = new Vector2d(50, 133);
         velocity = Vector2d.zero();
-        direction = Direction.EAST;
+        direction = Direction.RIGHT;
 
         health = 100;
         damage = 50;
@@ -47,7 +49,9 @@ public class Knight extends Actor implements Player {
 
     @Override
     public void draw(Camera camera) {
-        if (direction == Direction.WEST) {
+        camera.drawRectangle(getX(), getY(), getWidth(), getHeight(), Color.RED);
+        camera.drawRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), Color.CYAN);
+        if (isFacingLeft()) {
             getCurrentAnimation().drawFlippedHorizontally(this, camera);
         } else {
             super.draw(camera);

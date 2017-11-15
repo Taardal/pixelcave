@@ -36,7 +36,7 @@ public abstract class Level {
 
         player = new KnightBuilder(gameAssetService)
                 .theme(Knight.Theme.BLUE)
-                .position(0, 0)
+                .position(50, 0)
                 .world(world)
                 .build();
     }

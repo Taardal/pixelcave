@@ -3,13 +3,13 @@ package no.taardal.pixelcave.direction;
 public enum Direction {
 
     NO_DIRECTION,
-    NORTH,
-    NORTH_EAST,
-    EAST,
-    SOUTH_EAST,
-    SOUTH,
-    SOUTH_WEST,
-    WEST,
-    NORTH_WEST
+    UP,
+    UP_RIGHT,
+    UP_LEFT,
+    DOWN_RIGHT,
+    DOWN,
+    DOWN_LEFT,
+    RIGHT,
+    LEFT
 
 }

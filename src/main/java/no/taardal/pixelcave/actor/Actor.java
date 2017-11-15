@@ -27,6 +27,7 @@ public abstract class Actor {
     Vector2d position;
     Vector2d velocity;
     Direction direction;
+    Direction previousDirection;
     int health;
     int damage;
     int attackRange;
@@ -40,7 +41,8 @@ public abstract class Actor {
         bounds = new Bounds();
         position = Vector2d.zero();
         velocity = Vector2d.zero();
-        direction = Direction.EAST;
+        direction = Direction.RIGHT;
+        previousDirection = direction;
     }
 
     public Actor(SpriteSheet spriteSheet) {
@@ -171,4 +173,46 @@ public abstract class Actor {
 
     public abstract void onAttacked(Actor attacker);
 
+    public boolean isInSlope() {
+        return direction == Direction.UP_RIGHT
+                || direction == Direction.UP_LEFT
+                || direction == Direction.DOWN_RIGHT
+                || direction == Direction.DOWN_LEFT;
+    }
+
+    public boolean isFacingLeft() {
+        return direction == Direction.LEFT || direction == Direction.UP_LEFT || direction == Direction.DOWN_LEFT;
+    }
+
+    public boolean isFacingRight() {
+        return direction == Direction.RIGHT || direction == Direction.UP_RIGHT || direction == Direction.DOWN_RIGHT;
+    }
+
+    public boolean wasLeftFacing() {
+        return previousDirection == Direction.LEFT || previousDirection == Direction.UP_LEFT || previousDirection == Direction.DOWN_LEFT;
+    }
+
+    public boolean wasRightFacing() {
+        return previousDirection == Direction.RIGHT || previousDirection == Direction.UP_RIGHT || previousDirection == Direction.DOWN_RIGHT;
+    }
+
+    public boolean hasTurned() {
+        return hasTurnedLeft() || hasTurnedRight();
+    }
+
+    public boolean hasTurnedRight() {
+        return isFacingRight() && wasLeftFacing();
+    }
+
+    public boolean hasTurnedLeft() {
+        return isFacingLeft() && wasRightFacing();
+    }
+
+    public Direction getPreviousDirection() {
+        return previousDirection;
+    }
+
+    public void setPreviousDirection(Direction previousDirection) {
+        this.previousDirection = previousDirection;
+    }
 }

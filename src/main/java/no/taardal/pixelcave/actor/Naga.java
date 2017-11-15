@@ -32,7 +32,7 @@ public class Naga extends Enemy {
 
     @Override
     public void draw(Camera camera) {
-        if (direction == Direction.EAST) {
+        if (direction == Direction.RIGHT) {
             getCurrentAnimation().drawFlippedHorizontally(this, camera);
         } else {
             super.draw(camera);
