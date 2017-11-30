@@ -10,7 +10,7 @@ public abstract class Enemy extends Actor {
 
     public void nextMove(Player player) {
         if (!movementStateMachine.isEmpty()) {
-            //((EnemyState) movementStateMachine.getCurrentState()).nextMove(player);
+            //((EnemyState) movementStateMachine.getCurrentState()).handleInput(player);
         }
     }
 

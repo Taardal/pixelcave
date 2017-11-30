@@ -6,18 +6,31 @@ import no.taardal.pixelcave.keyboard.KeyBinding;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.sprite.Sprite;
-import no.taardal.pixelcave.state.actor.ActorFallingState;
+import no.taardal.pixelcave.state.actor.ActorMovementState;
 import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.vector.Vector2f;
 
-public class KnightFallingState extends ActorFallingState<Knight> {
+public class KnightFallingState extends ActorMovementState<Knight> {
+
+    private Animation fallingAnimation;
+    private Animation landingAnimation;
 
     public KnightFallingState(Knight actor, StateMachine stateMachine) {
         super(actor, stateMachine);
+        fallingAnimation = getFallingAnimation();
+        landingAnimation = getLandingAnimation();
     }
 
     @Override
-    public void nextMove(Keyboard keyboard) {
+    public void onEntry() {
+        actor.setVelocity(new Vector2f(actor.getVelocity().getX(), 20));
+        actor.getBounds().setWidth(19);
+        actor.getBounds().setHeight(30);
+        actor.getBounds().setPosition(new Vector2f(getBoundsX(), getBoundsY()));
+    }
+
+    @Override
+    public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
                 moveLeft();
@@ -27,21 +40,39 @@ public class KnightFallingState extends ActorFallingState<Knight> {
         } else {
             actor.setVelocity(new Vector2f(0, actor.getVelocity().getY()));
         }
-        if (keyboard.isPressed(KeyBinding.ATTACK) && actor.getVelocity().getY() >= 0) {
+    }
 
+    @Override
+    public void update(float secondsSinceLastUpdate) {
+        super.update(secondsSinceLastUpdate);
+        if (!actor.isFalling()) {
+            onLanded();
         }
     }
 
     @Override
-    protected Animation getFallingActorAnimation() {
+    public void onExit() {
+        fallingAnimation.reset();
+        landingAnimation.reset();
+    }
+
+    @Override
+    public Animation getAnimation() {
+        if (actor.isFalling()) {
+            return fallingAnimation;
+        } else {
+            return landingAnimation;
+        }
+    }
+
+    private Animation getFallingAnimation() {
         Sprite[] sprites = {actor.getSpriteSheet().getSprites()[6][10]};
         Animation animation = new Animation(sprites);
         animation.setIndefinite(true);
         return animation;
     }
 
-    @Override
-    protected Animation getLandingActorAnimation() {
+    private Animation getLandingAnimation() {
         Sprite[] sprites = new Sprite[3];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = actor.getSpriteSheet().getSprites()[i + 7][10];
@@ -51,28 +82,6 @@ public class KnightFallingState extends ActorFallingState<Knight> {
         return animation;
     }
 
-    @Override
-    protected void onLanded() {
-        if (actor.getVelocity().getX() == 0) {
-            if (getAnimation().isFinished()) {
-                stateMachine.changeState(new KnightIdleState(actor, stateMachine));
-            }
-        } else {
-            stateMachine.changeState(new KnightIdleState(actor, stateMachine));
-        }
-    }
-
-    @Override
-    protected void updateBounds() {
-        actor.getBounds().setWidth(19);
-        actor.getBounds().setHeight(30);
-        actor.getBounds().setPosition(getBoundsX(), getBoundsY());
-    }
-
-    private float getBoundsY() {
-        return (actor.getY() + actor.getHeight()) - actor.getBounds().getHeight();
-    }
-
     private float getBoundsX() {
         int marginX = 5;
         if (actor.getDirection() == Direction.RIGHT) {
@@ -80,6 +89,10 @@ public class KnightFallingState extends ActorFallingState<Knight> {
         } else {
             return actor.getX() + actor.getWidth() - actor.getBounds().getWidth() - marginX;
         }
+    }
+
+    private float getBoundsY() {
+        return (actor.getY() + actor.getHeight()) - actor.getBounds().getHeight();
     }
 
     private void moveRight() {
@@ -94,6 +107,16 @@ public class KnightFallingState extends ActorFallingState<Knight> {
             actor.setDirection(Direction.LEFT);
         }
         actor.setVelocity(new Vector2f(-actor.getMovementSpeed(), actor.getVelocity().getY()));
+    }
+
+    private void onLanded() {
+        if (actor.isRunning()) {
+            stateMachine.changeState(new KnightRunningState(actor, stateMachine));
+        } else {
+            if (getAnimation().isFinished()) {
+                stateMachine.changeState(new KnightIdleState(actor, stateMachine));
+            }
+        }
     }
 
 }

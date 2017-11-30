@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 public class KnightJumpingState extends KnightFallingState {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KnightJumpingState.class);
+    private static final int MAX_JUMPING_VELOCITY_Y = 100;
     private static final int VELOCITY_Y = -200;
 
     private Animation jumpingAnimation;
@@ -22,7 +23,7 @@ public class KnightJumpingState extends KnightFallingState {
 
     @Override
     public Animation getAnimation() {
-        if (falling && actor.getVelocity().getY() < 100) {
+        if (actor.isFalling() && actor.getVelocity().getY() < MAX_JUMPING_VELOCITY_Y) {
             return jumpingAnimation;
         } else {
             return super.getAnimation();
@@ -33,21 +34,14 @@ public class KnightJumpingState extends KnightFallingState {
     public void onEntry() {
         super.onEntry();
         actor.setVelocity(new Vector2f(actor.getVelocity().getX(), VELOCITY_Y));
+        actor.getBounds().setWidth(19);
+        actor.getBounds().setHeight(30);
     }
 
     @Override
     public void onExit() {
         jumpingAnimation.reset();
         super.onExit();
-    }
-
-    @Override
-    protected void updateBounds() {
-        actor.getBounds().setWidth(19);
-        actor.getBounds().setHeight(30);
-        if (falling && actor.getVelocity().getY() < 100) {
-            actor.getBounds().setPosition(actor.getBounds().getX(), actor.getBounds().getY() - 5);
-        }
     }
 
     private Animation getJumpingActorAnimation() {

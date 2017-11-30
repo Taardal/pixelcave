@@ -1,12 +1,10 @@
 package no.taardal.pixelcave.actor;
 
+import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
-import no.taardal.pixelcave.keyboard.KeyBinding;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.sprite.SpriteSheet;
-import no.taardal.pixelcave.state.actor.knight.KnightAttackingMidAirState;
-import no.taardal.pixelcave.state.actor.knight.KnightAttackingState;
 import no.taardal.pixelcave.state.actor.knight.KnightFallingState;
 import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
@@ -35,7 +33,6 @@ public class Knight extends Actor implements Player {
 
     public Knight(SpriteSheet spriteSheet) {
         super(spriteSheet);
-        position = new Vector2f(50, 133);
         velocity = Vector2f.zero();
         direction = Direction.RIGHT;
 
@@ -43,18 +40,28 @@ public class Knight extends Actor implements Player {
         damage = 50;
         attackRange = 20;
         movementSpeed = 100;
+    }
 
-        movementStateMachine.pushState(new KnightFallingState(this, movementStateMachine));
+    @Override
+    public void update(float secondsSinceLastUpdate) {
+        if (movementStateMachine.isEmpty()) {
+            movementStateMachine.pushState(new KnightFallingState(this, movementStateMachine));
+        }
+        super.update(secondsSinceLastUpdate);
     }
 
     @Override
     public void draw(Camera camera) {
         camera.drawRectangle(getX(), getY(), getWidth(), getHeight(), Color.RED);
         camera.drawRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), Color.CYAN);
-        if (isFacingLeft()) {
-            getCurrentAnimation().drawFlippedHorizontally(this, camera);
-        } else {
-            super.draw(camera);
+
+        Animation animation = getCurrentAnimation();
+        if (animation != null) {
+            if (isFacingLeft()) {
+                animation.drawFlippedHorizontally(this, camera);
+            } else {
+                super.draw(camera);
+            }
         }
     }
 
@@ -65,15 +72,6 @@ public class Knight extends Actor implements Player {
 
     public void handleInput(Keyboard keyboard) {
         movementStateMachine.handleInput(keyboard);
-        if (keyboard.isPressed(KeyBinding.ATTACK)) {
-            if (combatStateMachine.isEmpty() || !(combatStateMachine.getCurrentState() instanceof KnightAttackingState)) {
-                if (movementStateMachine.getCurrentState() instanceof KnightFallingState) {
-                    combatStateMachine.pushState(new KnightAttackingMidAirState(this, combatStateMachine));
-                } else {
-                    combatStateMachine.pushState(new KnightAttackingState(this, combatStateMachine));
-                }
-            }
-        }
     }
 
 }

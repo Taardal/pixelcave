@@ -30,7 +30,7 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
     @Override
     public void update(float secondsSinceLastUpdate) {
         super.update(secondsSinceLastUpdate);
-
+/*
         TileLayer tileLayer = (TileLayer) actor.getWorld().getLayers().get("main");
         Map<Integer, Tile> tiles = actor.getWorld().getTiles();
         int tileWidth = actor.getWorld().getTileWidth();
@@ -59,7 +59,7 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
         int column = collisionX / tileWidth;
         int row = collisionY / tileHeight;
 
-        if (isCollision(collisionX, collisionY)) {
+        if (isSolidTile(collisionX, collisionY)) {
             float x;
             if (actor.isFacingLeft()) {
                 x = (column * tileWidth) + tileWidth - (actor.getBounds().getX() - actor.getX());
@@ -70,7 +70,7 @@ public abstract class ActorRunningState<T extends Actor> extends ActorState<T> {
         }
 
         actor.setPosition(nextPosition);
-
+*/
     }
 
     private boolean isCollision(int x, int y) {

@@ -39,10 +39,6 @@ public abstract class Actor {
         combatStateMachine = new StateMachine();
         enemies = new ArrayList<>();
         bounds = new Bounds();
-        position = Vector2f.zero();
-        velocity = Vector2f.zero();
-        direction = Direction.RIGHT;
-        previousDirection = direction;
     }
 
     public Actor(SpriteSheet spriteSheet) {
@@ -166,8 +162,10 @@ public abstract class Actor {
     public Animation getCurrentAnimation() {
         if (!combatStateMachine.isEmpty()) {
             return combatStateMachine.getCurrentState().getAnimation();
-        } else {
+        } else if (!movementStateMachine.isEmpty()) {
             return movementStateMachine.getCurrentState().getAnimation();
+        } else {
+            return null;
         }
     }
 
@@ -188,11 +186,11 @@ public abstract class Actor {
         return direction == Direction.RIGHT || direction == Direction.UP_RIGHT || direction == Direction.DOWN_RIGHT;
     }
 
-    public boolean wasLeftFacing() {
+    public boolean wasFacingLeft() {
         return previousDirection == Direction.LEFT || previousDirection == Direction.UP_LEFT || previousDirection == Direction.DOWN_LEFT;
     }
 
-    public boolean wasRightFacing() {
+    public boolean wasFacingRight() {
         return previousDirection == Direction.RIGHT || previousDirection == Direction.UP_RIGHT || previousDirection == Direction.DOWN_RIGHT;
     }
 
@@ -201,11 +199,11 @@ public abstract class Actor {
     }
 
     public boolean hasTurnedRight() {
-        return isFacingRight() && wasLeftFacing();
+        return isFacingRight() && wasFacingLeft();
     }
 
     public boolean hasTurnedLeft() {
-        return isFacingLeft() && wasRightFacing();
+        return isFacingLeft() && wasFacingRight();
     }
 
     public Direction getPreviousDirection() {
@@ -214,5 +212,13 @@ public abstract class Actor {
 
     public void setPreviousDirection(Direction previousDirection) {
         this.previousDirection = previousDirection;
+    }
+
+    public boolean isFalling() {
+        return getVelocity().getY() != 0;
+    }
+
+    public boolean isRunning() {
+        return getVelocity().getX() != 0 && getVelocity().getY() == 0;
     }
 }

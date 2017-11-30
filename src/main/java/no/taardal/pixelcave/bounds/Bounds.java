@@ -1,54 +1,56 @@
 package no.taardal.pixelcave.bounds;
 
+import no.taardal.pixelcave.vector.Vector2f;
+
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 public class Bounds {
 
-    private Rectangle rectangle;
+    private Vector2f position;
+    private int width;
+    private int height;
 
     public Bounds() {
-        rectangle = new Rectangle();
+        position = Vector2f.zero();
+    }
+
+    public float getX() {
+        return position.getX();
+    }
+
+    public float getY() {
+        return position.getY();
+    }
+
+    public Vector2f getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector2f position) {
+        this.position = position;
     }
 
     public int getWidth() {
-        return rectangle.width;
+        return width;
     }
 
     public void setWidth(int width) {
-        this.rectangle.width = width;
+        this.width = width;
     }
 
     public int getHeight() {
-        return rectangle.height;
+        return height;
     }
 
     public void setHeight(int height) {
-        this.rectangle.height = height;
-    }
-
-    public int getX() {
-        return rectangle.x;
-    }
-
-    public void setX(int x) {
-        this.rectangle.x = x;
-    }
-
-    public int getY() {
-        return rectangle.y;
-    }
-
-    public void setY(int y) {
-        this.rectangle.y = y;
-    }
-
-    public void setPosition(float x, float y) {
-        setX((int) x);
-        setY((int) y);
+        this.height = height;
     }
 
     public boolean intersects(Bounds bounds) {
-        return rectangle.intersects(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+        Rectangle2D rectangle = new Rectangle((int) getX(), (int) getY(), width, height);
+        Rectangle2D otherRectangle = new Rectangle((int) bounds.getX(), (int) bounds.getY(), bounds.getWidth(), bounds.getHeight());
+        return rectangle.intersects(otherRectangle);
     }
 
 }

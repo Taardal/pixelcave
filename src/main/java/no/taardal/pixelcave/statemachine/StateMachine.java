@@ -20,7 +20,7 @@ public class StateMachine {
 
     public void handleInput(Keyboard keyboard) {
         if (!isEmpty()) {
-            actorStateDeque.getFirst().nextMove(keyboard);
+            actorStateDeque.getFirst().handleInput(keyboard);
         }
     }
 
@@ -48,7 +48,7 @@ public class StateMachine {
     }
 
     public ActorState getCurrentState() {
-        return actorStateDeque.getFirst();
+        return !isEmpty() ? actorStateDeque.getFirst() : null;
     }
 
     public boolean isEmpty() {
