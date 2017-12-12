@@ -69,11 +69,8 @@ public class KnightRunningState extends ActorMovementState<Knight> {
 
     @Override
     public void update(float secondsSinceLastUpdate) {
-        int column = (actor.getWidth() / 2) / actor.getWorld().getTileWidth();
-        int row = (((int) actor.getPosition().getY()) + actor.getHeight()) / actor.getWorld().getTileHeight();
-        if (isSolidTile(column, row)) {
-            super.update(secondsSinceLastUpdate);
-        } else {
+        super.update(secondsSinceLastUpdate);
+        if (actor.isFalling()) {
             stateMachine.changeState(new KnightFallingState(actor, stateMachine));
         }
     }

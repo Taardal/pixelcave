@@ -104,8 +104,22 @@ public class Vector2f {
         return (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
+    public float getLength(Vector2f vector2f) {
+        float x = Math.abs(this.x - vector2f.getX());
+        float y = Math.abs(this.y - vector2f.getY());
+        return (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    }
+
     public float getDotProduct(Vector2f vector2f) {
         return x * vector2f.x + y * vector2f.y;
+    }
+
+    public Vector2f withX(float x) {
+        return new Vector2f(x, y);
+    }
+
+    public Vector2f withY(float y) {
+        return new Vector2f(x, y);
     }
 
     @Override

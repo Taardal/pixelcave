@@ -1,6 +1,7 @@
 package no.taardal.pixelcave.state.actor;
 
 import no.taardal.pixelcave.actor.Actor;
+import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.tile.Tile;
@@ -34,38 +35,98 @@ public abstract class ActorMovementState<T extends Actor> extends ActorState<T> 
             nextBoundsPosition = new Vector2f(nextBoundsPosition.getX(), 0);
         }
 
-        float leftX = nextBoundsPosition.getX();
-        float rightX = leftX + actor.getBounds().getWidth();
-        float topY = nextBoundsPosition.getY();
-        float bottomY = topY + actor.getBounds().getHeight();
-
-        int leftColumn = ((int) leftX) / actor.getWorld().getTileWidth();
-        int rightColumn = ((int) rightX) / actor.getWorld().getTileWidth();
-        int topRow = ((int) topY) / actor.getWorld().getTileHeight();
-        int bottomRow = ((int) bottomY) / actor.getWorld().getTileHeight();
-
-        float x = nextBoundsPosition.getX();
-        float y = nextBoundsPosition.getY();
-        if (isSolidTile(leftColumn, bottomRow - 1)) {
-            x = (leftColumn * actor.getWorld().getTileWidth()) + actor.getWorld().getTileWidth();
-        }
-        if (isSolidTile(rightColumn, bottomRow - 1)) {
-            x = (rightColumn * actor.getWorld().getTileWidth()) - actor.getBounds().getWidth();
-        }
-        if (isSolidTile(leftColumn + 1, topRow)) {
-            y = (topRow * actor.getWorld().getTileHeight()) + actor.getWorld().getTileHeight();
-        }
-        if (isSolidTile(leftColumn + 1, bottomRow)) {
-            y = (bottomRow * actor.getWorld().getTileHeight()) - actor.getBounds().getHeight();
-            actor.setVelocity(new Vector2f(actor.getVelocity().getX(), 0));
-        }
-        nextBoundsPosition = new Vector2f(x, y);
+        nextBoundsPosition = checkCollision(nextBoundsPosition);
 
         distanceToMove = nextBoundsPosition.subtract(actor.getBounds().getPosition());
         actor.setPosition(actor.getPosition().add(distanceToMove));
         actor.getBounds().setPosition(actor.getBounds().getPosition().add(distanceToMove));
 
         super.update(secondsSinceLastUpdate);
+    }
+
+    private Vector2f checkCollision(Vector2f position) {
+
+        if (actor.getVelocity().getY() < 0) {
+            position = checkTopCollision(position);
+        } else {
+            position = checkBotCollision(position);
+        }
+        if (actor.getDirection() == Direction.LEFT) {
+            position = checkLeftCollision(position);
+        } else if (actor.getVelocity().getX() > 0) {
+            position = checkRightCollision(position);
+        }
+        return position;
+    }
+
+    private Vector2f checkTopCollision(Vector2f boundsPosition) {
+        int startX = (int) boundsPosition.getX() + 1;
+        int endX = startX + actor.getBounds().getWidth() - 1;
+        int row = ((int) boundsPosition.getY()) / actor.getWorld().getTileHeight();
+        for (int x = startX; x <= endX; x++) {
+            int column = x / actor.getWorld().getTileWidth();
+            if (isSolidTile(column, row)) {
+                float y = (row * actor.getWorld().getTileHeight()) + actor.getWorld().getTileHeight();
+                boundsPosition = boundsPosition.withY(y);
+                break;
+            }
+        }
+        return boundsPosition;
+    }
+
+    private Vector2f checkBotCollision(Vector2f boundsPosition) {
+        int startX = ((int) boundsPosition.getX()) + 1;
+        int endX = startX + actor.getBounds().getWidth() - 1;
+        int bottomY = ((int) boundsPosition.getY()) + actor.getBounds().getHeight();
+        int row = bottomY / actor.getWorld().getTileHeight();
+
+        boolean collision = false;
+        for (int x = startX; x <= endX; x++) {
+            int column = x / actor.getWorld().getTileWidth();
+            if (isSolidTile(column, row)) {
+                float y = (row * actor.getWorld().getTileHeight()) - actor.getBounds().getHeight();
+                boundsPosition = boundsPosition.withY(y);
+                actor.setVelocity(actor.getVelocity().withY(0));
+                collision = true;
+                break;
+            }
+        }
+        if (!collision && !actor.isFalling()) {
+            actor.setVelocity(actor.getVelocity().withY(50));
+        }
+        return boundsPosition;
+    }
+
+    private Vector2f checkLeftCollision(Vector2f boundsPosition) {
+        int startY = (int) boundsPosition.getY() + 1;
+        int endY = startY + actor.getBounds().getHeight() - 1;
+        int column = ((int) boundsPosition.getX()) / actor.getWorld().getTileWidth();
+        for (int y = startY; y < endY; y++) {
+            int row = y / actor.getWorld().getTileHeight();
+            if (isSolidTile(column, row)) {
+                float x = (column * actor.getWorld().getTileWidth()) + actor.getWorld().getTileWidth();
+                boundsPosition = boundsPosition.withX(x);
+                actor.setVelocity(actor.getVelocity().withX(0));
+                break;
+            }
+        }
+        return boundsPosition;
+    }
+
+    private Vector2f checkRightCollision(Vector2f boundsPosition) {
+        int startY = (int) boundsPosition.getY() + 1;
+        int endY = startY + actor.getBounds().getHeight() - 1;
+        int column = ((int) boundsPosition.getX() + actor.getBounds().getWidth()) / actor.getWorld().getTileWidth();
+        for (int y = startY; y < endY; y++) {
+            int row = y / actor.getWorld().getTileHeight();
+            if (isSolidTile(column, row)) {
+                float x = (column * actor.getWorld().getTileWidth()) - actor.getBounds().getWidth();
+                boundsPosition = boundsPosition.withX(x);
+                actor.setVelocity(actor.getVelocity().withX(0));
+                break;
+            }
+        }
+        return boundsPosition;
     }
 
     protected boolean isSolidTile(int column, int row) {
