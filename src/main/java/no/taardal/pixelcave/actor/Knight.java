@@ -5,7 +5,6 @@ import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.sprite.SpriteSheet;
-import no.taardal.pixelcave.state.actor.knight.KnightFallingState;
 import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +43,44 @@ public class Knight extends Actor implements Player {
 
     @Override
     public void update(float secondsSinceLastUpdate) {
-        if (movementStateMachine.isEmpty()) {
-            movementStateMachine.pushState(new KnightFallingState(this, movementStateMachine));
+        /*
+
+        Update values (bounds size, velocity)
+        --------------------------------------------------------
+        if (actor.isFalling()) {
+            actor.setVelocity(getFallingVelocity(secondsSinceLastUpdate));
         }
-        super.update(secondsSinceLastUpdate);
+
+        Calculate next (bounds) position
+        --------------------------------------------------------
+        Vector2f distanceToMove = actor.getVelocity().multiply(secondsSinceLastUpdate);
+        Vector2f nextBoundsPosition = actor.getBounds().getPosition().add(distanceToMove);
+        if (nextBoundsPosition.getX() < 0) {
+            nextBoundsPosition = new Vector2f(0, nextBoundsPosition.getY());
+        }
+        if (nextBoundsPosition.getY() < 0) {
+            nextBoundsPosition = new Vector2f(nextBoundsPosition.getX(), 0);
+        }
+
+        Check, and adjust for, collisions
+        --------------------------------------------------------
+        nextBoundsPosition = checkCollision(nextBoundsPosition);
+
+        Set new position
+        --------------------------------------------------------
+        distanceToMove = nextBoundsPosition.subtract(actor.getBounds().getPosition());
+        actor.setPosition(actor.getPosition().add(distanceToMove));
+        actor.getBounds().setPosition(actor.getBounds().getPosition().add(distanceToMove));
+
+        Set animation if needed
+        --------------------------------------------------------
+
+
+        Update animation
+        --------------------------------------------------------
+        getCurrentAnimation().update();
+
+        */
     }
 
     @Override
