@@ -12,6 +12,7 @@ import java.util.Map;
 public class World {
 
     public static final int NO_TILE_ID = 0;
+    public static final int GRAVITY = 500;
 
     private Map<String, Layer> layers;
     private Map<Integer, Tile> tiles;

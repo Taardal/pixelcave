@@ -9,9 +9,11 @@ import no.taardal.pixelcave.world.World;
 public class KnightBuilder implements Builder<Knight> {
 
     private GameAssetService gameAssetService;
+    private SpriteSheet spriteSheet;
     private World world;
     private String theme;
     private Vector2f position;
+    private Vector2f velocity;
 
     public KnightBuilder(GameAssetService gameAssetService) {
         this.gameAssetService = gameAssetService;
@@ -19,10 +21,15 @@ public class KnightBuilder implements Builder<Knight> {
 
     @Override
     public Knight build() {
-        Knight knight = new Knight(getSpriteSheet());
-        knight.setWorld(world);
-        knight.setPosition(position);
-        return knight;
+        if (spriteSheet == null) {
+            spriteSheet = getSpriteSheet();
+        }
+        return new Knight(spriteSheet, world, position, velocity);
+    }
+
+    public KnightBuilder spriteSheet(SpriteSheet spriteSheet) {
+        this.spriteSheet = spriteSheet;
+        return this;
     }
 
     public KnightBuilder world(World world) {
@@ -31,7 +38,7 @@ public class KnightBuilder implements Builder<Knight> {
     }
 
     public KnightBuilder theme(String theme) {
-        this.theme = theme;
+        this.theme = theme.toLowerCase();
         return this;
     }
 
@@ -50,11 +57,32 @@ public class KnightBuilder implements Builder<Knight> {
         return this;
     }
 
+    public KnightBuilder x(float x) {
+        if (position != null) {
+            position = position.withX(x);
+        } else {
+            position = new Vector2f(x, 0);
+        }
+        return this;
+    }
+
+    public KnightBuilder y(float y) {
+        if (position != null) {
+            position = position.withY(y);
+        } else {
+            position = new Vector2f(0, y);
+        }
+        return this;
+    }
+
+    public KnightBuilder velocity(Vector2f velocity) {
+        this.velocity = velocity;
+        return this;
+    }
+
     private SpriteSheet getSpriteSheet() {
         String path = "knight/spritesheet-knight-" + theme + ".png";
-        int spriteWidth = 40;
-        int spriteHeight = 40;
-        return gameAssetService.getSpriteSheet(path, spriteWidth, spriteHeight);
+        return gameAssetService.getSpriteSheet(path, Knight.SPRITE_WIDTH, Knight.SPRITE_HEIGHT);
     }
 
 

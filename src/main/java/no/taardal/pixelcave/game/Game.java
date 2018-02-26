@@ -14,11 +14,12 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.awt.image.ImageObserver;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     public static final String GAME_TITLE = "PixelCave";
-    public static final int GAME_WIDTH = 480;
+    public static final int GAME_WIDTH = 360;
     public static final int GAME_HEIGHT = GAME_WIDTH / 16 * 9;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
@@ -36,7 +37,6 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
         keyboard = new Keyboard();
         camera = new Camera(GAME_WIDTH, GAME_HEIGHT);
         setPreferredSize(new Dimension(GAME_WIDTH * SCALE, GAME_HEIGHT * SCALE));
-
         gameState = new PlayGameState(levels[0]);
     }
 
@@ -86,7 +86,10 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
 
     private void drawCameraToBuffer(BufferStrategy bufferStrategy) {
         Graphics graphics = bufferStrategy.getDrawGraphics();
-        graphics.drawImage(camera.getBufferedImage(), 0, 0, getWidth(), getHeight(), null);
+        int x = 0;
+        int y = 0;
+        ImageObserver observer = null;
+        graphics.drawImage(camera.getBufferedImage(), x, y, getWidth(), getHeight(), observer);
         graphics.dispose();
     }
 

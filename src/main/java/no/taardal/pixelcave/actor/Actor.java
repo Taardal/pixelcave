@@ -1,18 +1,14 @@
 package no.taardal.pixelcave.actor;
 
+import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
-import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.sprite.SpriteSheet;
-import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Actor {
 
@@ -20,9 +16,6 @@ public abstract class Actor {
 
     SpriteSheet spriteSheet;
     World world;
-    StateMachine movementStateMachine;
-    StateMachine combatStateMachine;
-    List<Enemy> enemies;
     Bounds bounds;
     Vector2f position;
     Vector2f velocity;
@@ -33,25 +26,19 @@ public abstract class Actor {
     int attackRange;
     int movementSpeed;
     boolean dead;
+    Animation animation;
 
     private Actor() {
-        movementStateMachine = new StateMachine();
-        combatStateMachine = new StateMachine();
-        enemies = new ArrayList<>();
-        bounds = new Bounds();
     }
 
-    public Actor(SpriteSheet spriteSheet) {
+    public Actor(SpriteSheet spriteSheet, World world, Bounds bounds, Vector2f position, Vector2f velocity, Direction direction) {
         this();
         this.spriteSheet = spriteSheet;
-    }
-
-    public List<Enemy> getEnemies() {
-        return enemies;
-    }
-
-    public void setEnemies(List<Enemy> enemies) {
-        this.enemies = enemies;
+        this.world = world;
+        this.bounds = bounds;
+        this.position = position;
+        this.velocity = velocity;
+        this.direction = direction;
     }
 
     public World getWorld() {
@@ -151,8 +138,7 @@ public abstract class Actor {
     }
 
     public void update(float secondsSinceLastUpdate) {
-        movementStateMachine.update(secondsSinceLastUpdate);
-        combatStateMachine.update(secondsSinceLastUpdate);
+
     }
 
     public void draw(Camera camera) {
@@ -160,13 +146,7 @@ public abstract class Actor {
     }
 
     public Animation getCurrentAnimation() {
-        if (!combatStateMachine.isEmpty()) {
-            return combatStateMachine.getCurrentState().getAnimation();
-        } else if (!movementStateMachine.isEmpty()) {
-            return movementStateMachine.getCurrentState().getAnimation();
-        } else {
-            return null;
-        }
+        return animation;
     }
 
     public abstract void onAttacked(Actor attacker);
