@@ -1,7 +1,6 @@
 package no.taardal.pixelcave.camera;
 
 
-import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.game.Game;
 import no.taardal.pixelcave.vector.Vector2f;
@@ -153,7 +152,4 @@ public class Camera extends Rectangle {
         drawRectangle((int) rectangle.getX(), (int) rectangle.getY(), (int) rectangle.getWidth(), (int) rectangle.getHeight(), color);
     }
 
-    public void drawBounds(Bounds rectangle, Color color) {
-        drawRectangle(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), color);
-    }
 }

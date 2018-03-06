@@ -1,4 +1,4 @@
-package no.taardal.pixelcave.state.game;
+package no.taardal.pixelcave.state;
 
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.keyboard.Keyboard;

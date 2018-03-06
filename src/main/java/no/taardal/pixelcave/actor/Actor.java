@@ -1,7 +1,6 @@
 package no.taardal.pixelcave.actor;
 
 import no.taardal.pixelcave.animation.Animation;
-import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.sprite.SpriteSheet;
@@ -12,30 +11,29 @@ import org.slf4j.LoggerFactory;
 
 public abstract class Actor {
 
+    static final int GRID_COLLISION_MARGIN = 1;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
     SpriteSheet spriteSheet;
     World world;
-    Bounds bounds;
     Vector2f position;
+    Vector2f boundsPosition;
     Vector2f velocity;
     Direction direction;
     Direction previousDirection;
-    int health;
-    int damage;
-    int attackRange;
-    int movementSpeed;
-    boolean dead;
     Animation animation;
+    int movementSpeed;
+    int boundsWidth;
+    int boundsHeight;
 
     private Actor() {
     }
 
-    public Actor(SpriteSheet spriteSheet, World world, Bounds bounds, Vector2f position, Vector2f velocity, Direction direction) {
+    public Actor(SpriteSheet spriteSheet, World world, Vector2f position, Vector2f velocity, Direction direction) {
         this();
         this.spriteSheet = spriteSheet;
         this.world = world;
-        this.bounds = bounds;
         this.position = position;
         this.velocity = velocity;
         this.direction = direction;
@@ -77,6 +75,38 @@ public abstract class Actor {
         return position.getY();
     }
 
+    public int getTopRow() {
+        return getTopRow(boundsPosition);
+    }
+
+    public int getTopRow(Vector2f position) {
+        return ((int) position.getY()) / world.getTileHeight();
+    }
+
+    public int getBottomRow() {
+        return getBottomRow(boundsPosition);
+    }
+
+    public int getBottomRow(Vector2f position) {
+        return (((int) position.getY()) + boundsHeight) / world.getTileHeight();
+    }
+
+    public int getLeftColumn() {
+        return getLeftColumn(boundsPosition);
+    }
+
+    public int getLeftColumn(Vector2f position) {
+        return ((int) position.getX()) / world.getTileWidth();
+    }
+
+    public int getRightColumn() {
+        return getRightColumn(boundsPosition);
+    }
+
+    public int getRightColumn(Vector2f position) {
+        return (((int) position.getX()) + boundsWidth) / world.getTileWidth();
+    }
+
     public Vector2f getVelocity() {
         return velocity;
     }
@@ -93,52 +123,12 @@ public abstract class Actor {
         this.direction = direction;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public int getAttackRange() {
-        return attackRange;
-    }
-
-    public void setAttackRange(int attackRange) {
-        this.attackRange = attackRange;
-    }
-
     public int getMovementSpeed() {
         return movementSpeed;
     }
 
     public void setMovementSpeed(int movementSpeed) {
         this.movementSpeed = movementSpeed;
-    }
-
-    public boolean isDead() {
-        return dead;
-    }
-
-    public void setDead(boolean dead) {
-        this.dead = dead;
-    }
-
-    public Bounds getBounds() {
-        return bounds;
-    }
-
-    public void update(float secondsSinceLastUpdate) {
-
     }
 
     public void draw(Camera camera) {

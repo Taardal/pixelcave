@@ -1,7 +1,6 @@
 package no.taardal.pixelcave.actor;
 
 import no.taardal.pixelcave.animation.Animation;
-import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.KeyBinding;
@@ -24,7 +23,7 @@ public class Knight extends Actor implements Player {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Knight.class);
     private static final int TERMINAL_VELOCITY = 300;
-    private static final int GRID_COLLISION_MARGIN = 1;
+    private static final int JUMPING_VELOCITY = -200;
 
     public enum Theme {
 
@@ -41,176 +40,138 @@ public class Knight extends Actor implements Player {
 
     }
 
+    private Animation idleAnimation;
+    private Animation runningAnimation;
+    private Animation jumpingAnimation;
+
     public Knight(SpriteSheet spriteSheet, World world, Vector2f position, Vector2f velocity) {
-        super(spriteSheet, world, new Bounds(), position, velocity, Direction.RIGHT);
-
-        health = 100;
-        damage = 50;
-        attackRange = 20;
+        super(spriteSheet, world, position, velocity, Direction.RIGHT);
         movementSpeed = 100;
-
-        animation = getIdleAnimation();
-
-        getBounds().setWidth(19);
-        getBounds().setHeight(30);
-
-        float boundsX;
-        int marginX = 5;
-        if (getDirection() == Direction.RIGHT) {
-            boundsX = getX() + marginX;
-        } else {
-            boundsX = getX() + getWidth() - getBounds().getWidth() - marginX;
-        }
-        float boundsY = (getY() + getHeight()) - getBounds().getHeight() - GRID_COLLISION_MARGIN;
-        getBounds().setPosition(new Vector2f(boundsX, boundsY));
-    }
-
-    private Animation getRunningAnimation() {
-        Sprite[] sprites = new Sprite[10];
-        for (int i = 0; i < sprites.length; i++) {
-            sprites[i] = getSpriteSheet().getSprites()[i][8];
-        }
-        return new Animation(sprites);
+        boundsWidth = 19;
+        boundsHeight = 30;
+        idleAnimation = getIdleAnimation();
+        runningAnimation = getRunningAnimation();
+        jumpingAnimation = getJumpingAnimation();
     }
 
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-            animation = getRunningAnimation();
-            getBounds().setWidth(27);
-            getBounds().setHeight(27);
             setPreviousDirection(getDirection());
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
-                if (getDirection() == Direction.UP_RIGHT || getDirection() == Direction.DOWN_LEFT) {
-                    setDirection(Direction.DOWN_LEFT);
-                } else if (getDirection() == Direction.DOWN_RIGHT || getDirection() == Direction.UP_LEFT) {
-                    setDirection(Direction.UP_LEFT);
-                } else {
-                    setDirection(Direction.LEFT);
-                }
-                setVelocity(new Vector2f(-getMovementSpeed(), getVelocity().getY()));
+                setDirection(Direction.LEFT);
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-                if (getDirection() == Direction.UP_LEFT) {
-                    setDirection(Direction.DOWN_RIGHT);
-                } else if (getDirection() == Direction.DOWN_LEFT) {
-                    setDirection(Direction.UP_RIGHT);
-                } else {
-                    if (getDirection() != Direction.DOWN_RIGHT && getDirection() != Direction.UP_RIGHT) {
-                        setDirection(Direction.RIGHT);
-                    }
-                }
-                setVelocity(new Vector2f(getMovementSpeed(), getVelocity().getY()));
+                setDirection(Direction.RIGHT);
             }
+            velocity = getVelocity().withX(direction == Direction.RIGHT ? getMovementSpeed() : -getMovementSpeed());
+            animation = runningAnimation;
         } else {
-            getBounds().setWidth(19);
-            getBounds().setHeight(30);
-            setVelocity(getVelocity().withX(0));
+            velocity = getVelocity().withX(0);
+            animation = idleAnimation;
         }
-        if (keyboard.isPressed(KeyBinding.UP_MOVEMENT) && getVelocity().getY() == 0) {
-            setVelocity(getVelocity().withY(-200));
+        if (keyboard.isPressed(KeyBinding.UP_MOVEMENT) && !isFalling()) {
+            velocity = getVelocity().withY(JUMPING_VELOCITY);
         }
     }
 
     @Override
     public void update(float secondsSinceLastUpdate) {
+        boundsPosition = new Vector2f(getBoundsX(), getBoundsY());
+
         if (isFalling()) {
             float velocityY = getVelocity().getY() + (World.GRAVITY * secondsSinceLastUpdate);
             if (velocityY > TERMINAL_VELOCITY) {
                 velocityY = TERMINAL_VELOCITY;
             }
-            setVelocity(getVelocity().withY(velocityY));
+            velocity = getVelocity().withY(velocityY);
+        } else if (!isHorizontalCollision(getBottomRow())) {
+            velocity = getVelocity().withY(25);
         }
 
-        Vector2f distanceToMove = getVelocity().multiply(secondsSinceLastUpdate);
-        Vector2f nextBoundsPosition = getBounds().getPosition().add(distanceToMove);
-        if (nextBoundsPosition.getX() < 0) {
-            nextBoundsPosition = nextBoundsPosition.withX(0);
-        }
-        if (nextBoundsPosition.getY() < 0) {
-            nextBoundsPosition = nextBoundsPosition.withY(0);
-        }
-
-        int topRow = ((int) getBounds().getY()) / world.getTileHeight();
-        int bottomRow = (((int) getBounds().getY()) + getBounds().getHeight()) / world.getTileHeight();
-        int column = ((int) nextBoundsPosition.getX()) / world.getTileWidth();
-        for (int i = topRow; i <= bottomRow; i++) {
-            if (isSolidTile(column, i)) {
-                float x = (column * getWorld().getTileWidth()) + getWorld().getTileWidth();
-                nextBoundsPosition = nextBoundsPosition.withX(x);
-                setVelocity(getVelocity().withX(0));
-                break;
-            }
-        }
-        column = (((int) nextBoundsPosition.getX()) + getBounds().getWidth()) / world.getTileWidth();
-        for (int i = topRow; i <= bottomRow; i++) {
-            if (isSolidTile(column, i)) {
-                float x = (column * getWorld().getTileWidth()) - getBounds().getWidth() - GRID_COLLISION_MARGIN;
-                nextBoundsPosition = nextBoundsPosition.withX(x);
-                setVelocity(getVelocity().withX(0));
-                break;
-            }
-        }
-        distanceToMove = nextBoundsPosition.subtract(getBounds().getPosition());
-        setPosition(getPosition().add(distanceToMove));
-        getBounds().setPosition(nextBoundsPosition);
-
-        int leftColumn = ((int) getBounds().getX()) / world.getTileWidth();
-        int rightColumn = (((int) getBounds().getX()) + getBounds().getWidth()) / world.getTileWidth();
-        if (velocity.getY() < 0) {
-            int row = ((int) nextBoundsPosition.getY()) / world.getTileHeight();
-            for (int i = leftColumn; i <= rightColumn; i++) {
-                if (isSolidTile(i, row)) {
-                    float y = (row * getWorld().getTileHeight()) + getWorld().getTileHeight();
-                    nextBoundsPosition = nextBoundsPosition.withY(y);
-                    setVelocity(getVelocity().withY(0));
-                    break;
-                }
-            }
-        } else {
-            int row = (((int) nextBoundsPosition.getY()) + getBounds().getHeight()) / world.getTileHeight();
-            for (int i = leftColumn; i <= rightColumn; i++) {
-                if (isSolidTile(i, row)) {
-                    float y = (row * getWorld().getTileHeight()) - getBounds().getHeight() - GRID_COLLISION_MARGIN;
-                    nextBoundsPosition = nextBoundsPosition.withY(y);
-                    setVelocity(getVelocity().withY(0));
-                    break;
-                }
-            }
-        }
-        distanceToMove = nextBoundsPosition.subtract(getBounds().getPosition());
-        setPosition(getPosition().add(distanceToMove));
-        getBounds().setPosition(nextBoundsPosition);
+        Vector2f nextBoundsPosition = boundsPosition.add(getVelocity().multiply(secondsSinceLastUpdate));
+        nextBoundsPosition = checkHorizontalCollision(nextBoundsPosition);
+        nextBoundsPosition = checkVerticalCollision(nextBoundsPosition);
+        Vector2f distanceToMove = nextBoundsPosition.subtract(boundsPosition);
+        position = getPosition().add(distanceToMove);
+        boundsPosition = boundsPosition.add(distanceToMove);
 
         getCurrentAnimation().update();
     }
 
-    protected boolean isSolidTile(int column, int row) {
+    private Vector2f checkHorizontalCollision(Vector2f nextBoundsPosition) {
+        if (nextBoundsPosition.getX() < 0) {
+            return nextBoundsPosition.withX(0);
+        } else {
+            int leftColumn = getLeftColumn(nextBoundsPosition);
+            if (isHorizontalCollision(leftColumn)) {
+                float x = (leftColumn * world.getTileWidth()) + world.getTileWidth();
+                nextBoundsPosition = nextBoundsPosition.withX(x);
+                velocity = getVelocity().withX(0);
+            }
+            int rightColumn = getRightColumn(nextBoundsPosition);
+            if (isHorizontalCollision(rightColumn)) {
+                float x = (rightColumn * world.getTileWidth()) - boundsWidth - GRID_COLLISION_MARGIN;
+                nextBoundsPosition = nextBoundsPosition.withX(x);
+                velocity = getVelocity().withX(0);
+            }
+            return nextBoundsPosition;
+        }
+    }
+
+    private Vector2f checkVerticalCollision(Vector2f nextBoundsPosition) {
+        if (nextBoundsPosition.getY() < 0) {
+            return nextBoundsPosition.withY(0);
+        } else {
+            int topRow = getTopRow(nextBoundsPosition);
+            if (isVerticalCollision(topRow)) {
+                float y = (topRow * world.getTileHeight()) + world.getTileHeight();
+                nextBoundsPosition = nextBoundsPosition.withY(y);
+                velocity = getVelocity().withY(0);
+            }
+            int bottomRow = getBottomRow(nextBoundsPosition);
+            if (isVerticalCollision(bottomRow)) {
+                float y = (bottomRow * world.getTileHeight()) - boundsHeight - GRID_COLLISION_MARGIN;
+                nextBoundsPosition = nextBoundsPosition.withY(y);
+                velocity = getVelocity().withY(0);
+            }
+            return nextBoundsPosition;
+        }
+    }
+
+    private boolean isHorizontalCollision(int column) {
+        for (int row = getTopRow(); row <= getBottomRow(); row++) {
+            if (isSolidTile(column, row)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isVerticalCollision(int row) {
+        for (int column = getLeftColumn(); column <= getRightColumn(); column++) {
+            if (isSolidTile(column, row)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSolidTile(int column, int row) {
         Tile tile = getTile(column, row);
         return tile != null && !tile.isSlope();
     }
 
-    protected Tile getTile(int column, int row) {
-        TileLayer tileLayer = (TileLayer) getWorld().getLayers().get("main");
+    private Tile getTile(int column, int row) {
+        TileLayer tileLayer = (TileLayer) world.getLayers().get("main");
         int tileId = tileLayer.getTileGrid()[column][row];
-        return getTile(tileId);
-    }
-
-    protected Tile getTile(int tileId) {
-        if (tileId != World.NO_TILE_ID) {
-            Tile tile = getWorld().getTiles().get(tileId);
-            if (tile != null) {
-                return tile;
-            }
-        }
-        return null;
+        return world.getTiles().get(tileId);
     }
 
     @Override
     public void draw(Camera camera) {
         camera.drawRectangle(getX(), getY(), getWidth(), getHeight(), Color.RED);
-        if (bounds != null) {
-            camera.drawRectangle(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), Color.CYAN);
+        if (boundsPosition != null) {
+            camera.drawRectangle(boundsPosition.getX(), boundsPosition.getY(), boundsWidth, boundsHeight, Color.CYAN);
         }
-
         Animation animation = getCurrentAnimation();
         if (animation != null) {
             if (isFacingLeft()) {
@@ -226,6 +187,19 @@ public class Knight extends Actor implements Player {
 
     }
 
+    private float getBoundsX() {
+        int marginX = getCurrentAnimation().equals(runningAnimation) ? 10 : 5;
+        if (getDirection() == Direction.RIGHT) {
+            return getX() + marginX;
+        } else {
+            return getX() + getWidth() - boundsWidth - marginX;
+        }
+    }
+
+    private float getBoundsY() {
+        return (getY() + getHeight()) - boundsHeight - GRID_COLLISION_MARGIN;
+    }
+
     private Animation getIdleAnimation() {
         Sprite[] sprites = new Sprite[4];
         for (int i = 0; i < sprites.length; i++) {
@@ -236,7 +210,15 @@ public class Knight extends Actor implements Player {
         return animation;
     }
 
-    private Animation getJumpingActorAnimation() {
+    private Animation getRunningAnimation() {
+        Sprite[] sprites = new Sprite[10];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = getSpriteSheet().getSprites()[i][8];
+        }
+        return new Animation(sprites);
+    }
+
+    private Animation getJumpingAnimation() {
         Sprite[] sprites = new Sprite[6];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = getSpriteSheet().getSprites()[i][10];
