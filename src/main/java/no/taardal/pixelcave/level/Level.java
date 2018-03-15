@@ -4,11 +4,14 @@ import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.actor.Player;
 import no.taardal.pixelcave.builder.KnightBuilder;
 import no.taardal.pixelcave.camera.Camera;
+import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.layer.Layer;
 import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.ribbon.RibbonManager;
 import no.taardal.pixelcave.service.GameAssetService;
+import no.taardal.pixelcave.service.LocalResourceService;
+import no.taardal.pixelcave.spritesheet.KnightSpriteSheet;
 import no.taardal.pixelcave.tile.Tile;
 import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
@@ -27,11 +30,13 @@ public abstract class Level {
         world = getWorld(gameAssetService);
         ribbonManager = getRibbonManager(gameAssetService);
 
-        player = new KnightBuilder(gameAssetService)
-                .world(world)
-                .theme(Knight.Theme.GOLD)
-                .position(new Vector2f(50, 0))
-                .velocity(new Vector2f(0, 50))
+        String knightSpriteSheetPath = "spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png";
+        player = new KnightBuilder()
+                .setWorld(world)
+                .setSpriteSheet(new KnightSpriteSheet(new LocalResourceService().getImage(knightSpriteSheetPath)))
+                .setPosition(new Vector2f(50, 0))
+                .setVelocity(new Vector2f(0, 50))
+                .setDirection(Direction.LEFT)
                 .build();
     }
 

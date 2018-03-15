@@ -2,7 +2,8 @@ package no.taardal.pixelcave.animation;
 
 import no.taardal.pixelcave.actor.Actor;
 import no.taardal.pixelcave.camera.Camera;
-import no.taardal.pixelcave.sprite.Sprite;
+
+import java.awt.image.BufferedImage;
 
 public class Animation {
 
@@ -25,11 +26,13 @@ public class Animation {
         DEAD
     }
 
-    private Sprite[] sprites;
-    private Sprite sprite;
+    private BufferedImage[] sprites;
+    private BufferedImage sprite;
     private int frame;
     private int updatesPerFrame;
     private int updatesSinceLastFrame;
+    private int width;
+    private int height;
     private boolean indefinite;
     private boolean finished;
 
@@ -38,18 +41,22 @@ public class Animation {
         indefinite = true;
     }
 
-    public Animation(Sprite[] sprites) {
+    public Animation(BufferedImage[] sprites) {
         this();
         this.sprites = sprites;
         sprite = sprites[0];
+        for (int i = 0; i < sprites.length; i++) {
+            width = sprites[i].getWidth() > width ? sprites[i].getWidth() : width;
+            height = sprites[i].getHeight() > height ? sprites[i].getHeight() : height;
+        }
     }
 
     public int getWidth() {
-        return sprite.getWidth();
+        return width;
     }
 
     public int getHeight() {
-        return sprite.getHeight();
+        return height;
     }
 
     public int getFrame() {
@@ -79,7 +86,7 @@ public class Animation {
     public void setFinished(boolean finished) {
         this.finished = finished;
         if (finished) {
-            indefinite = false;
+            setIndefinite(false);
         }
     }
 
@@ -110,10 +117,27 @@ public class Animation {
     }
 
     public void draw(Actor actor, Camera camera) {
-        sprite.draw((int) actor.getX(), (int) actor.getY(), camera);
+
+        int actorY = (int) actor.getY();
+        int actorBottomY = actorY + actor.getHeight();
+        int y = actorBottomY - sprite.getHeight();
+
+        int actorX = (int) actor.getX();
+        int actorRightX = actorX + actor.getWidth();
+        int x = actorRightX - sprite.getWidth();
+
+        camera.drawImage(sprite, actorX, y);
     }
 
     public void drawFlippedHorizontally(Actor actor, Camera camera) {
-        sprite.drawFlippedHorizontally((int) actor.getX(), (int) actor.getY(), camera);
+        int actorY = (int) actor.getY();
+        int actorBottomY = actorY + actor.getHeight();
+        int y = actorBottomY - sprite.getHeight();
+
+        int actorX = (int) actor.getX();
+        int actorRightX = actorX + actor.getWidth();
+        int x = actorRightX - sprite.getWidth();
+
+        camera.drawImageFlippedHorizontally(sprite, x, y);
     }
 }

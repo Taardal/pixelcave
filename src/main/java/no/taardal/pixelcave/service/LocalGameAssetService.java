@@ -2,7 +2,7 @@ package no.taardal.pixelcave.service;
 
 import com.google.gson.Gson;
 import no.taardal.pixelcave.ribbon.Ribbon;
-import no.taardal.pixelcave.sprite.SpriteSheet;
+import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.world.World;
 
 import javax.inject.Inject;
@@ -46,7 +46,8 @@ public class LocalGameAssetService implements GameAssetService {
     public SpriteSheet getSpriteSheet(String relativePath, int spriteWidth, int spriteHeight) {
         String path = SPRITE_SHEET_RESOURCE_PATH + "/" + relativePath;
         BufferedImage bufferedImage = resourceService.getImage(path);
-        return new SpriteSheet(bufferedImage, spriteWidth, spriteHeight);
+        //return new SpriteSheet(bufferedImage, spriteWidth, spriteHeight);
+        return null;
     }
 
 }

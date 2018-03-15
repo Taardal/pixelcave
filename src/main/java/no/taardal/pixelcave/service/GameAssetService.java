@@ -1,7 +1,7 @@
 package no.taardal.pixelcave.service;
 
 import no.taardal.pixelcave.ribbon.Ribbon;
-import no.taardal.pixelcave.sprite.SpriteSheet;
+import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.world.World;
 
 import java.util.List;
