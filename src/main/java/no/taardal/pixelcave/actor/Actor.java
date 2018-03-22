@@ -99,7 +99,7 @@ public abstract class Actor {
     }
 
     public int getBottomRow(Vector2f position) {
-        return ((int) getBottomY(position)) / world.getTileHeight();
+        return (((int) position.getY())  + getHeight() - 1) / world.getTileHeight();
     }
 
     public int getLeftColumn() {
@@ -115,7 +115,7 @@ public abstract class Actor {
     }
 
     public int getRightColumn(Vector2f position) {
-        return ((int) getRightX(position)) / world.getTileWidth();
+        return (((int) position.getX()) + getWidth() - 1) / world.getTileWidth();
     }
 
     public Vector2f getVelocity() {

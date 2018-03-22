@@ -34,7 +34,7 @@ public abstract class Level {
         player = new KnightBuilder()
                 .setWorld(world)
                 .setSpriteSheet(new KnightSpriteSheet(new LocalResourceService().getImage(knightSpriteSheetPath)))
-                .setPosition(new Vector2f(50, 0))
+                .setPosition(new Vector2f(16, 132))
                 .setVelocity(new Vector2f(0, 50))
                 .setDirection(Direction.LEFT)
                 .build();

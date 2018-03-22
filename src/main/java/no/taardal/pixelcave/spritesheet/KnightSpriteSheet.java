@@ -21,6 +21,8 @@ public class KnightSpriteSheet extends SpriteSheet {
         animations.put(Animation.Type.IDLE, getIdleAnimation());
         animations.put(Animation.Type.RUN, getRunningAnimation());
         animations.put(Animation.Type.JUMP, getJumpingAnimation());
+        animations.put(Animation.Type.FALL, getFallingAnimation());
+        animations.put(Animation.Type.LAND, getLandingAnimation());
         return animations;
     }
 
@@ -43,13 +45,29 @@ public class KnightSpriteSheet extends SpriteSheet {
     }
 
     private Animation getJumpingAnimation() {
-        BufferedImage[] sprites = new BufferedImage[10];
+        BufferedImage[] sprites = new BufferedImage[6];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = this.sprites[i][10];
         }
         Animation animation = new Animation(sprites);
         animation.setIndefinite(false);
-        animation.setUpdatesPerFrame(15);
+        return animation;
+    }
+
+    private Animation getFallingAnimation() {
+        BufferedImage[] sprites = {this.sprites[6][10]};
+        Animation animation = new Animation(sprites);
+        animation.setIndefinite(true);
+        return animation;
+    }
+
+    private Animation getLandingAnimation() {
+        BufferedImage[] sprites = new BufferedImage[3];
+        for (int i = 0; i < sprites.length; i++) {
+            sprites[i] = this.sprites[i + 7][10];
+        }
+        Animation animation = new Animation(sprites);
+        animation.setIndefinite(false);
         return animation;
     }
 

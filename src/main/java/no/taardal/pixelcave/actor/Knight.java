@@ -78,7 +78,7 @@ public class Knight extends Actor implements Player {
         Vector2f distanceToMove = nextPosition.subtract(position);
         position = getPosition().add(distanceToMove);
 
-        getAnimation().update();
+        animation.update();
     }
 
     private Vector2f checkHorizontalCollision(Vector2f nextPosition) {
