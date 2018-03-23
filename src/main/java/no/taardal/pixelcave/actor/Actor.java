@@ -4,10 +4,13 @@ import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.spritesheet.SpriteSheet;
+import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.image.BufferedImage;
 
 public abstract class Actor {
 
@@ -21,8 +24,15 @@ public abstract class Actor {
     Vector2f velocity;
     Direction direction;
     Animation animation;
+    StateMachine stateMachine;
+    int width;
+    int height;
+    Vector2f boundsPosition;
+    int boundsWidth;
+    int boundsHeight;
 
     private Actor() {
+        stateMachine = new StateMachine();
     }
 
     public Actor(SpriteSheet spriteSheet, World world, Vector2f position, Vector2f velocity, Direction direction) {
@@ -32,6 +42,40 @@ public abstract class Actor {
         this.position = position;
         this.velocity = velocity;
         this.direction = direction;
+
+        for (int i = 0; i < spriteSheet.getSprites().length; i++) {
+            for (int j = 0; j < spriteSheet.getSprites()[0].length; j++) {
+                BufferedImage sprite = spriteSheet.getSprites()[i][j];
+                if (sprite != null) {
+                    width = sprite.getWidth() > width ? sprite.getWidth() : width;
+                    height = sprite.getHeight() > height ? sprite.getHeight() : height;
+                }
+            }
+        }
+    }
+
+    public Vector2f getBoundsPosition() {
+        return boundsPosition;
+    }
+
+    public void setBoundsPosition(Vector2f boundsPosition) {
+        this.boundsPosition = boundsPosition;
+    }
+
+    public int getBoundsWidth() {
+        return boundsWidth;
+    }
+
+    public void setBoundsWidth(int boundsWidth) {
+        this.boundsWidth = boundsWidth;
+    }
+
+    public int getBoundsHeight() {
+        return boundsHeight;
+    }
+
+    public void setBoundsHeight(int boundsHeight) {
+        this.boundsHeight = boundsHeight;
     }
 
     public World getWorld() {
@@ -47,11 +91,11 @@ public abstract class Actor {
     }
 
     public int getWidth() {
-        return animation.getWidth();
+        return width;
     }
 
     public int getHeight() {
-        return animation.getHeight();
+        return height;
     }
 
     public Vector2f getPosition() {
@@ -138,6 +182,10 @@ public abstract class Actor {
         return animation;
     }
 
+    public void setAnimation(Animation animation) {
+        this.animation = animation;
+    }
+
     public boolean isFalling() {
         return getVelocity().getY() != 0;
     }
@@ -149,4 +197,5 @@ public abstract class Actor {
     public void draw(Camera camera) {
         getAnimation().draw(this, camera);
     }
+
 }

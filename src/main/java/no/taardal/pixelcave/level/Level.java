@@ -45,7 +45,7 @@ public abstract class Level {
     }
 
     public void update(float secondsSinceLastUpdate, Camera camera) {
-        player.update(secondsSinceLastUpdate);
+        player.update(world, secondsSinceLastUpdate);
         camera.update(player.getPosition());
         camera.update(0, 0);
         ribbonManager.update(camera);

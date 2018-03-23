@@ -6,8 +6,8 @@ import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.level.Level;
 import no.taardal.pixelcave.listener.ExitListener;
 import no.taardal.pixelcave.listener.GameLoopListener;
-import no.taardal.pixelcave.state.GameState;
-import no.taardal.pixelcave.state.PlayGameState;
+import no.taardal.pixelcave.state.game.GameState;
+import no.taardal.pixelcave.state.game.PlayGameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
