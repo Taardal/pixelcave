@@ -51,8 +51,8 @@ public class Knight extends Actor implements Player {
 
     @Override
     public void draw(Camera camera) {
-        camera.drawRectangle(getX(), getY(), getWidth(), getHeight(), Color.RED);
-        camera.drawRectangle(boundsPosition.getX(), boundsPosition.getY(), boundsWidth, boundsHeight, Color.CYAN);
+        camera.drawRectangle(spriteBounds.getX(), spriteBounds.getY(), spriteBounds.getWidth(), spriteBounds.getHeight(), Color.RED);
+        camera.drawRectangle(collisionBounds.getX(), collisionBounds.getY(), collisionBounds.getWidth(), collisionBounds.getHeight(), Color.CYAN);
         Animation animation = getAnimation();
         if (animation != null) {
             if (direction == Direction.LEFT) {

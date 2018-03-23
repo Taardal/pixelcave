@@ -2,6 +2,7 @@ package no.taardal.pixelcave.state;
 
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.animation.Animation;
+import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.statemachine.StateListener;
 import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
@@ -21,11 +22,13 @@ public class KnightFallingState extends MovementState<Knight> {
         actor.setAnimation(animation);
         actor.setVelocity(actor.getVelocity().withY(25));
 
-        actor.setBoundsWidth(animation.getWidth());
-        actor.setBoundsHeight(animation.getHeight());
-        float boundsX = (actor.getX() + actor.getWidth()) - (animation.getWidth());
+        float boundsX = actor.getX() + actor.getWidth() - animation.getWidth();
         float boundsY = actor.getY() + actor.getHeight() - animation.getHeight();
-        actor.setBoundsPosition(new Vector2f(boundsX, boundsY));
+        actor.setCollisionBounds(new Bounds.Builder()
+                .setWidth(animation.getWidth())
+                .setHeight(animation.getHeight())
+                .setPosition(new Vector2f(boundsX, boundsY))
+                .build());
     }
 
     @Override
@@ -38,18 +41,18 @@ public class KnightFallingState extends MovementState<Knight> {
         }
         actor.setVelocity(actor.getVelocity().withY(velocityY));
 
-        Vector2f nextPosition = actor.getPosition().add(actor.getVelocity().multiply(secondsSinceLastUpdate));
-        int nextBottomRow = actor.getBottomRow(nextPosition);
+        Vector2f nextCollisionBoundsPosition = actor.getCollisionBounds().getPosition().add(actor.getVelocity().multiply(secondsSinceLastUpdate));
+        int nextBottomRow = (((int) nextCollisionBoundsPosition.getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
         boolean landed = false;
         if (isVerticalCollision(nextBottomRow, world)) {
-            float y = (nextBottomRow * world.getTileHeight()) - actor.getHeight();
-            nextPosition = nextPosition.withY(y);
+            float y = (nextBottomRow * world.getTileHeight()) - actor.getCollisionBounds().getHeight();
+            nextCollisionBoundsPosition = nextCollisionBoundsPosition.withY(y);
             actor.setVelocity(actor.getVelocity().withY(0));
             landed = true;
         }
-        Vector2f distanceToMove = nextPosition.subtract(actor.getPosition());
+        Vector2f distanceToMove = nextCollisionBoundsPosition.subtract(actor.getCollisionBounds().getPosition());
         actor.setPosition(actor.getPosition().add(distanceToMove));
-        actor.setBoundsPosition(actor.getBoundsPosition().add(distanceToMove));
+        actor.getCollisionBounds().setPosition(actor.getCollisionBounds().getPosition().add(distanceToMove));
 
         if (landed) {
             stateListener.onChangeState(new KnightIdleState(actor, stateListener));
