@@ -4,6 +4,7 @@ import no.taardal.pixelcave.actor.Actor;
 import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.statemachine.StateListener;
 import no.taardal.pixelcave.tile.Tile;
+import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 
 public abstract class MovementState<T extends Actor> implements ActorState {
@@ -16,19 +17,44 @@ public abstract class MovementState<T extends Actor> implements ActorState {
         this.stateListener = stateListener;
     }
 
-    @Override
-    public void onEntry() {
-
+    Vector2f checkHorizontalCollision(Vector2f nextPosition, World world) {
+        if (nextPosition.getX() < 0) {
+            return nextPosition.withX(0);
+        } else {
+            int nextLeftColumn = ((int) nextPosition.getX()) / world.getTileHeight();
+            if (isHorizontalCollision(nextLeftColumn, world)) {
+                float x = (nextLeftColumn * world.getTileWidth()) + world.getTileWidth();
+                nextPosition = nextPosition.withX(x);
+                actor.setVelocity(actor.getVelocity().withX(0));
+            }
+            int nextRightColumn = (((int) nextPosition.getX())  + actor.getCollisionBounds().getWidth()) / world.getTileHeight();
+            if (isHorizontalCollision(nextRightColumn, world)) {
+                float x = (nextRightColumn * world.getTileWidth()) - actor.getCollisionBounds().getWidth();
+                nextPosition = nextPosition.withX(x);
+                actor.setVelocity(actor.getVelocity().withX(0));
+            }
+            return nextPosition;
+        }
     }
 
-    @Override
-    public void update(World world, float secondsSinceLastUpdate) {
-        actor.getAnimation().update();
-    }
-
-    @Override
-    public void onExit() {
-        actor.getAnimation().reset();
+    Vector2f checkVerticalCollision(Vector2f nextPosition, World world) {
+        if (nextPosition.getY() < 0) {
+            return nextPosition.withY(0);
+        } else {
+            int nextTopRow = ((int) nextPosition.getY()) / world.getTileHeight();
+            if (isVerticalCollision(nextTopRow, world)) {
+                float y = (nextTopRow * world.getTileHeight()) + world.getTileHeight();
+                nextPosition = nextPosition.withY(y);
+                actor.setVelocity(actor.getVelocity().withY(0));
+            }
+            int nextBottomRow = (((int) nextPosition.getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
+            if (isVerticalCollision(nextBottomRow, world)) {
+                float y = (nextBottomRow * world.getTileHeight()) - actor.getCollisionBounds().getHeight();
+                nextPosition = nextPosition.withY(y);
+                actor.setVelocity(actor.getVelocity().withY(0));
+            }
+            return nextPosition;
+        }
     }
 
     boolean isHorizontalCollision(int column, World world) {

@@ -11,14 +11,9 @@ import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-
 public class Knight extends Actor implements Player {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Knight.class);
-    private static final int TERMINAL_VELOCITY = 300;
-    private static final int JUMPING_VELOCITY = -200;
-    private static final int MOVEMENT_SPEED = 100;
 
     public enum Theme {
 
@@ -31,17 +26,17 @@ public class Knight extends Actor implements Player {
         RED,
         WHITE,
         YELLOW,
-        YOUNG
+        YOUNG;
 
     }
 
-    public Knight(SpriteSheet spriteSheet, World world, Vector2f position, Vector2f velocity, Direction direction) {
-        super(spriteSheet, world, position, velocity, direction);
+    public Knight(SpriteSheet spriteSheet, Direction direction, Vector2f velocity, Vector2f position) {
+        super(spriteSheet, direction, velocity, position);
         stateMachine.onPushState(new KnightIdleState(this, stateMachine));
     }
 
     public void handleInput(Keyboard keyboard) {
-
+        stateMachine.getCurrentState().handleInput(keyboard);
     }
 
     @Override
@@ -51,8 +46,6 @@ public class Knight extends Actor implements Player {
 
     @Override
     public void draw(Camera camera) {
-        camera.drawRectangle(spriteBounds.getX(), spriteBounds.getY(), spriteBounds.getWidth(), spriteBounds.getHeight(), Color.RED);
-        camera.drawRectangle(collisionBounds.getX(), collisionBounds.getY(), collisionBounds.getWidth(), collisionBounds.getHeight(), Color.CYAN);
         Animation animation = getAnimation();
         if (animation != null) {
             if (direction == Direction.LEFT) {

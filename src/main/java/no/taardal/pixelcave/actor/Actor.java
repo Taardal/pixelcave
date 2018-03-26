@@ -7,15 +7,13 @@ import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.vector.Vector2f;
-import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public abstract class Actor {
-
-    static final int GRID_COLLISION_MARGIN = 1;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Actor.class);
 
@@ -103,8 +101,17 @@ public abstract class Actor {
         return spriteBounds.getPosition().getY();
     }
 
+    public Animation getAnimation() {
+        return stateMachine.isEmpty() ? null : stateMachine.getCurrentState().getAnimation();
+    }
+
     public void draw(Camera camera) {
-        stateMachine.getCurrentState().getAnimation().draw(this, camera);
+        Animation animation = getAnimation();
+        if (animation != null) {
+            animation.draw(this, camera);
+        }
+        camera.drawRectangle(spriteBounds.getX(), spriteBounds.getY(), spriteBounds.getWidth(), spriteBounds.getHeight(), Color.RED);
+        camera.drawRectangle(collisionBounds.getX(), collisionBounds.getY(), collisionBounds.getWidth(), collisionBounds.getHeight(), Color.CYAN);
     }
 
     private Bounds createSpriteBounds(SpriteSheet spriteSheet, Vector2f position) {

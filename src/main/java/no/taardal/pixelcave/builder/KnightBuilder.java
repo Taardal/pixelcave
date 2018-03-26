@@ -16,7 +16,7 @@ public class KnightBuilder implements Builder<Knight> {
 
     @Override
     public Knight build() {
-        return new Knight(spriteSheet, world, position, velocity, direction);
+        return new Knight(spriteSheet, direction, velocity, position);
     }
 
     public KnightBuilder setSpriteSheet(SpriteSheet spriteSheet) {

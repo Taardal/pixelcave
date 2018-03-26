@@ -4,6 +4,8 @@ import no.taardal.pixelcave.actor.Actor;
 import no.taardal.pixelcave.camera.Camera;
 
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Animation {
 
@@ -139,5 +141,29 @@ public class Animation {
         int x = actorRightX - sprite.getWidth();
 
         camera.drawImageFlippedHorizontally(sprite, x, y);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Animation animation = (Animation) o;
+        return frame == animation.frame &&
+                updatesPerFrame == animation.updatesPerFrame &&
+                updatesSinceLastFrame == animation.updatesSinceLastFrame &&
+                width == animation.width &&
+                height == animation.height &&
+                indefinite == animation.indefinite &&
+                finished == animation.finished &&
+                Arrays.equals(sprites, animation.sprites) &&
+                Objects.equals(sprite, animation.sprite);
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = Objects.hash(sprite, frame, updatesPerFrame, updatesSinceLastFrame, width, height, indefinite, finished);
+        result = 31 * result + Arrays.hashCode(sprites);
+        return result;
     }
 }
