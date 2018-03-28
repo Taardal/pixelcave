@@ -12,28 +12,26 @@ import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class KnightFallingState extends MovementState<Knight> {
+public class KnightRunningState extends MovementState<Knight> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KnightFallingState.class);
-    private static final int TERMINAL_VELOCITY = 300;
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnightRunningState.class);
 
-    public KnightFallingState(Knight actor, StateListener stateListener) {
+    public KnightRunningState(Knight actor, StateListener stateListener) {
         super(actor, stateListener);
     }
 
     @Override
     public Animation getAnimation() {
-        if (actor.getVelocity().getY() != 0) {
-            return actor.getAnimations().get(Animation.Type.FALL);
-        } else {
-            return actor.getAnimations().get(Animation.Type.LAND);
-        }
+        return actor.getAnimations().get(Animation.Type.RUN);
     }
 
     @Override
     public void onEntry() {
         LOGGER.info("Entered [{}]", toString());
-        actor.setVelocity(actor.getVelocity().withY(25));
+
+        int velocityX = actor.getDirection() == Direction.RIGHT ? actor.getMovementSpeed() : -actor.getMovementSpeed();
+        actor.setVelocity(actor.getVelocity().withX(velocityX));
+
         Animation animation = getAnimation();
         float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - animation.getWidth();
         float boundsY = actor.getY() + actor.getHeight() - animation.getHeight();
@@ -59,9 +57,10 @@ public class KnightFallingState extends MovementState<Knight> {
             int velocityX = actor.getDirection() == Direction.RIGHT ? actor.getMovementSpeed() : -actor.getMovementSpeed();
             actor.setVelocity(actor.getVelocity().withX(velocityX));
         } else {
-            if (actor.getVelocity().getX() != 0) {
-                actor.setVelocity(new Vector2f(0, actor.getVelocity().getY()));
-            }
+            stateListener.onChangeState(new KnightIdleState(actor, stateListener));
+        }
+        if (keyboard.isPressed(KeyBinding.UP_MOVEMENT)) {
+            stateListener.onChangeState(new KnightJumpingState(actor, stateListener));
         }
     }
 
@@ -71,34 +70,23 @@ public class KnightFallingState extends MovementState<Knight> {
         float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - collisionBounds.getWidth();
         collisionBounds.setPosition(collisionBounds.getPosition().withX(boundsX));
 
-        float velocityY = actor.getVelocity().getY() + (World.GRAVITY * secondsSinceLastUpdate);
-        if (velocityY > TERMINAL_VELOCITY) {
-            velocityY = TERMINAL_VELOCITY;
-        }
-        actor.setVelocity(actor.getVelocity().withY(velocityY));
-
         Vector2f nextCollisionBoundsPosition = collisionBounds.getPosition().add(actor.getVelocity().multiply(secondsSinceLastUpdate));
-        nextCollisionBoundsPosition = checkHorizontalCollision(nextCollisionBoundsPosition, world);
-        nextCollisionBoundsPosition = checkVerticalCollision(nextCollisionBoundsPosition, world);
-        Vector2f distanceToMove = nextCollisionBoundsPosition.subtract(collisionBounds.getPosition());
-        actor.getSpriteBounds().setPosition(actor.getPosition().add(distanceToMove));
-        collisionBounds.setPosition(collisionBounds.getPosition().add(distanceToMove));
+        int bottomRow = (((int) nextCollisionBoundsPosition.getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
+        if (isVerticalCollision(bottomRow, world)) {
+            nextCollisionBoundsPosition = checkHorizontalCollision(nextCollisionBoundsPosition, world);
+            Vector2f distanceToMove = nextCollisionBoundsPosition.subtract(collisionBounds.getPosition());
+            actor.getSpriteBounds().setPosition(actor.getPosition().add(distanceToMove));
+            collisionBounds.setPosition(collisionBounds.getPosition().add(distanceToMove));
 
-        getAnimation().update();
-        if (actor.getVelocity().getY() == 0) {
-            if (actor.getVelocity().getX() != 0) {
-                stateListener.onChangeState(new KnightRunningState(actor, stateListener));
-            } else {
-                if (getAnimation().isFinished()) {
-                    stateListener.onChangeState(new KnightIdleState(actor, stateListener));
-                }
-            }
+            getAnimation().update();
+        } else {
+            stateListener.onChangeState(new KnightFallingState(actor, stateListener));
         }
     }
 
     @Override
     public void onExit() {
-        actor.getAnimations().get(Animation.Type.FALL).reset();
-        actor.getAnimations().get(Animation.Type.LAND).reset();
+        getAnimation().reset();
     }
+
 }

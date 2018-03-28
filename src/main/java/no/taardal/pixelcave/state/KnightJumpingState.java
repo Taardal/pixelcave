@@ -3,6 +3,7 @@ package no.taardal.pixelcave.state;
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.bounds.Bounds;
+import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.statemachine.StateListener;
 import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ public class KnightJumpingState extends KnightFallingState {
     @Override
     public Animation getAnimation() {
         if (actor.getVelocity().getY() != 0 && actor.getVelocity().getY() < MAX_JUMPING_VELOCITY_Y) {
-            return actor.getSpriteSheet().getAnimations().get(Animation.Type.JUMP);
+            return actor.getAnimations().get(Animation.Type.JUMP);
         } else {
             return super.getAnimation();
         }
@@ -32,7 +33,7 @@ public class KnightJumpingState extends KnightFallingState {
         LOGGER.info("Entered [{}]", toString());
         Animation animation = getAnimation();
         actor.setVelocity(actor.getVelocity().withY(JUMPING_VELOCITY_Y));
-        float boundsX = actor.getX() + actor.getWidth() - animation.getWidth();
+        float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - animation.getWidth();
         float boundsY = actor.getY() + actor.getHeight() - animation.getHeight();
         actor.setCollisionBounds(new Bounds.Builder()
                 .setWidth(animation.getWidth())
@@ -44,7 +45,7 @@ public class KnightJumpingState extends KnightFallingState {
     @Override
     public void onExit() {
         super.onExit();
-        actor.getSpriteSheet().getAnimations().get(Animation.Type.JUMP).reset();
+        actor.getAnimations().get(Animation.Type.JUMP).reset();
     }
 
 }

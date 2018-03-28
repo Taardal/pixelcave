@@ -1,7 +1,6 @@
 package no.taardal.pixelcave.statemachine;
 
 import no.taardal.pixelcave.state.ActorState;
-import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,12 +35,6 @@ public class StateMachine implements StateListener {
     public void onPushState(ActorState actorState) {
         actorState.onEntry();
         actorStateDeque.addFirst(actorState);
-    }
-
-    public void update(World world, float secondsSinceLastUpdate) {
-        if (!isEmpty()) {
-            actorStateDeque.getFirst().update(world, secondsSinceLastUpdate);
-        }
     }
 
     public ActorState getCurrentState() {

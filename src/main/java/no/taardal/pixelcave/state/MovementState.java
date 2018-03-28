@@ -17,23 +17,23 @@ public abstract class MovementState<T extends Actor> implements ActorState {
         this.stateListener = stateListener;
     }
 
-    Vector2f checkHorizontalCollision(Vector2f nextPosition, World world) {
-        if (nextPosition.getX() < 0) {
-            return nextPosition.withX(0);
+    Vector2f checkHorizontalCollision(Vector2f position, World world) {
+        if (position.getX() < 0) {
+            return position.withX(0);
         } else {
-            int nextLeftColumn = ((int) nextPosition.getX()) / world.getTileHeight();
+            int nextLeftColumn = ((int) position.getX()) / world.getTileHeight();
             if (isHorizontalCollision(nextLeftColumn, world)) {
                 float x = (nextLeftColumn * world.getTileWidth()) + world.getTileWidth();
-                nextPosition = nextPosition.withX(x);
+                position = position.withX(x);
                 actor.setVelocity(actor.getVelocity().withX(0));
             }
-            int nextRightColumn = (((int) nextPosition.getX())  + actor.getCollisionBounds().getWidth()) / world.getTileHeight();
+            int nextRightColumn = (((int) position.getX())  + actor.getCollisionBounds().getWidth()) / world.getTileHeight();
             if (isHorizontalCollision(nextRightColumn, world)) {
-                float x = (nextRightColumn * world.getTileWidth()) - actor.getCollisionBounds().getWidth();
-                nextPosition = nextPosition.withX(x);
+                float x = (nextRightColumn * world.getTileWidth()) - actor.getCollisionBounds().getWidth() - 1;
+                position = position.withX(x);
                 actor.setVelocity(actor.getVelocity().withX(0));
             }
-            return nextPosition;
+            return position;
         }
     }
 
@@ -49,7 +49,7 @@ public abstract class MovementState<T extends Actor> implements ActorState {
             }
             int nextBottomRow = (((int) nextPosition.getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
             if (isVerticalCollision(nextBottomRow, world)) {
-                float y = (nextBottomRow * world.getTileHeight()) - actor.getCollisionBounds().getHeight();
+                float y = (nextBottomRow * world.getTileHeight()) - actor.getCollisionBounds().getHeight() - 1;
                 nextPosition = nextPosition.withY(y);
                 actor.setVelocity(actor.getVelocity().withY(0));
             }
@@ -77,6 +77,11 @@ public abstract class MovementState<T extends Actor> implements ActorState {
             }
         }
         return false;
+    }
+
+    boolean isBottomCollision(World world) {
+        int bottomRow = (((int) actor.getCollisionBounds().getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
+        return isVerticalCollision(bottomRow, world);
     }
 
     private boolean isSolidTile(int column, int row, World world) {

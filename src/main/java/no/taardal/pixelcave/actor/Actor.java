@@ -10,8 +10,8 @@ import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 public abstract class Actor {
 
@@ -89,10 +89,6 @@ public abstract class Actor {
         return spriteBounds.getPosition();
     }
 
-    public void setPosition(Vector2f position) {
-        spriteBounds.setPosition(position);
-    }
-
     public float getX() {
         return spriteBounds.getPosition().getX();
     }
@@ -105,13 +101,19 @@ public abstract class Actor {
         return stateMachine.isEmpty() ? null : stateMachine.getCurrentState().getAnimation();
     }
 
+    public Map<Animation.Type, Animation> getAnimations() {
+        return spriteSheet.getAnimations();
+    }
+
+    public int getMovementSpeed() {
+        return 100;
+    }
+
     public void draw(Camera camera) {
         Animation animation = getAnimation();
         if (animation != null) {
             animation.draw(this, camera);
         }
-        camera.drawRectangle(spriteBounds.getX(), spriteBounds.getY(), spriteBounds.getWidth(), spriteBounds.getHeight(), Color.RED);
-        camera.drawRectangle(collisionBounds.getX(), collisionBounds.getY(), collisionBounds.getWidth(), collisionBounds.getHeight(), Color.CYAN);
     }
 
     private Bounds createSpriteBounds(SpriteSheet spriteSheet, Vector2f position) {

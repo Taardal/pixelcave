@@ -3,6 +3,7 @@ package no.taardal.pixelcave.state;
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.bounds.Bounds;
+import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.KeyBinding;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.statemachine.StateListener;
@@ -21,7 +22,7 @@ public class KnightIdleState extends MovementState<Knight> {
 
     @Override
     public Animation getAnimation() {
-        return actor.getSpriteSheet().getAnimations().get(Animation.Type.IDLE);
+        return actor.getAnimations().get(Animation.Type.IDLE);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class KnightIdleState extends MovementState<Knight> {
         LOGGER.info("Entered [{}]", toString());
         actor.setVelocity(new Vector2f(0, 0));
         Animation animation = getAnimation();
-        float boundsX = actor.getX() + actor.getWidth() - animation.getWidth();
+        float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - animation.getWidth();
         float boundsY = actor.getY() + actor.getHeight() - animation.getHeight();
         actor.setCollisionBounds(new Bounds.Builder()
                 .setWidth(animation.getWidth())
@@ -40,6 +41,9 @@ public class KnightIdleState extends MovementState<Knight> {
 
     @Override
     public void handleInput(Keyboard keyboard) {
+        if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
+            stateListener.onChangeState(new KnightRunningState(actor, stateListener));
+        }
         if (keyboard.isPressed(KeyBinding.UP_MOVEMENT) && actor.getVelocity().getY() == 0) {
             stateListener.onChangeState(new KnightJumpingState(actor, stateListener));
         }

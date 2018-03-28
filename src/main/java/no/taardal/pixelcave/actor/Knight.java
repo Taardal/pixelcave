@@ -11,6 +11,8 @@ import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 public class Knight extends Actor implements Player {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Knight.class);
@@ -36,16 +38,27 @@ public class Knight extends Actor implements Player {
     }
 
     public void handleInput(Keyboard keyboard) {
-        stateMachine.getCurrentState().handleInput(keyboard);
+        if (!stateMachine.isEmpty()) {
+            stateMachine.getCurrentState().handleInput(keyboard);
+        } else {
+            LOGGER.warn("Could not handle input. State machine was empty.");
+        }
     }
 
     @Override
     public void update(World world, float secondsSinceLastUpdate) {
-        stateMachine.update(world, secondsSinceLastUpdate);
+        if (!stateMachine.isEmpty()) {
+            stateMachine.getCurrentState().update(world, secondsSinceLastUpdate);
+        } else {
+            LOGGER.warn("Could not update. State machine was empty.");
+        }
     }
 
     @Override
     public void draw(Camera camera) {
+        camera.drawRectangle(spriteBounds.getX(), spriteBounds.getY(), spriteBounds.getWidth(), spriteBounds.getHeight(), Color.RED);
+        camera.drawRectangle(collisionBounds.getX(), collisionBounds.getY(), collisionBounds.getWidth(), collisionBounds.getHeight(), Color.CYAN);
+
         Animation animation = getAnimation();
         if (animation != null) {
             if (direction == Direction.LEFT) {
@@ -53,6 +66,8 @@ public class Knight extends Actor implements Player {
             } else {
                 super.draw(camera);
             }
+        } else {
+            LOGGER.warn("Could not draw. Animation was null.");
         }
     }
 
