@@ -67,31 +67,56 @@ public class KnightFallingState extends MovementState<Knight> {
 
     @Override
     public void update(World world, float secondsSinceLastUpdate) {
+        getAnimation().update();
+
         Bounds collisionBounds = actor.getCollisionBounds();
         float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - collisionBounds.getWidth();
         collisionBounds.setPosition(collisionBounds.getPosition().withX(boundsX));
 
-        float velocityY = actor.getVelocity().getY() + (World.GRAVITY * secondsSinceLastUpdate);
-        if (velocityY > TERMINAL_VELOCITY) {
-            velocityY = TERMINAL_VELOCITY;
+        Vector2f position = collisionBounds.getPosition();
+        Vector2f nextPosition = position.add(actor.getVelocity().multiply(secondsSinceLastUpdate));
+
+        int tw = world.getTileWidth();
+        int th = world.getTileHeight();
+
+        int minRow = ((int) position.getY()) / th;
+        int maxRow = (((int) position.getY()) + collisionBounds.getHeight()) / th;
+
+        float px = position.getX();
+        float npx = nextPosition.getX();
+        float dx = npx - px;
+        if (dx < 0) {
+            dx = -dx;
         }
-        actor.setVelocity(actor.getVelocity().withY(velocityY));
 
-        Vector2f nextCollisionBoundsPosition = collisionBounds.getPosition().add(actor.getVelocity().multiply(secondsSinceLastUpdate));
-        nextCollisionBoundsPosition = checkHorizontalCollision(nextCollisionBoundsPosition, world);
-        nextCollisionBoundsPosition = checkVerticalCollision(nextCollisionBoundsPosition, world);
-        Vector2f distanceToMove = nextCollisionBoundsPosition.subtract(collisionBounds.getPosition());
-        actor.getSpriteBounds().setPosition(actor.getPosition().add(distanceToMove));
-        collisionBounds.setPosition(collisionBounds.getPosition().add(distanceToMove));
+        int column = ((int) px) / tw;
 
-        getAnimation().update();
-        if (actor.getVelocity().getY() == 0) {
-            if (actor.getVelocity().getX() != 0) {
-                stateListener.onChangeState(new KnightRunningState(actor, stateListener));
-            } else {
-                if (getAnimation().isFinished()) {
-                    stateListener.onChangeState(new KnightIdleState(actor, stateListener));
+        float dct = Integer.MAX_VALUE;
+        for (int r = minRow; r < maxRow; r++) {
+            for (int c = column; c >= 0; c--) {
+                if (isSolidTile(c, r, world)) {
+                    int tx = (c * tw) + tw;
+                    float dt = tx - px;
+                    if (dt < 0) {
+                        dt = -dt;
+                    }
+                    dct = Math.min(dt, dct);
                 }
+            }
+        }
+
+
+        if (dct < Integer.MAX_VALUE) {
+            float d = Math.min(dx, dct);
+            Vector2f distanceToMove = new Vector2f(d, 0);
+            LOGGER.info("Distance to move [{}]", distanceToMove);
+
+            if (actor.getDirection() == Direction.LEFT) {
+                actor.getSpriteBounds().setPosition(actor.getPosition().subtract(distanceToMove));
+                collisionBounds.setPosition(collisionBounds.getPosition().subtract(distanceToMove));
+            } else {
+                actor.getSpriteBounds().setPosition(actor.getPosition().add(distanceToMove));
+                collisionBounds.setPosition(collisionBounds.getPosition().add(distanceToMove));
             }
         }
     }

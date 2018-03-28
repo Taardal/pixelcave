@@ -29,7 +29,7 @@ public abstract class MovementState<T extends Actor> implements ActorState {
             }
             int nextRightColumn = (((int) position.getX())  + actor.getCollisionBounds().getWidth()) / world.getTileHeight();
             if (isHorizontalCollision(nextRightColumn, world)) {
-                float x = (nextRightColumn * world.getTileWidth()) - actor.getCollisionBounds().getWidth() - 1;
+                float x = (nextRightColumn * world.getTileWidth()) - actor.getCollisionBounds().getWidth();
                 position = position.withX(x);
                 actor.setVelocity(actor.getVelocity().withX(0));
             }
@@ -49,7 +49,7 @@ public abstract class MovementState<T extends Actor> implements ActorState {
             }
             int nextBottomRow = (((int) nextPosition.getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
             if (isVerticalCollision(nextBottomRow, world)) {
-                float y = (nextBottomRow * world.getTileHeight()) - actor.getCollisionBounds().getHeight() - 1;
+                float y = (nextBottomRow * world.getTileHeight()) - actor.getCollisionBounds().getHeight();
                 nextPosition = nextPosition.withY(y);
                 actor.setVelocity(actor.getVelocity().withY(0));
             }
@@ -84,7 +84,7 @@ public abstract class MovementState<T extends Actor> implements ActorState {
         return isVerticalCollision(bottomRow, world);
     }
 
-    private boolean isSolidTile(int column, int row, World world) {
+    boolean isSolidTile(int column, int row, World world) {
         TileLayer tileLayer = (TileLayer) world.getLayers().get("main");
         int tileId = tileLayer.getTileGrid()[column][row];
         Tile tile = world.getTiles().get(tileId);

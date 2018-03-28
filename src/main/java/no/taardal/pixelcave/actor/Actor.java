@@ -106,7 +106,7 @@ public abstract class Actor {
     }
 
     public int getMovementSpeed() {
-        return 100;
+        return 20;
     }
 
     public void draw(Camera camera) {
