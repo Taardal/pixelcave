@@ -10,7 +10,6 @@ import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public abstract class Actor {
@@ -21,8 +20,8 @@ public abstract class Actor {
     SpriteSheet spriteSheet;
     Direction direction;
     Vector2f velocity;
-    Bounds spriteBounds;
-    Bounds collisionBounds;
+    Vector2f position;
+    Bounds bounds;
 
     private Actor() {
         stateMachine = new StateMachine();
@@ -33,8 +32,8 @@ public abstract class Actor {
         this.spriteSheet = spriteSheet;
         this.direction = direction;
         this.velocity = velocity;
-        spriteBounds = createSpriteBounds(spriteSheet, position);
-        collisionBounds = new Bounds.Builder().copy(spriteBounds).build();
+        this.position = position;
+        bounds = new Bounds.Builder().setPosition(position).build();
     }
 
     public SpriteSheet getSpriteSheet() {
@@ -61,40 +60,32 @@ public abstract class Actor {
         this.velocity = velocity;
     }
 
-    public Bounds getSpriteBounds() {
-        return spriteBounds;
+    public Bounds getBounds() {
+        return bounds;
     }
 
-    public void setSpriteBounds(Bounds spriteBounds) {
-        this.spriteBounds = spriteBounds;
-    }
-
-    public Bounds getCollisionBounds() {
-        return collisionBounds;
-    }
-
-    public void setCollisionBounds(Bounds collisionBounds) {
-        this.collisionBounds = collisionBounds;
+    public void setBounds(Bounds bounds) {
+        this.bounds = bounds;
     }
 
     public int getWidth() {
-        return spriteBounds.getWidth();
+        return bounds.getWidth();
     }
 
     public int getHeight() {
-        return spriteBounds.getHeight();
+        return bounds.getHeight();
     }
 
     public Vector2f getPosition() {
-        return spriteBounds.getPosition();
+        return bounds.getPosition();
     }
 
     public float getX() {
-        return spriteBounds.getPosition().getX();
+        return bounds.getPosition().getX();
     }
 
     public float getY() {
-        return spriteBounds.getPosition().getY();
+        return bounds.getPosition().getY();
     }
 
     public Animation getAnimation() {
@@ -106,7 +97,7 @@ public abstract class Actor {
     }
 
     public int getMovementSpeed() {
-        return 20;
+        return 100;
     }
 
     public void draw(Camera camera) {
@@ -114,21 +105,6 @@ public abstract class Actor {
         if (animation != null) {
             animation.draw(this, camera);
         }
-    }
-
-    private Bounds createSpriteBounds(SpriteSheet spriteSheet, Vector2f position) {
-        int largestSpriteWidth = 0;
-        int largestSpriteHeight = 0;
-        for (int i = 0; i < spriteSheet.getSprites().length; i++) {
-            for (int j = 0; j < spriteSheet.getSprites()[0].length; j++) {
-                BufferedImage sprite = spriteSheet.getSprites()[i][j];
-                if (sprite != null) {
-                    largestSpriteWidth = sprite.getWidth() > largestSpriteWidth ? sprite.getWidth() : largestSpriteWidth;
-                    largestSpriteHeight = sprite.getHeight() > largestSpriteHeight ? sprite.getHeight() : largestSpriteHeight;
-                }
-            }
-        }
-        return new Bounds.Builder().setPosition(position).setWidth(largestSpriteWidth).setHeight(largestSpriteHeight).build();
     }
 
 }

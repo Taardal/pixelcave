@@ -19,10 +19,10 @@ public class KnightSpriteSheet extends SpriteSheet {
     Map<Animation.Type, Animation> createAnimations() {
         Map<Animation.Type, Animation> animations = new HashMap<>();
         animations.put(Animation.Type.IDLE, getIdleAnimation());
-        animations.put(Animation.Type.RUN, getRunningAnimation());
-        animations.put(Animation.Type.JUMP, getJumpingAnimation());
-        animations.put(Animation.Type.FALL, getFallingAnimation());
-        animations.put(Animation.Type.LAND, getLandingAnimation());
+        animations.put(Animation.Type.RUN, getRunAnimation());
+        animations.put(Animation.Type.JUMP, getJumpAnimation());
+        animations.put(Animation.Type.FALL, getFallAnimation());
+        animations.put(Animation.Type.LAND, getLandAnimation());
         return animations;
     }
 
@@ -36,7 +36,7 @@ public class KnightSpriteSheet extends SpriteSheet {
         return animation;
     }
 
-    private Animation getRunningAnimation() {
+    private Animation getRunAnimation() {
         BufferedImage[] sprites = new BufferedImage[10];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = this.sprites[i][8];
@@ -44,8 +44,8 @@ public class KnightSpriteSheet extends SpriteSheet {
         return new Animation(sprites);
     }
 
-    private Animation getJumpingAnimation() {
-        BufferedImage[] sprites = new BufferedImage[6];
+    private Animation getJumpAnimation() {
+        BufferedImage[] sprites = new BufferedImage[7];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = this.sprites[i][10];
         }
@@ -54,14 +54,14 @@ public class KnightSpriteSheet extends SpriteSheet {
         return animation;
     }
 
-    private Animation getFallingAnimation() {
+    private Animation getFallAnimation() {
         BufferedImage[] sprites = {this.sprites[6][10]};
         Animation animation = new Animation(sprites);
         animation.setIndefinite(true);
         return animation;
     }
 
-    private Animation getLandingAnimation() {
+    private Animation getLandAnimation() {
         BufferedImage[] sprites = new BufferedImage[3];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = this.sprites[i + 7][10];

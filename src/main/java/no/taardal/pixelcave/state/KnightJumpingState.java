@@ -2,10 +2,9 @@ package no.taardal.pixelcave.state;
 
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.animation.Animation;
-import no.taardal.pixelcave.bounds.Bounds;
-import no.taardal.pixelcave.direction.Direction;
+import no.taardal.pixelcave.keyboard.KeyBinding;
+import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.statemachine.StateListener;
-import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +21,7 @@ public class KnightJumpingState extends KnightFallingState {
     @Override
     public Animation getAnimation() {
         if (actor.getVelocity().getY() != 0 && actor.getVelocity().getY() < MAX_JUMPING_VELOCITY_Y) {
-            return actor.getAnimations().get(Animation.Type.JUMP);
+            return actor.getAnimations().get(Animation.Type.FALL);
         } else {
             return super.getAnimation();
         }
@@ -30,16 +29,17 @@ public class KnightJumpingState extends KnightFallingState {
 
     @Override
     public void onEntry() {
+        super.onEntry();
         LOGGER.info("Entered [{}]", toString());
-        Animation animation = getAnimation();
-        actor.setVelocity(actor.getVelocity().withY(JUMPING_VELOCITY_Y));
-        float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - animation.getWidth();
-        float boundsY = actor.getY() + actor.getHeight() - animation.getHeight();
-        actor.setCollisionBounds(new Bounds.Builder()
-                .setWidth(animation.getWidth())
-                .setHeight(animation.getHeight())
-                .setPosition(new Vector2f(boundsX, boundsY))
-                .build());
+        actor.getVelocity().setY(JUMPING_VELOCITY_Y);
+    }
+
+    @Override
+    public void handleInput(Keyboard keyboard) {
+        super.handleInput(keyboard);
+        if (keyboard.isPressed(KeyBinding.UP_MOVEMENT) && actor.getVelocity().getY() == 0) {
+            actor.setVelocity(actor.getVelocity().withY(JUMPING_VELOCITY_Y));
+        }
     }
 
     @Override

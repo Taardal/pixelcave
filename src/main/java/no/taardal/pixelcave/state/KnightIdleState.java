@@ -2,8 +2,6 @@ package no.taardal.pixelcave.state;
 
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.animation.Animation;
-import no.taardal.pixelcave.bounds.Bounds;
-import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.KeyBinding;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.statemachine.StateListener;
@@ -29,14 +27,6 @@ public class KnightIdleState extends MovementState<Knight> {
     public void onEntry() {
         LOGGER.info("Entered [{}]", toString());
         actor.setVelocity(new Vector2f(0, 0));
-        Animation animation = getAnimation();
-        float boundsX = actor.getDirection() == Direction.RIGHT ? actor.getX() : actor.getX() + actor.getWidth() - animation.getWidth();
-        float boundsY = actor.getY() + actor.getHeight() - animation.getHeight();
-        actor.setCollisionBounds(new Bounds.Builder()
-                .setWidth(animation.getWidth())
-                .setHeight(animation.getHeight())
-                .setPosition(new Vector2f(boundsX, boundsY))
-                .build());
     }
 
     @Override
@@ -51,7 +41,7 @@ public class KnightIdleState extends MovementState<Knight> {
 
     @Override
     public void update(World world, float secondsSinceLastUpdate) {
-        int bottomRow = (((int) actor.getCollisionBounds().getY())  + actor.getCollisionBounds().getHeight()) / world.getTileHeight();
+        int bottomRow = (((int) actor.getBounds().getY())  + actor.getBounds().getHeight() + 1) / world.getTileHeight();
         if (isVerticalCollision(bottomRow, world)) {
             getAnimation().update();
         } else {
