@@ -33,13 +33,11 @@ public class KnightRunningState extends MovementState<Knight> {
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
-                if (actor.getDirection() != Direction.LEFT) {
-                    actor.setDirection(Direction.LEFT);
-                }
+                actor.setDirection(Direction.LEFT);
+                actor.getVelocity().setX(-actor.getMovementSpeed());
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-                if (actor.getDirection() != Direction.RIGHT) {
-                    actor.setDirection(Direction.RIGHT);
-                }
+                actor.setDirection(Direction.RIGHT);
+                actor.getVelocity().setX(actor.getMovementSpeed());
             }
         } else {
             stateListener.onChangeState(new KnightIdleState(actor, stateListener));
@@ -51,12 +49,9 @@ public class KnightRunningState extends MovementState<Knight> {
 
     @Override
     public void update(World world, float secondsSinceLastUpdate) {
-        stepX(world, secondsSinceLastUpdate);
-
-        int bottomRow = (((int) actor.getBounds().getY())  + actor.getBounds().getHeight() + 1) / world.getTileHeight();
-        if (isVerticalCollision(bottomRow, world)) {
-            getAnimation().update();
-        } else {
+        getAnimation().update();
+        step(world, secondsSinceLastUpdate);
+        if (!isStandingOnSolidTile(world)) {
             stateListener.onChangeState(new KnightFallingState(actor, stateListener));
         }
     }

@@ -6,7 +6,6 @@ import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.KeyBinding;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.statemachine.StateListener;
-import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,18 +38,15 @@ public class KnightFallingState extends MovementState<Knight> {
     public void handleInput(Keyboard keyboard) {
         if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT) || keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
             if (keyboard.isPressed(KeyBinding.LEFT_MOVEMENT)) {
-                if (actor.getDirection() != Direction.LEFT) {
-                    actor.setDirection(Direction.LEFT);
-                }
+                actor.setDirection(Direction.LEFT);
+                actor.getVelocity().setX(-actor.getMovementSpeed());
             } else if (keyboard.isPressed(KeyBinding.RIGHT_MOVEMENT)) {
-                if (actor.getDirection() != Direction.RIGHT) {
-                    actor.setDirection(Direction.RIGHT);
-                }
+                actor.setDirection(Direction.RIGHT);
+                actor.getVelocity().setX(actor.getMovementSpeed());
             }
-            actor.setVelocity(actor.getVelocity().withX(actor.getMovementSpeed()));
         } else {
             if (actor.getVelocity().getX() != 0) {
-                actor.setVelocity(new Vector2f(0, actor.getVelocity().getY()));
+                actor.getVelocity().setX(0);
             }
         }
     }
@@ -58,24 +54,15 @@ public class KnightFallingState extends MovementState<Knight> {
     @Override
     public void update(World world, float secondsSinceLastUpdate) {
         getAnimation().update();
-
         float velocityY = actor.getVelocity().getY() + (World.GRAVITY * secondsSinceLastUpdate);
         if (velocityY > TERMINAL_VELOCITY) {
             velocityY = TERMINAL_VELOCITY;
         }
         actor.getVelocity().setY(velocityY);
-
-        stepX(world, secondsSinceLastUpdate);
-        stepY(world, secondsSinceLastUpdate);
-
-        if (actor.getVelocity().getY() == 0) {
-            if (actor.getVelocity().getX() != 0) {
-                stateListener.onChangeState(new KnightRunningState(actor, stateListener));
-            } else {
-                if (getAnimation().isFinished()) {
-                    stateListener.onChangeState(new KnightIdleState(actor, stateListener));
-                }
-            }
+        step(world, secondsSinceLastUpdate);
+        if (isStandingOnSolidTile(world)) {
+            actor.getVelocity().setY(0);
+            onLanded();
         }
     }
 
@@ -84,4 +71,15 @@ public class KnightFallingState extends MovementState<Knight> {
         actor.getAnimations().get(Animation.Type.FALL).reset();
         actor.getAnimations().get(Animation.Type.LAND).reset();
     }
+
+    private void onLanded() {
+        if (actor.getVelocity().getX() != 0) {
+            stateListener.onChangeState(new KnightRunningState(actor, stateListener));
+        } else {
+            if (getAnimation().equals(actor.getAnimations().get(Animation.Type.LAND)) && getAnimation().isFinished()) {
+                stateListener.onChangeState(new KnightIdleState(actor, stateListener));
+            }
+        }
+    }
+
 }

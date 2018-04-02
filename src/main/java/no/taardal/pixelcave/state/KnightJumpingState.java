@@ -21,7 +21,7 @@ public class KnightJumpingState extends KnightFallingState {
     @Override
     public Animation getAnimation() {
         if (actor.getVelocity().getY() != 0 && actor.getVelocity().getY() < MAX_JUMPING_VELOCITY_Y) {
-            return actor.getAnimations().get(Animation.Type.FALL);
+            return actor.getAnimations().get(Animation.Type.JUMP);
         } else {
             return super.getAnimation();
         }
@@ -29,7 +29,6 @@ public class KnightJumpingState extends KnightFallingState {
 
     @Override
     public void onEntry() {
-        super.onEntry();
         LOGGER.info("Entered [{}]", toString());
         actor.getVelocity().setY(JUMPING_VELOCITY_Y);
     }

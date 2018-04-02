@@ -41,8 +41,7 @@ public class KnightIdleState extends MovementState<Knight> {
 
     @Override
     public void update(World world, float secondsSinceLastUpdate) {
-        int bottomRow = (((int) actor.getBounds().getY())  + actor.getBounds().getHeight() + 1) / world.getTileHeight();
-        if (isVerticalCollision(bottomRow, world)) {
+        if (isStandingOnSolidTile(world)) {
             getAnimation().update();
         } else {
             stateListener.onChangeState(new KnightFallingState(actor, stateListener));

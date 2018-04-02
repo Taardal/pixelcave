@@ -80,6 +80,11 @@ public abstract class Actor {
         return bounds.getPosition();
     }
 
+    public void setPosition(Vector2f position) {
+        this.position = position;
+        bounds.setPosition(position);
+    }
+
     public float getX() {
         return bounds.getPosition().getX();
     }
