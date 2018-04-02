@@ -43,7 +43,6 @@ public class Tile {
 
     public void draw(int x, int y, Camera camera) {
         camera.drawImage(bufferedImage, x, y);
-//        camera.drawRectangle(x, y, bufferedImage.getWidth(), bufferedImage.getHeight(), Color.CYAN);
     }
 
     private boolean isSlopeTile() {

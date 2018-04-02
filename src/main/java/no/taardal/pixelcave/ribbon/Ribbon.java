@@ -30,7 +30,8 @@ public class Ribbon {
         this.speedY = speedY;
     }
 
-    public void update(Direction direction) {
+    public void update(Direction cameraDirection) {
+        Direction direction = getDirection(cameraDirection);
         if (direction == Direction.RIGHT) {
             bufferedImageX = (bufferedImageX + speedX) % bufferedImage.getWidth();
         } else if (direction == Direction.LEFT) {
@@ -46,6 +47,16 @@ public class Ribbon {
             if (bufferedImageY + Game.GAME_HEIGHT > bufferedImage.getHeight()) {
                 bufferedImageY = bufferedImage.getHeight() - Game.GAME_HEIGHT;
             }
+        }
+    }
+
+    private Direction getDirection(Direction cameraDirection) {
+        if (cameraDirection == Direction.LEFT) {
+            return Direction.RIGHT;
+        } else if (cameraDirection == Direction.RIGHT) {
+            return Direction.LEFT;
+        } else {
+            return Direction.NO_DIRECTION;
         }
     }
 

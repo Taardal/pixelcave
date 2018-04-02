@@ -120,25 +120,25 @@ public class Animation {
 
     public void draw(Actor actor, Camera camera) {
 
-        int actorY = (int) actor.getY();
-        int actorBottomY = actorY + actor.getHeight();
-        int y = actorBottomY - sprite.getHeight();
+        float actorY = actor.getY();
+        float actorBottomY = actorY + actor.getHeight();
+        float y = actorBottomY - sprite.getHeight();
 
-        int actorX = (int) actor.getX();
-        int actorRightX = actorX + actor.getWidth();
-        int x = actorRightX - sprite.getWidth();
+        float actorX = actor.getX();
+        float actorRightX = actorX + actor.getWidth();
+        float x = actorRightX - sprite.getWidth();
 
-        camera.drawImage(sprite, actorX, y);
+        camera.drawImagez(sprite, actorX, y);
     }
 
     public void drawFlippedHorizontally(Actor actor, Camera camera) {
-        int actorY = (int) actor.getY();
-        int actorBottomY = actorY + actor.getHeight();
-        int y = actorBottomY - sprite.getHeight();
+        float actorY = (float) actor.getY();
+        float actorBottomY = actorY + actor.getHeight();
+        float y = actorBottomY - sprite.getHeight();
 
-        int actorX = (int) actor.getX();
-        int actorRightX = actorX + actor.getWidth();
-        int x = actorRightX - sprite.getWidth();
+        float actorX = (float) actor.getX();
+        float actorRightX = actorX + actor.getWidth();
+        float x = actorRightX - sprite.getWidth();
 
         camera.drawImageFlippedHorizontally(sprite, x, y);
     }
@@ -161,7 +161,6 @@ public class Animation {
 
     @Override
     public int hashCode() {
-
         int result = Objects.hash(sprite, frame, updatesPerFrame, updatesSinceLastFrame, width, height, indefinite, finished);
         result = 31 * result + Arrays.hashCode(sprites);
         return result;

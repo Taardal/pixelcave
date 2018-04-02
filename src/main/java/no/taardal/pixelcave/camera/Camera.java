@@ -1,8 +1,6 @@
 package no.taardal.pixelcave.camera;
 
-
 import no.taardal.pixelcave.direction.Direction;
-import no.taardal.pixelcave.game.Game;
 import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,76 +8,98 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
-public class Camera extends Rectangle {
+public class Camera {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Camera.class);
-    private static final float TWEEN = 0.03f;
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
     private Direction direction;
-    private int offsetX;
-    private int offsetY;
-    private int previousOffsetX;
-    private int previousOffsetY;
+    private int x;
+    private int y;
+    private int width;
+    private int height;
+    private int[] pixels;
 
     public Camera(int width, int height) {
-        super(width, height);
+        this.width = width;
+        this.height = height;
+        direction = Direction.NO_DIRECTION;
+
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         graphics2D = bufferedImage.createGraphics();
-        direction = Direction.NO_DIRECTION;
+        pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public BufferedImage getBufferedImage() {
         return bufferedImage;
     }
 
-    public int getOffsetX() {
-        return offsetX;
+    public int getX() {
+        return (int) x;
     }
 
-    public int getOffsetY() {
-        return offsetY;
+    public int getY() {
+        return (int) y;
     }
 
-    public int getPreviousOffsetX() {
-        return previousOffsetX;
-    }
-
-    public int getPreviousOffsetY() {
-        return previousOffsetY;
+    public void setX(float x) {
+        this.x = (int) x;
     }
 
     public Direction getDirection() {
         return direction;
     }
 
-    public void update(float x, float y) {
-        previousOffsetX = offsetX;
-        previousOffsetY = offsetY;
+    /*
+    Tweaning = this.x += (targetX - this.x) * tweanAmount
+     */
+    private static final float TWEEN = 0.0275f;
 
-        float deltaX = ((x - Game.GAME_WIDTH / 2) - offsetX);
-        float deltaY = ((y - Game.GAME_HEIGHT / 2) - offsetY);
+    float prevPlayerX;
+    public void update(float playerX, float playerY) {
 
-        offsetX += deltaX;
-        offsetY += deltaY;
-
-        if (deltaX > 1) {
-            direction = Direction.RIGHT;
-        } else if (deltaX < 0) {
-            direction = Direction.LEFT;
+        int k = (int) (width * (70 / 100.0f));
+        int j = (int) (width * (30 / 100.0f));
+        float v = playerX - x;
+        if (v < j || v > k) {
+            if (v < j) {
+                direction = Direction.LEFT;
+            } else {
+                direction = Direction.RIGHT;
+            }
+            x += (int) playerX - (int) prevPlayerX;
         } else {
             direction = Direction.NO_DIRECTION;
         }
+        prevPlayerX = playerX;
+/*
+        int playerX1 = (int) playerX;
+        this.x += ((playerX1 - Game.GAME_WIDTH / 2) - x) * TWEEN;
 
-        if (offsetX <= 0) {
-            offsetX = 0;
-            direction = Direction.NO_DIRECTION;
-        }
-        if (offsetY < 0) {
-            offsetY = 0;
-        }
+
+        float v = (playerX - Game.GAME_WIDTH / 2) - x;
+        float pointA = x;
+        float pointB = pointA + v;
+
+        float lerp = lerp(pointA, pointB, TWEEN);
+
+        x = lerp;
+        */
+    }
+
+    float lerp(float pointA, float pointB, float alpha) {
+        return pointA + alpha * (pointB - pointA);
     }
 
     public void update(Vector2f playerPosition) {
@@ -91,10 +111,41 @@ public class Camera extends Rectangle {
         graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
     }
 
-    public void drawImage(BufferedImage bufferedImage, int x, int y) {
-        x -= offsetX;
-        y -= offsetY;
-        graphics2D.drawImage(bufferedImage, x, y, null);
+    public void drawImage(BufferedImage bufferedImage, float x, float y) {
+        x -= this.x;
+        y -= this.y;
+        graphics2D.drawImage(bufferedImage, (int) x, (int) y, null);
+    }
+
+    public void drawImagez(BufferedImage bufferedImage, float x, float y) {
+        x -= this.x;
+        y -= this.y;
+        LOGGER.info("DRAWING SPRITE AT [{}, {}]", x, y);
+        graphics2D.drawImage(bufferedImage, (int) x, (int) y, null);
+    }
+
+    public static final int ALPHA_COLOR = 0xffff00ff;
+
+    public void drawImagePixels(BufferedImage sprite, float positionX, float positionY) {
+        positionX -= this.x;
+        positionY -= this.y;
+
+        int[] spritePixels = ((DataBufferInt) sprite.getRaster().getDataBuffer()).getData();
+
+        for (int y = 0; y < sprite.getHeight(); y++) {
+            int absoluteY = y + (int) positionY;
+            for (int x = 0; x < sprite.getWidth(); x++) {
+                int absoluteX = x + (int) positionX;
+                if (absoluteX < 0 || absoluteX >= width || absoluteY < 0 || absoluteY >= height) {
+                    continue;
+                }
+                int spritePixelColor = spritePixels[x + y * sprite.getWidth()];
+                if (spritePixelColor != ALPHA_COLOR) {
+                    pixels[absoluteX + absoluteY * width] = spritePixelColor;
+                }
+            }
+        }
+
     }
 
     public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
@@ -104,18 +155,18 @@ public class Camera extends Rectangle {
                 null);
     }
 
-    public void drawImageFlippedHorizontally(BufferedImage bufferedImage, int x, int y) {
-        x -= offsetX;
-        y -= offsetY;
+    public void drawImageFlippedHorizontally(BufferedImage bufferedImage, float x, float y) {
+        x -= this.x;
+        y -= this.y;
 
         int sourceX1 = 0;
         int sourceX2 = bufferedImage.getWidth();
         int sourceY1 = 0;
         int sourceY2 = bufferedImage.getHeight();
-        int destinationX1 = x;
-        int destinationX2 = x + bufferedImage.getWidth();
-        int destinationY1 = y;
-        int destinationY2 = y + bufferedImage.getHeight();
+        int destinationX1 = (int) x;
+        int destinationX2 = (int) x + bufferedImage.getWidth();
+        int destinationY1 = (int) y;
+        int destinationY2 = (int) y + bufferedImage.getHeight();
 
         drawImage(bufferedImage,
                 destinationX1, destinationX2, destinationY1, destinationY2,
@@ -138,8 +189,8 @@ public class Camera extends Rectangle {
     }
 
     public void drawRectangle(int x, int y, int width, int height, Color color) {
-        x -= offsetX;
-        y -= offsetY;
+        x -= this.x;
+        y -= this.y;
         graphics2D.setColor(color);
         graphics2D.drawRect(x, y, width, height);
     }
