@@ -128,7 +128,7 @@ public class Animation {
         float actorRightX = actorX + actor.getWidth();
         float x = actorRightX - sprite.getWidth();
 
-        camera.drawImagez(sprite, actorX, y);
+        camera.drawImage(sprite, actorX, y);
     }
 
     public void drawFlippedHorizontally(Actor actor, Camera camera) {

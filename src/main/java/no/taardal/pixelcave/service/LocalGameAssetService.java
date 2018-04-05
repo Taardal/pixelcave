@@ -8,6 +8,8 @@ import no.taardal.pixelcave.world.World;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class LocalGameAssetService implements GameAssetService {
@@ -32,10 +34,12 @@ public class LocalGameAssetService implements GameAssetService {
     }
 
     @Override
-    public List<Ribbon> getRibbons(String relativePath) {
+    public List<Ribbon> getRibbons() {
         List<Ribbon> ribbons = new ArrayList<>();
-        String directoryPath = RIBBONS_RESOURCE_PATH + "/" + relativePath;
-        for (String fileName : resourceService.getFileNames(directoryPath)) {
+        String directoryPath = RIBBONS_RESOURCE_PATH + "/";
+        List<String> fileNames = Arrays.asList(resourceService.getFileNames(directoryPath));
+        Collections.sort(fileNames);
+        for (String fileName : fileNames) {
             BufferedImage bufferedImage = resourceService.getImage(directoryPath + "/" + fileName);
             ribbons.add(new Ribbon(bufferedImage));
         }

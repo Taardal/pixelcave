@@ -10,7 +10,7 @@ public interface GameAssetService {
 
     World getWorld(String relativePath);
 
-    List<Ribbon> getRibbons(String relativePath);
+    List<Ribbon> getRibbons();
 
     SpriteSheet getSpriteSheet(String relativePath, int spriteWidth, int spriteHeight);
 

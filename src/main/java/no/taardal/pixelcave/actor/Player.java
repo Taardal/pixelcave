@@ -18,4 +18,7 @@ public interface Player {
 
     Direction getDirection();
 
+    int getWidth();
+
+    int getHeight();
 }

@@ -5,7 +5,6 @@ import no.taardal.pixelcave.actor.Player;
 import no.taardal.pixelcave.builder.KnightBuilder;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
-import no.taardal.pixelcave.game.Game;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.layer.Layer;
 import no.taardal.pixelcave.layer.TileLayer;
@@ -24,38 +23,13 @@ import java.util.List;
 public class Level {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Level.class);
-    private static final int HORIZONTAL_SPEED = 5;
-    private static final int VERTICAL_SPEED = 1;
-    private static final double BASE_SPEED_FACTOR = 0.2;
-    private static final double SPEED_FACTOR_INCREMENT = 0.1;
 
     private World world;
     private Player player;
     private List<Ribbon> ribbons;
 
-    boolean foo = false;
-
     public Level(GameAssetService gameAssetService) {
         world = gameAssetService.getWorld("world_pixelcave.json");
-
-        ribbons = gameAssetService.getRibbons("");
-        int foo = 1;
-        for (int i = 0; i < ribbons.size(); i++) {
-            Ribbon ribbon = ribbons.get(i);
-            ribbon.setSpeedX(foo);
-            if (i % 4 == 0) {
-                foo++;
-            }
-        }
-
-        /*
-        double speedFactor = BASE_SPEED_FACTOR;
-        for (Ribbon ribbon : ribbons) {
-            ribbon.setSpeedX((int) (speedFactor * HORIZONTAL_SPEED));
-            ribbon.setSpeedY(VERTICAL_SPEED);
-            speedFactor += SPEED_FACTOR_INCREMENT;
-        }
-        */
 
         String knightSpriteSheetPath = "spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png";
         player = new KnightBuilder()
@@ -65,6 +39,13 @@ public class Level {
                 .setVelocity(new Vector2f(0, 50))
                 .setDirection(Direction.LEFT)
                 .build();
+
+        ribbons = gameAssetService.getRibbons();
+        float speed = 1f;
+        for (int i = 0; i < ribbons.size(); i++) {
+            ribbons.get(i).setSpeedX(speed);
+            speed += 0.1f;
+        }
     }
 
     public void handleInput(Keyboard keyboard) {
@@ -72,12 +53,8 @@ public class Level {
     }
 
     public void update(float secondsSinceLastUpdate, Camera camera) {
-        if (!foo) {
-            camera.setX(player.getPosition().getX() - Game.GAME_WIDTH / 2);
-            foo = true;
-        }
         player.update(world, secondsSinceLastUpdate);
-        camera.update(player.getPosition());
+        camera.update(player);
         for (int i = 0; i < ribbons.size(); i++) {
             ribbons.get(i).update(camera.getDirection());
         }
@@ -101,9 +78,9 @@ public class Level {
 
     private void drawTiles(TileLayer tileLayer, Camera camera) {
         int topMostRowToDraw = (camera.getY() - world.getTileHeight()) / world.getTileHeight();
+        int bottomMostRowToDraw = (camera.getY() + camera.getHeight() + world.getTileHeight()) / world.getTileHeight();
         int leftMostColumnToDraw = (camera.getX() - world.getTileWidth()) / world.getTileWidth();
         int rightMostColumnToDraw = (camera.getX() + camera.getWidth() + world.getTileWidth()) / world.getTileWidth();
-        int bottomMostRowToDraw = (camera.getY() + camera.getHeight() + world.getTileHeight()) / world.getTileHeight();
         for (int row = topMostRowToDraw; row < bottomMostRowToDraw; row++) {
             if (row < 0) {
                 continue;
@@ -118,15 +95,19 @@ public class Level {
                 if (column >= world.getWidth()) {
                     break;
                 }
-                int tileId = tileLayer.getTileGrid()[column][row];
-                if (tileId != World.NO_TILE_ID) {
-                    Tile tile = world.getTiles().get(tileId);
-                    if (tile != null) {
-                        int x = column * world.getTileWidth();
-                        int y = row * world.getTileHeight();
-                        tile.draw(x, y, camera);
-                    }
-                }
+                drawTile(row, column, tileLayer, camera);
+            }
+        }
+    }
+
+    private void drawTile(int row, int column, TileLayer tileLayer, Camera camera) {
+        int tileId = tileLayer.getTileGrid()[column][row];
+        if (tileId != World.NO_TILE_ID) {
+            Tile tile = world.getTiles().get(tileId);
+            if (tile != null) {
+                int x = column * world.getTileWidth();
+                int y = row * world.getTileHeight();
+                tile.draw(x, y, camera);
             }
         }
     }
