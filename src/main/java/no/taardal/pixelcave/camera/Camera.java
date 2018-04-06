@@ -77,10 +77,8 @@ public class Camera {
             x = ((int) player.getPosition().getX()) - Game.GAME_WIDTH / 2;
             centerOnPlayerRequired = false;
         }
-
         float playerX = player.getPosition().getX();
         float playerXInCamera = playerX - x;
-
         if (playerXInCamera < left || (playerXInCamera + player.getWidth()) > right) {
             if (playerXInCamera < left) {
                 direction = Direction.LEFT;
@@ -92,6 +90,14 @@ public class Camera {
             direction = Direction.NO_DIRECTION;
         }
         previousPlayerX = playerX;
+    }
+
+    public void drawImage(BufferedImage bufferedImage, float x, float y, boolean flipped) {
+        if (flipped) {
+            drawImageFlippedHorizontally(bufferedImage, x, y);
+        } else {
+            drawImage(bufferedImage, x, y);
+        }
     }
 
     public void drawImage(BufferedImage bufferedImage, float x, float y) {
@@ -115,32 +121,6 @@ public class Camera {
         );
     }
 
-    public void drawImageFlippedHorizontally(BufferedImage bufferedImage, float x, float y) {
-        x -= this.x;
-        y -= this.y;
-
-        int sourceX1 = 0;
-        int sourceX2 = bufferedImage.getWidth();
-        int sourceY1 = 0;
-        int sourceY2 = bufferedImage.getHeight();
-        int destinationX1 = (int) x;
-        int destinationX2 = (int) x + bufferedImage.getWidth();
-        int destinationY1 = (int) y;
-        int destinationY2 = (int) y + bufferedImage.getHeight();
-
-        drawImage(
-                bufferedImage,
-                destinationX1,
-                destinationX2,
-                destinationY1,
-                destinationY2,
-                sourceX2,
-                sourceX1,
-                sourceY1,
-                sourceY2
-        );
-    }
-
     public void drawRectangle(float x, float y, int width, int height, Color color) {
         x -= this.x;
         y -= this.y;
@@ -157,6 +137,30 @@ public class Camera {
     public void drawCircle(int x, int y, int diameter, Color color) {
         graphics2D.setColor(color);
         graphics2D.fillOval(x, y, diameter, diameter);
+    }
+
+    private void drawImageFlippedHorizontally(BufferedImage bufferedImage, float x, float y) {
+        x -= this.x;
+        y -= this.y;
+        int sourceX1 = 0;
+        int sourceX2 = bufferedImage.getWidth();
+        int sourceY1 = 0;
+        int sourceY2 = bufferedImage.getHeight();
+        int destinationX1 = (int) x;
+        int destinationX2 = (int) x + bufferedImage.getWidth();
+        int destinationY1 = (int) y;
+        int destinationY2 = (int) y + bufferedImage.getHeight();
+        drawImage(
+                bufferedImage,
+                destinationX1,
+                destinationX2,
+                destinationY1,
+                destinationY2,
+                sourceX2,
+                sourceX1,
+                sourceY1,
+                sourceY2
+        );
     }
 
 }

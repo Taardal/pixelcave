@@ -1,23 +1,25 @@
 package no.taardal.pixelcave.level;
 
+import com.google.gson.Gson;
 import no.taardal.pixelcave.actor.Knight;
 import no.taardal.pixelcave.actor.Player;
-import no.taardal.pixelcave.builder.KnightBuilder;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.layer.Layer;
 import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.ribbon.Ribbon;
-import no.taardal.pixelcave.service.GameAssetService;
-import no.taardal.pixelcave.service.LocalResourceService;
-import no.taardal.pixelcave.spritesheet.KnightSpriteSheet;
+import no.taardal.pixelcave.service.ResourceService;
+import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.tile.Tile;
 import no.taardal.pixelcave.vector.Vector2f;
 import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Level {
@@ -25,27 +27,37 @@ public class Level {
     private static final Logger LOGGER = LoggerFactory.getLogger(Level.class);
 
     private World world;
-    private Player player;
     private List<Ribbon> ribbons;
+    private Player player;
 
-    public Level(GameAssetService gameAssetService) {
-        world = gameAssetService.getWorld("world_pixelcave.json");
+    public Level(ResourceService resourceService, Gson gson) {
+        world = gson.fromJson(resourceService.readFile("worlds/world_pixelcave.json"), World.class);
 
-        String knightSpriteSheetPath = "spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png";
-        player = new KnightBuilder()
-                .setWorld(world)
-                .setSpriteSheet(new KnightSpriteSheet(new LocalResourceService().getImage(knightSpriteSheetPath)))
+        ribbons = new ArrayList<>();
+        String directoryPath = "ribbons/";
+        List<String> fileNames = Arrays.asList(resourceService.getFileNames(directoryPath));
+        Collections.sort(fileNames);
+        float speed = 1f;
+        for (String fileName : fileNames) {
+            String path = directoryPath + "/" + fileName;
+            Ribbon ribbon = new Ribbon(resourceService.getBufferedImage(path));
+            ribbon.setSpeedX(speed);
+            ribbons.add(ribbon);
+            speed += 0.1f;
+        }
+
+        SpriteSheet spriteSheet = new SpriteSheet.Builder()
+                .setBufferedImage(resourceService.getBufferedImage("spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png"))
+                .setApproximateSpriteWidth(40)
+                .setApproximateSpriteHeight(40)
+                .build();
+
+        player = new Knight.Builder()
+                .setSpriteSheet(spriteSheet)
                 .setPosition(new Vector2f(132, 100))
                 .setVelocity(new Vector2f(0, 50))
                 .setDirection(Direction.LEFT)
                 .build();
-
-        ribbons = gameAssetService.getRibbons();
-        float speed = 1f;
-        for (int i = 0; i < ribbons.size(); i++) {
-            ribbons.get(i).setSpeedX(speed);
-            speed += 0.1f;
-        }
     }
 
     public void handleInput(Keyboard keyboard) {

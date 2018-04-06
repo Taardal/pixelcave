@@ -11,9 +11,6 @@ import no.taardal.pixelcave.layer.Layer;
 import no.taardal.pixelcave.level.Level;
 import no.taardal.pixelcave.listener.ExitListener;
 import no.taardal.pixelcave.provider.LevelsProvider;
-import no.taardal.pixelcave.service.GameAssetService;
-import no.taardal.pixelcave.service.LocalGameAssetService;
-import no.taardal.pixelcave.service.LocalResourceService;
 import no.taardal.pixelcave.service.ResourceService;
 import no.taardal.pixelcave.tile.TileSet;
 import no.taardal.pixelcave.world.World;
@@ -23,8 +20,6 @@ public class GameModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(ExitListener.class).to(Game.class);
-        binder.bind(GameAssetService.class).to(LocalGameAssetService.class);
-        binder.bind(ResourceService.class).to(LocalResourceService.class);
         binder.bind(Level[].class).toProvider(LevelsProvider.class).asEagerSingleton();
     }
 

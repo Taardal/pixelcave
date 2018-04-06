@@ -25,11 +25,11 @@ public class Animation {
         DEFEND_WHILE_CROUCHED,
         CROUCH,
         HURT,
-        DEAD
+        DEAD;
     }
 
     private BufferedImage[] sprites;
-    private BufferedImage sprite;
+    private BufferedImage currentSprite;
     private int frame;
     private int updatesPerFrame;
     private int updatesSinceLastFrame;
@@ -46,7 +46,7 @@ public class Animation {
     public Animation(BufferedImage[] sprites) {
         this();
         this.sprites = sprites;
-        sprite = sprites[0];
+        currentSprite = sprites[0];
         for (int i = 0; i < sprites.length; i++) {
             width = sprites[i].getWidth() > width ? sprites[i].getWidth() : width;
             height = sprites[i].getHeight() > height ? sprites[i].getHeight() : height;
@@ -102,7 +102,7 @@ public class Animation {
                         finished = true;
                     }
                 } else {
-                    sprite = sprites[frame];
+                    currentSprite = sprites[frame];
                     frame++;
                 }
                 updatesSinceLastFrame = 0;
@@ -113,34 +113,18 @@ public class Animation {
 
     public void reset() {
         finished = false;
-        sprite = sprites[0];
+        currentSprite = sprites[0];
         frame = 0;
         updatesSinceLastFrame = 0;
     }
 
-    public void draw(Actor actor, Camera camera) {
-
-        float actorY = actor.getY();
-        float actorBottomY = actorY + actor.getHeight();
-        float y = actorBottomY - sprite.getHeight();
-
-        float actorX = actor.getX();
-        float actorRightX = actorX + actor.getWidth();
-        float x = actorRightX - sprite.getWidth();
-
-        camera.drawImage(sprite, actorX, y);
-    }
-
-    public void drawFlippedHorizontally(Actor actor, Camera camera) {
-        float actorY = (float) actor.getY();
-        float actorBottomY = actorY + actor.getHeight();
-        float y = actorBottomY - sprite.getHeight();
-
-        float actorX = (float) actor.getX();
-        float actorRightX = actorX + actor.getWidth();
-        float x = actorRightX - sprite.getWidth();
-
-        camera.drawImageFlippedHorizontally(sprite, x, y);
+    public void draw(Actor actor, Camera camera, boolean flipped) {
+        float y = actor.getPosition().getY() + actor.getHeight() - currentSprite.getHeight();
+        float x = actor.getPosition().getX();
+        if (flipped) {
+            x += actor.getWidth() - currentSprite.getWidth();
+        }
+        camera.drawImage(currentSprite, x, y, flipped);
     }
 
     @Override
@@ -156,12 +140,12 @@ public class Animation {
                 indefinite == animation.indefinite &&
                 finished == animation.finished &&
                 Arrays.equals(sprites, animation.sprites) &&
-                Objects.equals(sprite, animation.sprite);
+                Objects.equals(currentSprite, animation.currentSprite);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(sprite, frame, updatesPerFrame, updatesSinceLastFrame, width, height, indefinite, finished);
+        int result = Objects.hash(currentSprite, frame, updatesPerFrame, updatesSinceLastFrame, width, height, indefinite, finished);
         result = 31 * result + Arrays.hashCode(sprites);
         return result;
     }

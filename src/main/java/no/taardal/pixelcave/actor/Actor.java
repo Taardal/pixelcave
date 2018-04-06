@@ -1,12 +1,13 @@
 package no.taardal.pixelcave.actor;
 
 import no.taardal.pixelcave.animation.Animation;
-import no.taardal.pixelcave.bounds.Bounds;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
+import no.taardal.pixelcave.keyboard.Keyboard;
 import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.statemachine.StateMachine;
 import no.taardal.pixelcave.vector.Vector2f;
+import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,10 @@ public abstract class Actor {
     Direction direction;
     Vector2f velocity;
     Vector2f position;
-    Bounds bounds;
+    Map<Animation.Type, Animation> animations;
+    int width;
+    int height;
+    int movementSpeed;
 
     private Actor() {
         stateMachine = new StateMachine();
@@ -33,15 +37,11 @@ public abstract class Actor {
         this.direction = direction;
         this.velocity = velocity;
         this.position = position;
-        bounds = new Bounds.Builder().setPosition(position).build();
+        animations = createAnimations();
     }
 
     public SpriteSheet getSpriteSheet() {
         return spriteSheet;
-    }
-
-    public void setSpriteSheet(SpriteSheet spriteSheet) {
-        this.spriteSheet = spriteSheet;
     }
 
     public Direction getDirection() {
@@ -60,56 +60,57 @@ public abstract class Actor {
         this.velocity = velocity;
     }
 
-    public Bounds getBounds() {
-        return bounds;
-    }
-
-    public void setBounds(Bounds bounds) {
-        this.bounds = bounds;
-    }
-
-    public int getWidth() {
-        return bounds.getWidth();
-    }
-
-    public int getHeight() {
-        return bounds.getHeight();
-    }
-
     public Vector2f getPosition() {
-        return bounds.getPosition();
+        return position;
     }
 
     public void setPosition(Vector2f position) {
         this.position = position;
-        bounds.setPosition(position);
-    }
-
-    public float getX() {
-        return bounds.getPosition().getX();
-    }
-
-    public float getY() {
-        return bounds.getPosition().getY();
-    }
-
-    public Animation getAnimation() {
-        return stateMachine.isEmpty() ? null : stateMachine.getCurrentState().getAnimation();
     }
 
     public Map<Animation.Type, Animation> getAnimations() {
-        return spriteSheet.getAnimations();
+        return animations;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public int getMovementSpeed() {
-        return 100;
+        return movementSpeed;
+    }
+
+    public void handleInput(Keyboard keyboard) {
+        if (!stateMachine.isEmpty()) {
+            stateMachine.getCurrentState().handleInput(keyboard);
+        } else {
+            LOGGER.warn("Could not handle input. State machine was empty.");
+        }
+    }
+
+    public void update(World world, float secondsSinceLastUpdate) {
+        if (!stateMachine.isEmpty()) {
+            stateMachine.getCurrentState().update(world, secondsSinceLastUpdate);
+        } else {
+            LOGGER.warn("Could not update. State machine was empty.");
+        }
     }
 
     public void draw(Camera camera) {
-        Animation animation = getAnimation();
+        Animation animation = stateMachine.isEmpty() ? null : stateMachine.getCurrentState().getAnimation();
         if (animation != null) {
-            animation.draw(this, camera);
+            animation.draw(this, camera, isFlipped());
+        } else {
+            LOGGER.warn("Could not draw. Animation was null.");
         }
     }
+
+    abstract Map<Animation.Type,Animation> createAnimations();
+
+    abstract boolean isFlipped();
 
 }

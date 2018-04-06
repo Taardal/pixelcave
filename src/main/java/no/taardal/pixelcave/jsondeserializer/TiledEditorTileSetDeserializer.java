@@ -62,7 +62,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
 
     private List<Tile> getTiles(String imagePath, int tileWidth, int tileHeight) {
         List<Tile> tiles = new ArrayList<>();
-        BufferedImage tileSetBufferedImage = resourceService.getImage(imagePath);
+        BufferedImage tileSetBufferedImage = resourceService.getBufferedImage(imagePath);
         int numberOfTilesY = tileSetBufferedImage.getHeight() / tileHeight;
         int numberOfTilesX = tileSetBufferedImage.getWidth() / tileWidth;
         for (int y = 0; y < numberOfTilesY; y++) {
@@ -87,7 +87,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
 
     private BufferedImage getTileBufferedImage(JsonElement jsonElement) {
         String imagePath = jsonElement.getAsJsonObject().get("image").getAsString().replaceFirst("../", "");
-        return resourceService.getImage(imagePath);
+        return resourceService.getBufferedImage(imagePath);
     }
 
 }

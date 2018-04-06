@@ -23,8 +23,8 @@ abstract class MovementState<T extends Actor> implements ActorState {
     }
 
     boolean isStandingOnSolidTile(World world) {
-        int leftColumn = ((int) actor.getX()) / world.getTileWidth();
-        int rightColumn = (((int) actor.getX()) + actor.getWidth() - 1) / world.getTileWidth();
+        int leftColumn = ((int) actor.getPosition().getX()) / world.getTileWidth();
+        int rightColumn = (((int) actor.getPosition().getX()) + actor.getWidth() - 1) / world.getTileWidth();
         return getDistanceToClosestSolidTileBelow(leftColumn, rightColumn, world) <= 0;
     }
 
@@ -104,8 +104,8 @@ abstract class MovementState<T extends Actor> implements ActorState {
     }
 
     private float getDistanceToClosestSolidTileY(World world) {
-        int leftColumn = ((int) actor.getX()) / world.getTileWidth();
-        int rightColumn = (((int) actor.getX()) + actor.getWidth() - 1) / world.getTileWidth();
+        int leftColumn = ((int) actor.getPosition().getX()) / world.getTileWidth();
+        int rightColumn = (((int) actor.getPosition().getX()) + actor.getWidth() - 1) / world.getTileWidth();
         if (actor.getVelocity().getY() < 0) {
             return getDistanceToClosestSolidTileAbove(leftColumn, rightColumn, world);
         } else {
