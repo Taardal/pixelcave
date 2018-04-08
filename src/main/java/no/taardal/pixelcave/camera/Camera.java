@@ -3,20 +3,20 @@ package no.taardal.pixelcave.camera;
 import no.taardal.pixelcave.actor.Player;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.game.Game;
+import no.taardal.pixelcave.sprite.Sprite;
+import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
+import java.awt.image.DataBufferInt;
 
 public class Camera {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Camera.class);
-    private static final ImageObserver IMAGE_OBSERVER = null;
 
     private BufferedImage bufferedImage;
-    private Graphics2D graphics2D;
     private Direction direction;
     private int width;
     private int height;
@@ -28,19 +28,21 @@ public class Camera {
     private int bottom;
     private float previousPlayerX;
     private boolean centerOnPlayerRequired;
+    private int[] pixels;
 
     public Camera(int width, int height) {
         this.width = width;
         this.height = height;
         direction = Direction.NO_DIRECTION;
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        graphics2D = bufferedImage.createGraphics();
         centerOnPlayerRequired = true;
 
         left = (int) (width * (30 / 100.0f));
         right = (int) (width * (70 / 100.0f));
         top = (int) (height * (30 / 100.0f));
         bottom = (int) (height * (70 / 100.0f));
+
+        pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
     }
 
     public BufferedImage getBufferedImage() {
@@ -68,8 +70,9 @@ public class Camera {
     }
 
     public void clear() {
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0;
+        }
     }
 
     public void update(Player player) {
@@ -92,8 +95,30 @@ public class Camera {
         previousPlayerX = playerX;
     }
 
-    public void drawImage(BufferedImage bufferedImage, float x, float y, boolean flipped) {
-        if (flipped) {
+    public void drawSprite(Sprite sprite, Vector2f position) {
+        int cameraX = ((int) position.getX()) - x;
+        int cameraY = ((int) position.getY()) - y;
+        for (int y = 0; y < sprite.getHeight(); y++) {
+            int absoluteY = y + cameraY;
+            for (int x = 0; x < sprite.getWidth(); x++) {
+                int absoluteX = x + cameraX;
+                if (absoluteX < -sprite.getWidth() || absoluteX >= width || absoluteY < -sprite.getHeight() || absoluteY >= height) {
+                    break;
+                }
+                if (absoluteX < 0) {
+                    absoluteX = 0;
+                }
+                if (absoluteY < 0) {
+                    absoluteY = 0;
+                }
+                int spritePixel = sprite.getPixels()[x + y * sprite.getWidth()];
+                pixels[absoluteX + absoluteY * width] = spritePixel;
+            }
+        }
+    }
+
+    public void drawImage(BufferedImage bufferedImage, float x, float y, boolean flip) {
+        if (flip) {
             drawImageFlippedHorizontally(bufferedImage, x, y);
         } else {
             drawImage(bufferedImage, x, y);
@@ -101,42 +126,23 @@ public class Camera {
     }
 
     public void drawImage(BufferedImage bufferedImage, float x, float y) {
-        x -= this.x;
-        y -= this.y;
-        graphics2D.drawImage(bufferedImage, (int) x, (int) y, IMAGE_OBSERVER);
+
     }
 
     public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
-        graphics2D.drawImage(
-                bufferedImage,
-                destinationX1,
-                destinationY1,
-                destinationX2,
-                destinationY2,
-                sourceX1,
-                sourceY1,
-                sourceX2,
-                sourceY2,
-                IMAGE_OBSERVER
-        );
+
     }
 
     public void drawRectangle(float x, float y, int width, int height, Color color) {
-        x -= this.x;
-        y -= this.y;
-        graphics2D.setColor(color);
-        graphics2D.drawRect((int) x, (int) y, width, height);
+
     }
 
     public void drawString(String text, int x, int y, Font font, Color color) {
-        graphics2D.setColor(color);
-        graphics2D.setFont(font);
-        graphics2D.drawString(text, x, y);
+
     }
 
     public void drawCircle(int x, int y, int diameter, Color color) {
-        graphics2D.setColor(color);
-        graphics2D.fillOval(x, y, diameter, diameter);
+
     }
 
     private void drawImageFlippedHorizontally(BufferedImage bufferedImage, float x, float y) {

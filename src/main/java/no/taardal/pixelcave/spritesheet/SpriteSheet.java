@@ -1,17 +1,19 @@
 package no.taardal.pixelcave.spritesheet;
 
+import no.taardal.pixelcave.sprite.Sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 public class SpriteSheet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpriteSheet.class);
 
-    private BufferedImage[][] sprites;
+    private Sprite[][] sprites;
     private BufferedImage bufferedImage;
+    private int[] pixels;
     private int approximateSpriteWidth;
     private int approximateSpriteHeight;
 
@@ -19,87 +21,40 @@ public class SpriteSheet {
         this.bufferedImage = bufferedImage;
         this.approximateSpriteWidth = approximateSpriteWidth;
         this.approximateSpriteHeight = approximateSpriteHeight;
+        pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
         sprites = createSprites();
     }
 
-    public BufferedImage[][] getSprites() {
+    public Sprite[][] getSprites() {
         return sprites;
     }
 
-    public int getWidth() {
-        return bufferedImage.getWidth();
-    }
-
-    public int getHeight() {
-        return bufferedImage.getHeight();
-    }
-
-    public int getApproximateSpriteWidth() {
-        return approximateSpriteWidth;
-    }
-
-    public int getApproximateSpriteHeight() {
-        return approximateSpriteHeight;
-    }
-
-    private BufferedImage[][] createSprites() {
-        int columns = bufferedImage.getWidth() / approximateSpriteWidth;
+    private Sprite[][] createSprites() {
         int rows = bufferedImage.getHeight() / approximateSpriteHeight;
-        BufferedImage[][] sprites = new BufferedImage[columns][rows];
+        int columns = bufferedImage.getWidth() / approximateSpriteWidth;
+        Sprite[][] sprites = new Sprite[columns][rows];
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 int approximateX = column * approximateSpriteWidth;
                 int approximateY = row * approximateSpriteHeight;
-                BufferedImage approximateCutoutImage = bufferedImage.getSubimage(approximateX, approximateY, approximateSpriteWidth, approximateSpriteHeight);
-                Rectangle exactCutoutRectangle = getExactCutoutRectangle(approximateCutoutImage);
-                if (exactCutoutRectangle != null) {
-                    sprites[column][row] = getSprite(approximateCutoutImage, exactCutoutRectangle);
-                }
+                BufferedImage spriteBufferedImage = bufferedImage.getSubimage(approximateX, approximateY, approximateSpriteWidth, approximateSpriteHeight);
+                sprites[column][row] = new Sprite(spriteBufferedImage);
             }
         }
         return sprites;
     }
 
-    private Rectangle getExactCutoutRectangle(BufferedImage bufferedImage) {
-        int minX = Integer.MAX_VALUE;
-        int minY = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE;
-        int maxY = Integer.MIN_VALUE;
-        for (int x = 0; x < bufferedImage.getWidth(); x++) {
-            for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                if (!isTransparent(bufferedImage.getRGB(x, y))) {
-                    minX = Math.min(x, minX);
-                    minY = Math.min(y, minY);
-                    maxX = Math.max(x, maxX);
-                    maxY = Math.max(y, maxY);
-                }
+    private int[] getSpritePixels(int row, int column) {
+        int startX = column * approximateSpriteWidth;
+        int startY = row * approximateSpriteHeight;
+        int[] spritePixels = new int[approximateSpriteWidth * approximateSpriteHeight];
+        for (int x = 0; x < approximateSpriteWidth; x++) {
+            for (int y = 0; y < approximateSpriteHeight; y++) {
+                int pixel = (startX + x) + (startY + y) * approximateSpriteWidth;
+                spritePixels[x + y * approximateSpriteWidth] = pixels[pixel];
             }
         }
-        if (minX != Integer.MAX_VALUE) {
-            int width = maxX - minX + 1;
-            int height = maxY - minY + 1;
-            return new Rectangle(minX, minY, width, height);
-        } else {
-            return null;
-        }
-    }
-
-    private boolean isTransparent(int rgb) {
-        int alpha = (rgb >> 24) & 0xFF;
-        return alpha == 0;
-    }
-
-    private BufferedImage getSprite(BufferedImage approximateCutout, Rectangle exactCutoutRectangle) {
-        BufferedImage exactCutoutImage = new BufferedImage(exactCutoutRectangle.width, exactCutoutRectangle.height, BufferedImage.TYPE_INT_ARGB);
-        for (int x = 0; x < exactCutoutRectangle.width; x++) {
-            for (int y = 0; y < exactCutoutRectangle.height; y++) {
-                int approximateCutoutX = x + exactCutoutRectangle.x;
-                int approximateCutoutY = y + exactCutoutRectangle.y;
-                int rgb = approximateCutout.getRGB(approximateCutoutX, approximateCutoutY);
-                exactCutoutImage.setRGB(x, y, rgb);
-            }
-        }
-        return exactCutoutImage;
+        return spritePixels;
     }
 
     public static class Builder {
