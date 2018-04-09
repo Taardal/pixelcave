@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.awt.image.ImageObserver;
 
 public class Camera {
@@ -28,6 +29,7 @@ public class Camera {
     private int bottom;
     private float previousPlayerX;
     private boolean centerOnPlayerRequired;
+    private int[] pixels;
 
     public Camera(int width, int height) {
         this.width = width;
@@ -35,12 +37,47 @@ public class Camera {
         direction = Direction.NO_DIRECTION;
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         graphics2D = bufferedImage.createGraphics();
+        pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+
         centerOnPlayerRequired = true;
 
         left = (int) (width * (30 / 100.0f));
         right = (int) (width * (70 / 100.0f));
         top = (int) (height * (30 / 100.0f));
         bottom = (int) (height * (70 / 100.0f));
+    }
+
+    public void drawImagez(BufferedImage bufferedImage, int[] foo, int xx, int yy) {
+        xx -= x;
+        yy -= y;
+        int bw = bufferedImage.getWidth();
+        int bh = bufferedImage.getHeight();
+        for (int y = 0; y < bh; y++) {
+            int ay = yy + y;
+            if (ay < 0) {
+                continue;
+            }
+            if (ay >= height) {
+                break;
+            }
+            for (int x = 0; x < bw; x++) {
+                int ax = xx + x;
+                if (ax < 0) {
+                    continue;
+                }
+                if (ax >= width) {
+                    break;
+                }
+                int i = foo[x + y * bw];
+                if (!isTransparent(i)) {
+                    pixels[ax + ay * width] = i;
+                }
+            }
+        }
+    }
+
+    private boolean isTransparent(int pixel) {
+        return (pixel >> 24) == 0x00;
     }
 
     public BufferedImage getBufferedImage() {
@@ -68,8 +105,13 @@ public class Camera {
     }
 
     public void clear() {
-        graphics2D.setColor(Color.BLACK);
-        graphics2D.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0;
+        }
+    }
+
+    public Graphics2D getGraphics2D() {
+        return graphics2D;
     }
 
     public void update(Player player) {
@@ -163,4 +205,7 @@ public class Camera {
         );
     }
 
+    public void createGraphics() {
+        graphics2D = bufferedImage.createGraphics();
+    }
 }

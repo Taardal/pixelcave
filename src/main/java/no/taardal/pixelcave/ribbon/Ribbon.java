@@ -16,9 +16,13 @@ public class Ribbon {
     private float y;
     private float speedX;
     private float speedY;
+    int[] foo;
 
     public Ribbon(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
+        int bw = bufferedImage.getWidth();
+        int bh = bufferedImage.getHeight();
+        foo = bufferedImage.getRGB(0, 0, bw, bh, new int[bw * bh], 0, bw);
     }
 
     public void setSpeedX(float speedX) {
@@ -38,6 +42,11 @@ public class Ribbon {
         }
     }
 
+    public void draw(Camera camera) {
+        camera.drawImagez(bufferedImage, foo, (int) x, (int) y);
+    }
+
+    /*
     public void draw(Camera camera) {
         int destinationY1 = 0;
         int destinationY2 = camera.getHeight();
@@ -93,6 +102,7 @@ public class Ribbon {
             camera.drawImage(bufferedImage, headDestinationX1, headDestinationX2, destinationY1, destinationY2, headSourceX1, headSourceX2, sourceY1, sourceY2);
         }
     }
+    */
 
     private Direction getDirection(Direction cameraDirection) {
         if (cameraDirection == Direction.LEFT) {

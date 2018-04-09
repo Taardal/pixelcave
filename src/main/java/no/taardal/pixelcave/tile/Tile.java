@@ -10,11 +10,15 @@ public class Tile {
     private BufferedImage bufferedImage;
     private boolean slope;
     private Direction direction;
+    int[] foo;
 
     public Tile(BufferedImage bufferedImage) {
         this.bufferedImage = bufferedImage;
         direction = Direction.NO_DIRECTION;
         slope = isSlopeTile();
+        int bw = bufferedImage.getWidth();
+        int bh = bufferedImage.getHeight();
+        foo = bufferedImage.getRGB(0, 0, bw, bh, new int[bw * bh], 0, bw);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class Tile {
     }
 
     public void draw(int x, int y, Camera camera) {
-        camera.drawImage(bufferedImage, x, y);
+        camera.drawImagez(bufferedImage, foo, x, y);
     }
 
     private boolean isSlopeTile() {

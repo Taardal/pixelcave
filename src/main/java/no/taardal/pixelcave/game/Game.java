@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.awt.image.ImageObserver;
 
 public class Game extends Canvas implements GameLoopListener, ExitListener {
 
@@ -76,21 +75,18 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
         BufferStrategy bufferStrategy = getBufferStrategy();
         if (bufferStrategy == null) {
             createBufferStrategy(NUMBER_OF_BUFFERS);
-        } else {
-            camera.clear();
-            gameState.draw(camera);
-            drawCameraToBuffer(bufferStrategy);
-            bufferStrategy.show();
+            return;
         }
-    }
-
-    private void drawCameraToBuffer(BufferStrategy bufferStrategy) {
         Graphics graphics = bufferStrategy.getDrawGraphics();
-        int x = 0;
-        int y = 0;
-        ImageObserver observer = null;
-        graphics.drawImage(camera.getBufferedImage(), x, y, getWidth(), getHeight(), observer);
+        graphics.setColor(Color.BLACK);
+        graphics.fillRect(0, 0, getWidth(), getHeight());
+
+        camera.clear();
+        gameState.draw(camera);
+
+        graphics.drawImage(camera.getBufferedImage(), 0, 0, getWidth(), getHeight(), null);
         graphics.dispose();
+        bufferStrategy.show();
     }
 
 }
