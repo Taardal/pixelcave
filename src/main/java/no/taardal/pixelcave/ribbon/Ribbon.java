@@ -2,23 +2,22 @@ package no.taardal.pixelcave.ribbon;
 
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
+import no.taardal.pixelcave.sprite.Sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.image.BufferedImage;
 
 public class Ribbon {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Ribbon.class);
 
-    private BufferedImage bufferedImage;
+    private Sprite sprite;
     private float x;
     private float y;
     private float speedX;
     private float speedY;
 
-    public Ribbon(BufferedImage bufferedImage) {
-        this.bufferedImage = bufferedImage;
+    public Ribbon(Sprite sprite) {
+        this.sprite = sprite;
     }
 
     public void setSpeedX(float speedX) {
@@ -32,12 +31,17 @@ public class Ribbon {
     public void update(Direction cameraDirection) {
         Direction direction = getDirection(cameraDirection);
         if (direction == Direction.RIGHT) {
-            x = (x + speedX) % bufferedImage.getWidth();
+            x = (x + speedX) % sprite.getWidth();
         } else if (direction == Direction.LEFT) {
-            x = (x - speedX) % bufferedImage.getWidth();
+            x = (x - speedX) % sprite.getWidth();
         }
     }
 
+    public void draw(Camera camera) {
+        camera.drawSprite(sprite, x, y);
+    }
+
+    /*
     public void draw(Camera camera) {
         int destinationY1 = 0;
         int destinationY2 = camera.getHeight();
@@ -93,6 +97,7 @@ public class Ribbon {
             camera.drawImage(bufferedImage, headDestinationX1, headDestinationX2, destinationY1, destinationY2, headSourceX1, headSourceX2, sourceY1, sourceY2);
         }
     }
+    */
 
     private Direction getDirection(Direction cameraDirection) {
         if (cameraDirection == Direction.LEFT) {

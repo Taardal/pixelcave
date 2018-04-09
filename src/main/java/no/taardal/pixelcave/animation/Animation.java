@@ -2,8 +2,8 @@ package no.taardal.pixelcave.animation;
 
 import no.taardal.pixelcave.actor.Actor;
 import no.taardal.pixelcave.camera.Camera;
+import no.taardal.pixelcave.sprite.Sprite;
 
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -28,8 +28,8 @@ public class Animation {
         DEAD;
     }
 
-    private BufferedImage[] sprites;
-    private BufferedImage currentSprite;
+    private Sprite[] sprites;
+    private Sprite currentSprite;
     private int frame;
     private int updatesPerFrame;
     private int updatesSinceLastFrame;
@@ -43,7 +43,7 @@ public class Animation {
         indefinite = true;
     }
 
-    public Animation(BufferedImage[] sprites) {
+    public Animation(Sprite[] sprites) {
         this();
         this.sprites = sprites;
         currentSprite = sprites[0];
@@ -122,9 +122,9 @@ public class Animation {
         float y = actor.getPosition().getY() + actor.getHeight() - currentSprite.getHeight();
         float x = actor.getPosition().getX();
         if (flipped) {
-            x += actor.getWidth() - currentSprite.getWidth();
+            //x += actor.getWidth() - currentSprite.getWidth();
         }
-        camera.drawImage(currentSprite, x, y, flipped);
+        camera.drawSprite(currentSprite, (int) x, (int) y, 0);
     }
 
     @Override

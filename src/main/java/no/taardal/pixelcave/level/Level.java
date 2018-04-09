@@ -10,6 +10,7 @@ import no.taardal.pixelcave.layer.Layer;
 import no.taardal.pixelcave.layer.TileLayer;
 import no.taardal.pixelcave.ribbon.Ribbon;
 import no.taardal.pixelcave.service.ResourceService;
+import no.taardal.pixelcave.sprite.Sprite;
 import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.tile.Tile;
 import no.taardal.pixelcave.vector.Vector2f;
@@ -17,6 +18,8 @@ import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,14 +43,31 @@ public class Level {
         float speed = 1f;
         for (String fileName : fileNames) {
             String path = directoryPath + "/" + fileName;
-            Ribbon ribbon = new Ribbon(resourceService.getBufferedImage(path));
+
+            BufferedImage bufferedImage = resourceService.getBufferedImage(path);
+            int width = bufferedImage.getWidth();
+            int height = bufferedImage.getHeight();
+            BufferedImage spriteImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics = spriteImage.createGraphics();
+            graphics.drawImage(bufferedImage, 0, 0, width, height, null);
+            graphics.dispose();
+
+            Ribbon ribbon = new Ribbon(new Sprite(spriteImage));
             ribbon.setSpeedX(speed);
             ribbons.add(ribbon);
             speed += 0.1f;
         }
 
+        BufferedImage bufferedImage = resourceService.getBufferedImage("spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png");
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+        BufferedImage spriteImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = spriteImage.createGraphics();
+        graphics.drawImage(bufferedImage, 0, 0, width, height, null);
+        graphics.dispose();
+
         SpriteSheet spriteSheet = new SpriteSheet.Builder()
-                .setBufferedImage(resourceService.getBufferedImage("spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png"))
+                .setBufferedImage(spriteImage)
                 .setApproximateSpriteWidth(40)
                 .setApproximateSpriteHeight(40)
                 .build();
@@ -74,7 +94,7 @@ public class Level {
 
     public void draw(Camera camera) {
         for (int i = 0; i < ribbons.size(); i++) {
-            ribbons.get(i).draw(camera);
+            //ribbons.get(i).draw(camera);
         }
         drawTiles(camera);
         player.draw(camera);

@@ -4,7 +4,6 @@ import no.taardal.pixelcave.actor.Player;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.game.Game;
 import no.taardal.pixelcave.sprite.Sprite;
-import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +70,7 @@ public class Camera {
 
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = 0;
+            pixels[i] = Color.BLACK.getRGB();
         }
     }
 
@@ -95,13 +94,45 @@ public class Camera {
         previousPlayerX = playerX;
     }
 
-    public void drawSprite(Sprite sprite, Vector2f position) {
-        int cameraX = ((int) position.getX()) - x;
-        int cameraY = ((int) position.getY()) - y;
+    public void drawSprite(Sprite sprite, float x, float y) {
+        int cameraX = ((int) x) - this.x;
+        int cameraY = ((int) y) - this.y;
+        for (int spriteY = 0; spriteY < sprite.getHeight(); spriteY++) {
+            int pixelY = spriteY + cameraY;
+            if (pixelY < 0) {
+                continue;
+            }
+            if (pixelY >= height) {
+                break;
+            }
+            for (int spriteX = 0; spriteX < sprite.getWidth(); spriteX++) {
+                int pixelX = spriteX + cameraX;
+                if (pixelX < 0) {
+                    continue;
+                }
+                if (pixelX >= width) {
+                    break;
+                }
+                pixels[pixelX + pixelY * width] = sprite.getPixels()[spriteX + spriteY * sprite.getWidth()];
+            }
+        }
+    }
+
+    public void drawSprite(Sprite sprite, int positionX, int positionY, int flip) {
+        positionX -= x;
+        positionY -= y;
         for (int y = 0; y < sprite.getHeight(); y++) {
-            int absoluteY = y + cameraY;
+            int absoluteY = y + positionY;
+            int spriteY = y;
+            if (flip == 2 || flip == 3) {
+                spriteY = (sprite.getHeight() - 1) - y;
+            }
             for (int x = 0; x < sprite.getWidth(); x++) {
-                int absoluteX = x + cameraX;
+                int absoluteX = x + positionX;
+                int spriteX = x;
+                if (flip == 1 || flip == 3) {
+                    spriteX = (sprite.getWidth() - 1) - x;
+                }
                 if (absoluteX < -sprite.getWidth() || absoluteX >= width || absoluteY < -sprite.getHeight() || absoluteY >= height) {
                     break;
                 }
@@ -111,8 +142,10 @@ public class Camera {
                 if (absoluteY < 0) {
                     absoluteY = 0;
                 }
-                int spritePixel = sprite.getPixels()[x + y * sprite.getWidth()];
-                pixels[absoluteX + absoluteY * width] = spritePixel;
+                int spritePixel = sprite.getPixels()[spriteX + spriteY * sprite.getWidth()];
+                if (((spritePixel >> 24) & 0xFF) != 0) {
+                    pixels[absoluteX + absoluteY * width] = spritePixel;
+                }
             }
         }
     }

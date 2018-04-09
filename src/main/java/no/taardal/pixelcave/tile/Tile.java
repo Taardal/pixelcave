@@ -2,17 +2,18 @@ package no.taardal.pixelcave.tile;
 
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
+import no.taardal.pixelcave.sprite.Sprite;
 
 import java.awt.image.BufferedImage;
 
 public class Tile {
 
-    private BufferedImage bufferedImage;
+    private Sprite sprite;
     private boolean slope;
     private Direction direction;
 
-    public Tile(BufferedImage bufferedImage) {
-        this.bufferedImage = bufferedImage;
+    public Tile(BufferedImage sprite) {
+        this.sprite = new Sprite(sprite);
         direction = Direction.NO_DIRECTION;
         slope = isSlopeTile();
     }
@@ -26,11 +27,11 @@ public class Tile {
     }
 
     public int getWidth() {
-        return bufferedImage.getWidth();
+        return sprite.getWidth();
     }
 
     public int getHeight() {
-        return bufferedImage.getHeight();
+        return sprite.getHeight();
     }
 
     public boolean isSlope() {
@@ -42,16 +43,16 @@ public class Tile {
     }
 
     public void draw(int x, int y, Camera camera) {
-        camera.drawImage(bufferedImage, x, y);
+        camera.drawSprite(sprite, x, y);
     }
 
     private boolean isSlopeTile() {
-        int[] rgbPixels = getRGBPixels();
+        int[] spritePixels = sprite.getPixels();
         int leftFloorY = 0;
         int rightFloorY = 0;
         for (int x = 0; x < getWidth(); x++) {
             for (int y = 0; y < getHeight(); y++) {
-                int pixel = rgbPixels[x + y * getWidth()];
+                int pixel = spritePixels[x + y * getWidth()];
                 if (x == 0) {
                     if (isTransparent(pixel)) {
                         leftFloorY = y;
@@ -75,15 +76,6 @@ public class Tile {
         } else {
             return false;
         }
-    }
-
-    private int[] getRGBPixels() {
-        int startX = 0;
-        int startY = 0;
-        int offset = 0;
-        int scanSize = getWidth();
-        int[] rgbArray = new int[getWidth() * getHeight()];
-        return bufferedImage.getRGB(startX, startY, getWidth(), getHeight(), rgbArray, offset, scanSize);
     }
 
     private boolean isTransparent(int pixel) {

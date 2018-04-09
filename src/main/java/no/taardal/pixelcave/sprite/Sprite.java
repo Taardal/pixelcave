@@ -1,6 +1,7 @@
 package no.taardal.pixelcave.sprite;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.awt.image.DataBufferInt;
 
 public class Sprite {
@@ -8,6 +9,11 @@ public class Sprite {
     private int[] pixels;
     private int width;
     private int height;
+
+    public Sprite(int[] pixels, int approximateWidth, int approximateHeight) {
+        this.pixels = pixels;
+        setSize(approximateWidth, approximateHeight);
+    }
 
     public Sprite(BufferedImage bufferedImage) {
         pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
@@ -52,4 +58,46 @@ public class Sprite {
         int alpha = (rgb >> 24) & 0xFF;
         return alpha == 0;
     }
+
+    public class FastRGB
+    {
+
+        private int width;
+        private int height;
+        private boolean hasAlphaChannel;
+        private int pixelLength;
+        private byte[] pixels;
+
+        FastRGB(BufferedImage image)
+        {
+
+            pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+            width = image.getWidth();
+            height = image.getHeight();
+            hasAlphaChannel = image.getAlphaRaster() != null;
+            pixelLength = 3;
+            if (hasAlphaChannel)
+            {
+                pixelLength = 4;
+            }
+
+        }
+
+        int getRGB(int x, int y)
+        {
+            int pos = (y * pixelLength * width) + (x * pixelLength);
+
+            int argb = -16777216; // 255 alpha
+            if (hasAlphaChannel)
+            {
+                argb = (((int) pixels[pos++] & 0xff) << 24); // alpha
+            }
+
+            argb += ((int) pixels[pos++] & 0xff); // blue
+            argb += (((int) pixels[pos++] & 0xff) << 8); // green
+            argb += (((int) pixels[pos++] & 0xff) << 16); // red
+            return argb;
+        }
+    }
+
 }

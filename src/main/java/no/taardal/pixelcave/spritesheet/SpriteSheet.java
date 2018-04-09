@@ -4,6 +4,7 @@ import no.taardal.pixelcave.sprite.Sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -37,8 +38,17 @@ public class SpriteSheet {
             for (int column = 0; column < columns; column++) {
                 int approximateX = column * approximateSpriteWidth;
                 int approximateY = row * approximateSpriteHeight;
+
                 BufferedImage spriteBufferedImage = bufferedImage.getSubimage(approximateX, approximateY, approximateSpriteWidth, approximateSpriteHeight);
-                sprites[column][row] = new Sprite(spriteBufferedImage);
+                int width = spriteBufferedImage.getWidth();
+                int height = spriteBufferedImage.getHeight();
+                BufferedImage spriteImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+                Graphics2D graphics = spriteImage.createGraphics();
+                graphics.drawImage(spriteBufferedImage, 0, 0, width, height, null);
+                graphics.dispose();
+
+
+                sprites[column][row] = new Sprite(spriteImage);
             }
         }
         return sprites;

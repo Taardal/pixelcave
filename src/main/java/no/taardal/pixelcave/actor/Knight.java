@@ -3,6 +3,7 @@ package no.taardal.pixelcave.actor;
 import no.taardal.pixelcave.animation.Animation;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
+import no.taardal.pixelcave.sprite.Sprite;
 import no.taardal.pixelcave.spritesheet.SpriteSheet;
 import no.taardal.pixelcave.state.KnightIdleState;
 import no.taardal.pixelcave.vector.Vector2f;
@@ -10,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +64,7 @@ public class Knight extends Actor implements Player {
     }
 
     private Animation getIdleAnimation() {
-        BufferedImage[] sprites = new BufferedImage[4];
+        Sprite[] sprites = new Sprite[4];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = spriteSheet.getSprites()[i][0];
         }
@@ -74,7 +74,7 @@ public class Knight extends Actor implements Player {
     }
 
     private Animation getRunAnimation() {
-        BufferedImage[] sprites = new BufferedImage[10];
+        Sprite[] sprites = new Sprite[10];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = spriteSheet.getSprites()[i][8];
         }
@@ -82,7 +82,7 @@ public class Knight extends Actor implements Player {
     }
 
     private Animation getJumpAnimation() {
-        BufferedImage[] sprites = new BufferedImage[7];
+        Sprite[] sprites = new Sprite[7];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = spriteSheet.getSprites()[i][10];
         }
@@ -92,14 +92,14 @@ public class Knight extends Actor implements Player {
     }
 
     private Animation getFallAnimation() {
-        BufferedImage[] sprites = {spriteSheet.getSprites()[6][10]};
+        Sprite[] sprites = {spriteSheet.getSprites()[6][10]};
         Animation animation = new Animation(sprites);
         animation.setIndefinite(true);
         return animation;
     }
 
     private Animation getLandAnimation() {
-        BufferedImage[] sprites = new BufferedImage[3];
+        Sprite[] sprites = new Sprite[3];
         for (int i = 0; i < sprites.length; i++) {
             sprites[i] = spriteSheet.getSprites()[i + 7][10];
         }
