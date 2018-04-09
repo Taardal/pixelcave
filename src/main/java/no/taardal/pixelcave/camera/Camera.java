@@ -35,7 +35,12 @@ public class Camera {
         this.width = width;
         this.height = height;
         direction = Direction.NO_DIRECTION;
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreenDevice = localGraphicsEnvironment.getDefaultScreenDevice();
+        GraphicsConfiguration defaultConfiguration = defaultScreenDevice.getDefaultConfiguration();
+        bufferedImage = defaultConfiguration.createCompatibleImage(width, height);
+        //bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
         graphics2D = bufferedImage.createGraphics();
         pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
 
@@ -77,7 +82,8 @@ public class Camera {
     }
 
     private boolean isTransparent(int pixel) {
-        return (pixel >> 24) == 0x00;
+        int alpha = (pixel >> 24) & 0xff;
+        return alpha == 0;
     }
 
     public BufferedImage getBufferedImage() {
