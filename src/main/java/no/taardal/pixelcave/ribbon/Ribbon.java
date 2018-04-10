@@ -15,9 +15,13 @@ public class Ribbon {
     private float y;
     private float speedX;
     private float speedY;
+    int[] foo;
 
-    public Ribbon(Sprite sprite) {
-        this.sprite = sprite;
+    public Ribbon(BufferedImage bufferedImage) {
+        this.bufferedImage = bufferedImage;
+        int bw = bufferedImage.getWidth();
+        int bh = bufferedImage.getHeight();
+        foo = bufferedImage.getRGB(0, 0, bw, bh, new int[bw * bh], 0, bw);
     }
 
     public void setSpeedX(float speedX) {
@@ -38,7 +42,7 @@ public class Ribbon {
     }
 
     public void draw(Camera camera) {
-        camera.drawSprite(sprite, x, y);
+        camera.drawImagez(bufferedImage, foo, (int) x, (int) y);
     }
 
     /*

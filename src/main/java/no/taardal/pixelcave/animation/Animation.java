@@ -4,7 +4,10 @@ import no.taardal.pixelcave.actor.Actor;
 import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.sprite.Sprite;
 
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Animation {
@@ -38,6 +41,8 @@ public class Animation {
     private boolean indefinite;
     private boolean finished;
 
+    List<int[]> fooz;
+
     private Animation() {
         updatesPerFrame = DEFAULT_UPDATES_PER_FRAME;
         indefinite = true;
@@ -51,6 +56,15 @@ public class Animation {
             width = sprites[i].getWidth() > width ? sprites[i].getWidth() : width;
             height = sprites[i].getHeight() > height ? sprites[i].getHeight() : height;
         }
+
+        fooz = new ArrayList<>();
+        for (int i = 0; i < sprites.length; i++) {
+            BufferedImage bufferedImage = sprites[i];
+            int bw = bufferedImage.getWidth();
+            int bh = bufferedImage.getHeight();
+            fooz.add(bufferedImage.getRGB(0, 0, bw, bh, new int[bw * bh], 0, bw));
+        }
+        fooz.size();
     }
 
     public int getWidth() {
@@ -124,7 +138,8 @@ public class Animation {
         if (flipped) {
             //x += actor.getWidth() - currentSprite.getWidth();
         }
-        camera.drawSprite(currentSprite, (int) x, (int) y, 0);
+        int[] foo = fooz.get(0);
+        camera.drawImagez(sprites[0], foo, (int) actor.getPosition().getX(), (int) actor.getPosition().getY());
     }
 
     @Override

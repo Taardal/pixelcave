@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.awt.image.ImageObserver;
 
 public class Camera {
 
@@ -33,7 +34,15 @@ public class Camera {
         this.width = width;
         this.height = height;
         direction = Direction.NO_DIRECTION;
-        bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreenDevice = localGraphicsEnvironment.getDefaultScreenDevice();
+        GraphicsConfiguration defaultConfiguration = defaultScreenDevice.getDefaultConfiguration();
+        bufferedImage = defaultConfiguration.createCompatibleImage(width, height);
+        //bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        graphics2D = bufferedImage.createGraphics();
+        pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+
         centerOnPlayerRequired = true;
 
         left = (int) (width * (30 / 100.0f));
@@ -42,6 +51,40 @@ public class Camera {
         bottom = (int) (height * (70 / 100.0f));
 
         pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+    }
+
+    public void drawImagez(BufferedImage bufferedImage, int[] foo, int xx, int yy) {
+        xx -= x;
+        yy -= y;
+        int bw = bufferedImage.getWidth();
+        int bh = bufferedImage.getHeight();
+        for (int y = 0; y < bh; y++) {
+            int ay = yy + y;
+            if (ay < 0) {
+                continue;
+            }
+            if (ay >= height) {
+                break;
+            }
+            for (int x = 0; x < bw; x++) {
+                int ax = xx + x;
+                if (ax < 0) {
+                    continue;
+                }
+                if (ax >= width) {
+                    break;
+                }
+                int i = foo[x + y * bw];
+                if (!isTransparent(i)) {
+                    pixels[ax + ay * width] = i;
+                }
+            }
+        }
+    }
+
+    private boolean isTransparent(int pixel) {
+        int alpha = (pixel >> 24) & 0xff;
+        return alpha == 0;
     }
 
     public BufferedImage getBufferedImage() {
@@ -70,8 +113,13 @@ public class Camera {
 
     public void clear() {
         for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = Color.BLACK.getRGB();
+            pixels[i] = 0;
         }
+    }
+
+    public Graphics2D getGraphics2D() {
+        return graphics2D;
+>>>>>>> c76671d212277562266853b4bdeb6d840ddb18e2
     }
 
     public void update(Player player) {
@@ -202,4 +250,7 @@ public class Camera {
         );
     }
 
+    public void createGraphics() {
+        graphics2D = bufferedImage.createGraphics();
+    }
 }
