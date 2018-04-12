@@ -7,11 +7,9 @@ import no.taardal.pixelcave.tile.TileSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.List;
 
 public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet> {
 
@@ -70,13 +68,7 @@ public class TiledEditorTileSetDeserializer implements JsonDeserializer<TileSet>
         for (int y = 0; y < numberOfTilesY; y++) {
             for (int x = 0; x < numberOfTilesX; x++) {
                 BufferedImage tileBufferedImage = tileSetBufferedImage.getSubimage(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
-                int width = tileBufferedImage.getWidth();
-                int height = tileBufferedImage.getHeight();
-                BufferedImage spriteImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-                Graphics2D graphics = spriteImage.createGraphics();
-                graphics.drawImage(tileBufferedImage, 0, 0, width, height, null);
-                graphics.dispose();
-                tiles.add(new Tile(spriteImage));
+                tiles.add(new Tile(tileBufferedImage));
             }
         }
         return tiles;

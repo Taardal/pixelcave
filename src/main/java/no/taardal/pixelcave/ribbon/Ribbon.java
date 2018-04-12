@@ -15,13 +15,9 @@ public class Ribbon {
     private float y;
     private float speedX;
     private float speedY;
-    int[] foo;
 
-    public Ribbon(BufferedImage bufferedImage) {
-        this.bufferedImage = bufferedImage;
-        int bw = bufferedImage.getWidth();
-        int bh = bufferedImage.getHeight();
-        foo = bufferedImage.getRGB(0, 0, bw, bh, new int[bw * bh], 0, bw);
+    public Ribbon(Sprite sprite) {
+        this.sprite = sprite;
     }
 
     public void setSpeedX(float speedX) {
@@ -32,76 +28,30 @@ public class Ribbon {
         this.speedY = speedY;
     }
 
-    public void update(Direction cameraDirection) {
-        Direction direction = getDirection(cameraDirection);
+    public void update(Camera camera) {
+        Direction direction = getDirection(camera.getDirection());
         if (direction == Direction.RIGHT) {
             x = (x + speedX) % sprite.getWidth();
         } else if (direction == Direction.LEFT) {
             x = (x - speedX) % sprite.getWidth();
         }
-    }
-
-    public void draw(Camera camera) {
-        camera.drawImagez(bufferedImage, foo, (int) x, (int) y);
-    }
-
-    /*
-    public void draw(Camera camera) {
-        int destinationY1 = 0;
-        int destinationY2 = camera.getHeight();
-        int sourceY1 = (int) y;
-        int sourceY2 = ((int) y) + camera.getHeight();
-
-        if (x == 0) {
-            int destinationX1 = 0;
-            int destinationX2 = camera.getWidth();
-            int sourceX1 = 0;
-            int sourceX2 = camera.getWidth();
-
-            camera.drawImage(bufferedImage, destinationX1, destinationX2, destinationY1, destinationY2, sourceX1, sourceX2, sourceY1, sourceY2);
-
-        } else if (x > 0 && x < camera.getWidth()) {
-            int tailDestinationX1 = 0;
-            int tailDestinationX2 = (int) x;
-            int tailSourceX1 = bufferedImage.getWidth() - (int) x;
-            int tailSourceX2 = bufferedImage.getWidth();
-            camera.drawImage(bufferedImage, tailDestinationX1, tailDestinationX2, destinationY1, destinationY2, tailSourceX1, tailSourceX2, sourceY1, sourceY2);
-
-            int headDestinationX1 = (int) x;
-            int headDestinationX2 = camera.getWidth();
-            int headSourceX1 = 0;
-            int headSourceX2 = camera.getWidth() - (int) x;
-            camera.drawImage(bufferedImage, headDestinationX1, headDestinationX2, destinationY1, destinationY2, headSourceX1, headSourceX2, sourceY1, sourceY2);
-
-        } else if (x >= camera.getWidth()) {
-            int destinationX1 = 0;
-            int destinationX2 = camera.getWidth();
-            int sourceX1 = bufferedImage.getWidth() - (int) x;
-            int sourceX2 = bufferedImage.getWidth() - ((int) x) + camera.getWidth();
-            camera.drawImage(bufferedImage, destinationX1, destinationX2, destinationY1, destinationY2, sourceX1, sourceX2, sourceY1, sourceY2);
-
-        } else if ((x < 0) && (x >= camera.getWidth() - bufferedImage.getWidth())) {
-            int destinationX1 = 0;
-            int destinationX2 = camera.getWidth();
-            int sourceX1 = (int) -x;
-            int sourceX2 = camera.getWidth() - (int) x;
-            camera.drawImage(bufferedImage, destinationX1, destinationX2, destinationY1, destinationY2, sourceX1, sourceX2, sourceY1, sourceY2);
-
-        } else if (x < camera.getWidth() - bufferedImage.getWidth()) {
-            int tailDestinationX1 = 0;
-            int tailDestinationX2 = bufferedImage.getWidth() + (int) x;
-            int tailSourceX1 = (int) -x;
-            int tailSourceX2 = bufferedImage.getWidth();
-            camera.drawImage(bufferedImage, tailDestinationX1, tailDestinationX2, destinationY1, destinationY2, tailSourceX1, tailSourceX2, sourceY1, sourceY2);
-
-            int headDestinationX1 = bufferedImage.getWidth() + (int) x;
-            int headDestinationX2 = camera.getWidth();
-            int headSourceX1 = 0;
-            int headSourceX2 = camera.getWidth() - bufferedImage.getWidth() - (int) x;
-            camera.drawImage(bufferedImage, headDestinationX1, headDestinationX2, destinationY1, destinationY2, headSourceX1, headSourceX2, sourceY1, sourceY2);
+        if (x + sprite.getWidth() < camera.getX()) {
+            x += sprite.getWidth();
+        }
+        if (x > camera.getX()) {
+            x -= sprite.getWidth();
         }
     }
-    */
+
+    public void draw(Camera camera) {
+        camera.drawSprite(sprite, (int) x, (int) y);
+        if (x > camera.getX()) {
+            camera.drawSprite(sprite, (int) x - sprite.getWidth(), (int) y);
+        }
+        if (x < camera.getX()) {
+            camera.drawSprite(sprite, (int) x + sprite.getWidth(), (int) y);
+        }
+    }
 
     private Direction getDirection(Direction cameraDirection) {
         if (cameraDirection == Direction.LEFT) {

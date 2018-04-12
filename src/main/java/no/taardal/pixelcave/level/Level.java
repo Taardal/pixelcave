@@ -18,7 +18,6 @@ import no.taardal.pixelcave.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,34 +39,21 @@ public class Level {
         String directoryPath = "ribbons/";
         List<String> fileNames = Arrays.asList(resourceService.getFileNames(directoryPath));
         Collections.sort(fileNames);
-        float speed = 1f;
+        float speed = 0.1f;
         for (String fileName : fileNames) {
             String path = directoryPath + "/" + fileName;
 
             BufferedImage bufferedImage = resourceService.getBufferedImage(path);
-            int width = bufferedImage.getWidth();
-            int height = bufferedImage.getHeight();
-            BufferedImage spriteImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D graphics = spriteImage.createGraphics();
-            graphics.drawImage(bufferedImage, 0, 0, width, height, null);
-            graphics.dispose();
 
-            Ribbon ribbon = new Ribbon(new Sprite(spriteImage));
+            Ribbon ribbon = new Ribbon(new Sprite(bufferedImage));
             ribbon.setSpeedX(speed);
             ribbons.add(ribbon);
             speed += 0.1f;
         }
 
         BufferedImage bufferedImage = resourceService.getBufferedImage("spritesheets/knight/spritesheet-knight-" + Knight.Theme.BLACK.toString().toLowerCase() + ".png");
-        int width = bufferedImage.getWidth();
-        int height = bufferedImage.getHeight();
-        BufferedImage spriteImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = spriteImage.createGraphics();
-        graphics.drawImage(bufferedImage, 0, 0, width, height, null);
-        graphics.dispose();
-
         SpriteSheet spriteSheet = new SpriteSheet.Builder()
-                .setBufferedImage(spriteImage)
+                .setBufferedImage(bufferedImage)
                 .setApproximateSpriteWidth(40)
                 .setApproximateSpriteHeight(40)
                 .build();
@@ -88,13 +74,13 @@ public class Level {
         player.update(world, secondsSinceLastUpdate);
         camera.update(player);
         for (int i = 0; i < ribbons.size(); i++) {
-            ribbons.get(i).update(camera.getDirection());
+            ribbons.get(i).update(camera);
         }
     }
 
     public void draw(Camera camera) {
         for (int i = 0; i < ribbons.size(); i++) {
-            //ribbons.get(i).draw(camera);
+            ribbons.get(i).draw(camera);
         }
         drawTiles(camera);
         player.draw(camera);

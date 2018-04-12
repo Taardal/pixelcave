@@ -78,6 +78,8 @@ public class Game extends Canvas implements GameLoopListener, ExitListener {
             return;
         }
         Graphics graphics = bufferStrategy.getDrawGraphics();
+        graphics.setColor(Color.BLACK);
+        graphics.fillRect(0, 0, getWidth(), getHeight());
 
         camera.clear();
         gameState.draw(camera);
