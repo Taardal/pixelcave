@@ -33,13 +33,7 @@ public class Camera {
         this.width = width;
         this.height = height;
         direction = Direction.NO_DIRECTION;
-
-        GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice defaultScreenDevice = localGraphicsEnvironment.getDefaultScreenDevice();
-        GraphicsConfiguration defaultConfiguration = defaultScreenDevice.getDefaultConfiguration();
-        //bufferedImage = defaultConfiguration.createCompatibleImage(width, height);
         bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
         pixels = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
 
         centerOnPlayerRequired = true;
@@ -49,36 +43,44 @@ public class Camera {
         bottom = (int) (height * (70 / 100.0f));
     }
 
-    public void drawSprite(Sprite sprite, int xx, int yy) {
-        drawSprite(sprite, xx, yy, false);
+    public void drawSprite(Sprite sprite, int x, int y) {
+        drawSprite(sprite, x, y, false);
     }
 
-    public void drawSprite(Sprite sprite, int xx, int yy, boolean flip) {
-        xx -= x;
-        yy -= y;
-        for (int y = 0; y < sprite.getHeight(); y++) {
-            int ay = yy + y;
-            if (ay < 0) {
+    public void drawSprite(Sprite sprite, int x, int y, boolean flipHorizontally) {
+        drawSprite(sprite, x, y, flipHorizontally, false);
+    }
+
+    public void drawSprite(Sprite sprite, int x, int y, boolean flipHorizontally, boolean flipVertically) {
+        x -= this.x;
+        y -= this.y;
+        for (int spriteY = y < 0 ? Math.abs(y) : 0; spriteY < sprite.getHeight(); spriteY++) {
+            int pixelY = y + spriteY;
+            int spritePixelY = spriteY;
+            if (flipVertically) {
+                spritePixelY = (sprite.getHeight() - 1) - spriteY;
+            }
+            if (pixelY < 0) {
                 continue;
             }
-            if (ay >= height) {
+            if (pixelY >= height) {
                 break;
             }
-            for (int x = 0; x < sprite.getWidth(); x++) {
-                int ax = xx + x;
-                int xxx = x;
-                if (flip) {
-                    xxx = (sprite.getWidth() - 1) - x;
+            for (int spriteX = x < 0 ? Math.abs(x) : 0; spriteX < sprite.getWidth(); spriteX++) {
+                int pixelX = x + spriteX;
+                int spritePixelX = spriteX;
+                if (flipHorizontally) {
+                    spritePixelX = (sprite.getWidth() - 1) - spriteX;
                 }
-                if (ax < 0) {
+                if (pixelX < 0) {
                     continue;
                 }
-                if (ax >= width) {
+                if (pixelX >= width) {
                     break;
                 }
-                int color = sprite.getPixels()[xxx + y * sprite.getWidth()];
+                int color = sprite.getPixels()[spritePixelX + spritePixelY * sprite.getWidth()];
                 if (!isTransparent(color)) {
-                    pixels[ax + ay * width] = color;
+                    pixels[pixelX + pixelY * width] = color;
                 }
             }
         }
