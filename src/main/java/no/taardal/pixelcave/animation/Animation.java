@@ -123,8 +123,10 @@ public class Animation {
         float x = actor.getPosition().getX();
         if (flipped) {
             x += actor.getWidth() - currentSprite.getWidth();
+            camera.drawSpriteFlippedHorizontally(currentSprite, (int) x, (int) y);
+        } else {
+            camera.drawSprite(currentSprite, (int) x, (int) y);
         }
-        camera.drawSprite(currentSprite, (int) x, (int) y, flipped);
     }
 
     @Override

@@ -7,7 +7,6 @@ import no.taardal.pixelcave.sprite.Sprite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -43,15 +42,69 @@ public class Camera {
         bottom = (int) (height * (70 / 100.0f));
     }
 
+    public BufferedImage getBufferedImage() {
+        return bufferedImage;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void update(Player player) {
+        if (centerOnPlayerRequired) {
+            x = ((int) player.getPosition().getX()) - Game.GAME_WIDTH / 2;
+            centerOnPlayerRequired = false;
+        }
+        float playerX = player.getPosition().getX();
+        float playerXInCamera = playerX - x;
+        if (playerXInCamera < left || (playerXInCamera + player.getWidth()) > right) {
+            if (playerXInCamera < left) {
+                direction = Direction.LEFT;
+            } else {
+                direction = Direction.RIGHT;
+            }
+            x += (int) playerX - (int) previousPlayerX;
+        } else {
+            direction = Direction.NO_DIRECTION;
+        }
+        previousPlayerX = playerX;
+    }
+
+    public void clear() {
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = 0;
+        }
+    }
+
     public void drawSprite(Sprite sprite, int x, int y) {
-        drawSprite(sprite, x, y, false);
+        boolean flipHorizontally = false;
+        boolean flipVertically = false;
+        drawSprite(sprite, x, y, flipHorizontally, flipVertically);
     }
 
-    public void drawSprite(Sprite sprite, int x, int y, boolean flipHorizontally) {
-        drawSprite(sprite, x, y, flipHorizontally, false);
+    public void drawSpriteFlippedHorizontally(Sprite sprite, int x, int y) {
+        boolean flipHorizontally = true;
+        boolean flipVertically = false;
+        drawSprite(sprite, x, y, flipHorizontally, flipVertically);
     }
 
-    public void drawSprite(Sprite sprite, int x, int y, boolean flipHorizontally, boolean flipVertically) {
+    private void drawSprite(Sprite sprite, int x, int y, boolean flipHorizontally, boolean flipVertically) {
         x -= this.x;
         y -= this.y;
         for (int spriteY = y < 0 ? Math.abs(y) : 0; spriteY < sprite.getHeight(); spriteY++) {
@@ -89,88 +142,6 @@ public class Camera {
     private boolean isTransparent(int pixel) {
         int alpha = (pixel >> 24) & 0xff;
         return alpha == 0;
-    }
-
-    public BufferedImage getBufferedImage() {
-        return bufferedImage;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void clear() {
-        for (int i = 0; i < pixels.length; i++) {
-            pixels[i] = 0;
-        }
-    }
-
-    public void update(Player player) {
-        if (centerOnPlayerRequired) {
-            x = ((int) player.getPosition().getX()) - Game.GAME_WIDTH / 2;
-            centerOnPlayerRequired = false;
-        }
-        float playerX = player.getPosition().getX();
-        float playerXInCamera = playerX - x;
-        if (playerXInCamera < left || (playerXInCamera + player.getWidth()) > right) {
-            if (playerXInCamera < left) {
-                direction = Direction.LEFT;
-            } else {
-                direction = Direction.RIGHT;
-            }
-            x += (int) playerX - (int) previousPlayerX;
-        } else {
-            direction = Direction.NO_DIRECTION;
-        }
-        previousPlayerX = playerX;
-    }
-
-    public void drawImage(BufferedImage bufferedImage, float x, float y, boolean flip) {
-        if (flip) {
-            drawImageFlippedHorizontally(bufferedImage, x, y);
-        } else {
-            drawImage(bufferedImage, x, y);
-        }
-    }
-
-    public void drawImage(BufferedImage bufferedImage, float x, float y) {
-
-    }
-
-    public void drawImage(BufferedImage bufferedImage, int destinationX1, int destinationX2, int destinationY1, int destinationY2, int sourceX1, int sourceX2, int sourceY1, int sourceY2) {
-
-    }
-
-    public void drawRectangle(float x, float y, int width, int height, Color color) {
-
-    }
-
-    public void drawString(String text, int x, int y, Font font, Color color) {
-
-    }
-
-    public void drawCircle(int x, int y, int diameter, Color color) {
-
-    }
-
-    private void drawImageFlippedHorizontally(BufferedImage bufferedImage, float x, float y) {
-
     }
 
 }

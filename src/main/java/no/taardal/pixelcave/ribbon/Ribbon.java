@@ -12,9 +12,7 @@ public class Ribbon {
 
     private Sprite sprite;
     private float x;
-    private float y;
     private float speedX;
-    private float speedY;
 
     public Ribbon(Sprite sprite) {
         this.sprite = sprite;
@@ -22,10 +20,6 @@ public class Ribbon {
 
     public void setSpeedX(float speedX) {
         this.speedX = speedX;
-    }
-
-    public void setSpeedY(int speedY) {
-        this.speedY = speedY;
     }
 
     public void update(Camera camera) {
@@ -44,12 +38,13 @@ public class Ribbon {
     }
 
     public void draw(Camera camera) {
-        camera.drawSprite(sprite, (int) x, (int) y);
+        int y = 0;
+        camera.drawSprite(sprite, (int) x, y);
         if (x > camera.getX()) {
-            camera.drawSprite(sprite, (int) x - sprite.getWidth(), (int) y);
+            camera.drawSprite(sprite, (int) x - sprite.getWidth(), y);
         }
         if (x < camera.getX()) {
-            camera.drawSprite(sprite, (int) x + sprite.getWidth(), (int) y);
+            camera.drawSprite(sprite, (int) x + sprite.getWidth(), y);
         }
     }
 
