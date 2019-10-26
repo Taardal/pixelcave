@@ -1,7 +1,6 @@
 package no.taardal.pixelcave.actor;
 
 import no.taardal.pixelcave.animation.Animation;
-import no.taardal.pixelcave.camera.Camera;
 import no.taardal.pixelcave.direction.Direction;
 import no.taardal.pixelcave.sprite.Sprite;
 import no.taardal.pixelcave.spritesheet.SpriteSheet;
@@ -10,7 +9,6 @@ import no.taardal.pixelcave.vector.Vector2f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,12 +37,6 @@ public class Knight extends Actor implements Player {
         width = 18;
         height = 29;
         movementSpeed = 100;
-    }
-
-    @Override
-    public void draw(Camera camera) {
-        super.draw(camera);
-        camera.drawRectangle(position.getX(), position.getY(), getWidth(), getHeight(), Color.CYAN);
     }
 
     @Override
