@@ -1,5 +1,11 @@
 # Pixelcave
 
+<div float="left">
+  <img src="./img/pixelcave.gif" width="800" />
+</div>
+
+# Description
+
 2D platformer demo game written from scratch in Java.
 
 This is a very small demo/prototype game that simply consists of a parallax background, environment tiles and a single character that can run, jump and collide with the environment. There are no enemies and no UI.
@@ -10,23 +16,6 @@ Main features of the code:
 - Sprite sheet animation
 - Collision detection
 - State machine
-
-# Resources&nbsp;:books:
-
-### Tools
-
-- [Tiled Level Editor][tiled]
-
-### Assets
-
-- [Itch.io: Nami Pixels][itchio:namipixels]
-
-### Knowledge
-
-- [TheCherno: Game Programming][res:yt:thecherno:gameprogramming] (YouTube)
-- [Game Programming Patterns: Game Loop][res:gameprogrammingpatterns:gameloop] (Book)
-- [Build a 2D platformer - JAVA][res:brainycode:2dplatformer] (Book)
-- [The Guide to Implementing 2D platformers][res:higherorderfun:2dplatformer] (Blog)
 
 # Prerequisites&nbsp;:vertical_traffic_light:
 
@@ -52,10 +41,22 @@ Main features of the code:
 - Build the app: `mvn clean package`
 - Run the app: `java -jar target/pixelcave-jar-with-dependencies.jar`
 
-<br>
-<div float="left">
-  <img src="./img/pixelcave.gif" width="800" />
-</div>
+# Resources&nbsp;:books:
+
+### Tools
+
+- [Tiled Level Editor][tiled]
+
+### Assets
+
+- [Itch.io: Nami Pixels][itchio:namipixels]
+
+### Knowledge
+
+- [TheCherno: Game Programming][res:yt:thecherno:gameprogramming] (YouTube)
+- [Game Programming Patterns: Game Loop][res:gameprogrammingpatterns:gameloop] (Book)
+- [Build a 2D platformer - JAVA][res:brainycode:2dplatformer] (Book)
+- [The Guide to Implementing 2D platformers][res:higherorderfun:2dplatformer] (Blog)
 
 
 [git:download]: https://git-scm.com/downloads
